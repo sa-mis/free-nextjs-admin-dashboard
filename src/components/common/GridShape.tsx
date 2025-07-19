@@ -1,25 +1,35 @@
-import Image from "next/image";
 import React from "react";
 
 export default function GridShape() {
   return (
-    <>
-      <div className="absolute right-0 top-0 -z-1 w-full max-w-[250px] xl:max-w-[450px]">
-        <Image
-          width={540}
-          height={254}
-          src="/images/shape/grid-01.svg"
-          alt="grid"
+    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="overflow-hidden">
+        <img
+          src="/images/grid-image/image-01.png"
+          alt="Grid Image 1"
+          className="w-full border border-gray-200 rounded-xl dark:border-gray-800"
+          width={1054}
+          height={600}
         />
       </div>
-      <div className="absolute bottom-0 left-0 -z-1 w-full max-w-[250px] rotate-180 xl:max-w-[450px]">
-        <Image
-          width={540}
-          height={254}
-          src="/images/shape/grid-01.svg"
-          alt="grid"
+      <div className="overflow-hidden">
+        <img
+          src="/images/grid-image/image-02.png"
+          alt="Grid Image 2"
+          className="w-full border border-gray-200 rounded-xl dark:border-gray-800"
+          width={1054}
+          height={600}
         />
       </div>
-    </>
+      <div className="overflow-hidden">
+        <img
+          src="/images/grid-image/image-03.png"
+          alt="Grid Image 3"
+          className="w-full border border-gray-200 rounded-xl dark:border-gray-800"
+          width={1054}
+          height={600}
+        />
+      </div>
+    </div>
   );
 }

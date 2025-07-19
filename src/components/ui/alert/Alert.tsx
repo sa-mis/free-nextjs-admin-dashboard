@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "react-router-dom";
 import React from "react";
 
 interface AlertProps {
@@ -130,7 +130,7 @@ const Alert: React.FC<AlertProps> = ({
 
           {showLink && (
             <Link
-              href={linkHref}
+              to={linkHref}
               className="inline-block mt-3 text-sm font-medium text-gray-500 underline dark:text-gray-400"
             >
               {linkText}

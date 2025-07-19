@@ -1,14 +1,11 @@
 "use client";
-import React from "react";
+import React, { lazy, Suspense } from "react";
 // import Chart from "react-apexcharts";
 import { ApexOptions } from "apexcharts";
 import ChartTab from "../common/ChartTab";
-import dynamic from "next/dynamic";
 
 // Dynamically import the ReactApexChart component
-const ReactApexChart = dynamic(() => import("react-apexcharts"), {
-  ssr: false,
-});
+const ReactApexChart = lazy(() => import("react-apexcharts"));
 
 export default function StatisticsChart() {
   const options: ApexOptions = {
@@ -127,7 +124,7 @@ export default function StatisticsChart() {
             Statistics
           </h3>
           <p className="mt-1 text-gray-500 text-theme-sm dark:text-gray-400">
-            Target you’ve set for each month
+            Target you've set for each month
           </p>
         </div>
         <div className="flex items-start w-full gap-3 sm:justify-end">
@@ -137,12 +134,14 @@ export default function StatisticsChart() {
 
       <div className="max-w-full overflow-x-auto custom-scrollbar">
         <div className="min-w-[1000px] xl:min-w-full">
-          <ReactApexChart
-            options={options}
-            series={series}
-            type="area"
-            height={310}
-          />
+          <Suspense fallback={<div>Loading chart...</div>}>
+            <ReactApexChart
+              options={options}
+              series={series}
+              type="area"
+              height={310}
+            />
+          </Suspense>
         </div>
       </div>
     </div>
