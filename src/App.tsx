@@ -24,6 +24,8 @@ import Images from '@/pages/Images'
 import Modals from '@/pages/Modals'
 import Videos from '@/pages/Videos'
 
+import CompaniesPage from '@/app/(admin)/companies/page'
+
 // Import layouts
 import AdminLayout from '@/layouts/AdminLayout'
 import AuthLayout from '@/layouts/AuthLayout'
@@ -42,6 +44,7 @@ function App() {
             {/* Admin routes */}
             <Route path="/" element={<AdminLayout><Dashboard /></AdminLayout>} />
             <Route path="/dashboard" element={<AdminLayout><Dashboard /></AdminLayout>} />
+            <Route path="/companies" element={<AdminLayout><CompaniesPage /></AdminLayout>} />
             <Route path="/profile" element={<AdminLayout><Profile /></AdminLayout>} />
             <Route path="/calendar" element={<AdminLayout><Calendar /></AdminLayout>} />
             <Route path="/blank" element={<AdminLayout><Blank /></AdminLayout>} />

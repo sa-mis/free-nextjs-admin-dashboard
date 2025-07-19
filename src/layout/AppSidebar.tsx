@@ -59,6 +59,13 @@ const navItems: NavItem[] = [
       { name: "404 Error", path: "/error-404", pro: false },
     ],
   },
+  {
+    name: "Organization",
+    icon: <BoxCubeIcon />,
+    subItems: [
+      { name: "Companies", path: "/companies", pro: false },
+    ],
+  },
 ];
 
 const othersItems: NavItem[] = [
@@ -94,8 +101,70 @@ const othersItems: NavItem[] = [
 
 const AppSidebar: React.FC = () => {
   const { isExpanded, isMobileOpen, isHovered, setIsHovered } = useSidebar();
-  const location = useLocation();
-  const pathname = location.pathname;
+  const pathname = useLocation().pathname;
+
+  const isActive = (path: string) => path === pathname;
+
+  const [openSubmenu, setOpenSubmenu] = useState<{
+    type: "main" | "others";
+    index: number;
+  } | null>(null);
+  const [subMenuHeight, setSubMenuHeight] = useState<Record<string, number>>(
+    {}
+  );
+  const subMenuRefs = useRef<Record<string, HTMLDivElement | null>>({});
+
+  useEffect(() => {
+    // Check if the current path matches any submenu item
+    let submenuMatched = false;
+    ["main", "others"].forEach((menuType) => {
+      const items = menuType === "main" ? navItems : othersItems;
+      items.forEach((nav, index) => {
+        if (nav.subItems) {
+          nav.subItems.forEach((subItem) => {
+            if (isActive(subItem.path)) {
+              setOpenSubmenu({
+                type: menuType as "main" | "others",
+                index,
+              });
+              submenuMatched = true;
+            }
+          });
+        }
+      });
+    });
+
+    // If no submenu item matches, close the open submenu
+    if (!submenuMatched) {
+      setOpenSubmenu(null);
+    }
+  }, [pathname]);
+
+  useEffect(() => {
+    // Set the height of the submenu items when the submenu is opened
+    if (openSubmenu !== null) {
+      const key = `${openSubmenu.type}-${openSubmenu.index}`;
+      if (subMenuRefs.current[key]) {
+        setSubMenuHeight((prevHeights) => ({
+          ...prevHeights,
+          [key]: subMenuRefs.current[key]?.scrollHeight || 0,
+        }));
+      }
+    }
+  }, [openSubmenu]);
+
+  const handleSubmenuToggle = (index: number, menuType: "main" | "others") => {
+    setOpenSubmenu((prevOpenSubmenu) => {
+      if (
+        prevOpenSubmenu &&
+        prevOpenSubmenu.type === menuType &&
+        prevOpenSubmenu.index === index
+      ) {
+        return null;
+      }
+      return { type: menuType, index };
+    });
+  };
 
   const renderMenuItems = (
     navItems: NavItem[],
@@ -216,73 +285,14 @@ const AppSidebar: React.FC = () => {
     </ul>
   );
 
-  const [openSubmenu, setOpenSubmenu] = useState<{
-    type: "main" | "others";
-    index: number;
-  } | null>(null);
-  const [subMenuHeight, setSubMenuHeight] = useState<Record<string, number>>(
-    {}
-  );
-  const subMenuRefs = useRef<Record<string, HTMLDivElement | null>>({});
-
-  // const isActive = (path: string) => path === pathname;
-   const isActive = useCallback((path: string) => path === pathname, [pathname]);
-
-  useEffect(() => {
-    // Check if the current path matches any submenu item
-    let submenuMatched = false;
-    ["main", "others"].forEach((menuType) => {
-      const items = menuType === "main" ? navItems : othersItems;
-      items.forEach((nav, index) => {
-        if (nav.subItems) {
-          nav.subItems.forEach((subItem) => {
-            if (isActive(subItem.path)) {
-              setOpenSubmenu({
-                type: menuType as "main" | "others",
-                index,
-              });
-              submenuMatched = true;
-            }
-          });
-        }
-      });
-    });
-
-    // If no submenu item matches, close the open submenu
-    if (!submenuMatched) {
-      setOpenSubmenu(null);
-    }
-  }, [pathname,isActive]);
-
-  useEffect(() => {
-    // Set the height of the submenu items when the submenu is opened
-    if (openSubmenu !== null) {
-      const key = `${openSubmenu.type}-${openSubmenu.index}`;
-      if (subMenuRefs.current[key]) {
-        setSubMenuHeight((prevHeights) => ({
-          ...prevHeights,
-          [key]: subMenuRefs.current[key]?.scrollHeight || 0,
-        }));
-      }
-    }
-  }, [openSubmenu]);
-
-  const handleSubmenuToggle = (index: number, menuType: "main" | "others") => {
-    setOpenSubmenu((prevOpenSubmenu) => {
-      if (
-        prevOpenSubmenu &&
-        prevOpenSubmenu.type === menuType &&
-        prevOpenSubmenu.index === index
-      ) {
-        return null;
-      }
-      return { type: menuType, index };
-    });
-  };
-
   return (
     <aside
-      className={`fixed mt-16 flex flex-col lg:mt-0 top-0 px-5 left-0 bg-white dark:bg-gray-900 dark:border-gray-800 text-gray-900 h-screen transition-all duration-300 ease-in-out z-50 border-r border-gray-200 
+      className={`
+        flex flex-col
+        lg:relative
+        fixed mt-16 lg:mt-0 top-0 px-5 left-0
+        bg-white dark:bg-gray-900 dark:border-gray-800 text-gray-900 h-screen
+        transition-all duration-300 ease-in-out z-50 border-r border-gray-200
         ${
           isExpanded || isMobileOpen
             ? "w-[290px]"
@@ -291,7 +301,8 @@ const AppSidebar: React.FC = () => {
             : "w-[90px]"
         }
         ${isMobileOpen ? "translate-x-0" : "-translate-x-full"}
-        lg:translate-x-0`}
+        lg:translate-x-0
+      `}
       onMouseEnter={() => !isExpanded && setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >

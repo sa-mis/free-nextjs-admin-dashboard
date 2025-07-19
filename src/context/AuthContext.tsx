@@ -1,7 +1,7 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { useRouter } from 'next/navigation';
+import { useNavigate } from 'react-router-dom';
 import { authService } from '@/services/auth';
 import toast from 'react-hot-toast';
 
@@ -19,7 +19,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
-  const router = useRouter();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -53,7 +53,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setUser(data.data.user);
       setIsAuthenticated(true);
       toast.success('Login successful!');
-      router.push('/dashboard');
+      navigate('/dashboard');
     } catch (error: any) {
       toast.error(error.response?.data?.message || 'Login failed.');
       setIsAuthenticated(false);
@@ -68,7 +68,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setIsAuthenticated(false);
     setUser(null);
     toast.success('Logged out successfully.');
-    router.push('/login');
+    navigate('/login');
   };
 
   return (

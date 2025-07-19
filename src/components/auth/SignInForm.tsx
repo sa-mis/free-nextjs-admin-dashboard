@@ -4,10 +4,9 @@ import Input from "@/components/form/input/InputField";
 import Label from "@/components/form/Label";
 import Button from "@/components/ui/button/Button";
 import { ChevronLeftIcon, EyeCloseIcon, EyeIcon } from "@/icons";
-import { authService } from "@/services/auth";
-import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "@/context/AuthContext";
+import { Link } from "react-router-dom";
 import React, { useState } from "react";
-import toast from "react-hot-toast";
 
 export default function SignInForm() {
   const [showPassword, setShowPassword] = useState(false);
@@ -15,19 +14,16 @@ export default function SignInForm() {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const navigate = useNavigate();
+  const { login, loading } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await authService.login({ username, email, password });
-      toast.success('Login successful!');
-      navigate('/dashboard');
-    } catch (error: any) {
-      toast.error(error.response?.data?.message || 'Login failed.');
+      await login({ username, email, password });
+    } catch (error) {
+      // Error is handled by AuthContext
     }
   };
-
 
   return (
     <div className="flex flex-col flex-1 lg:w-1/2 w-full">
@@ -97,8 +93,8 @@ export default function SignInForm() {
                   </Link>
                 </div>
                 <div>
-                  <Button className="w-full" size="sm">
-                    Sign in
+                  <Button className="w-full" size="sm" disabled={loading}>
+                    {loading ? 'Signing in...' : 'Sign in'}
                   </Button>
                 </div>
               </div>
@@ -108,7 +104,7 @@ export default function SignInForm() {
               <p className="text-sm font-normal text-center text-gray-700 dark:text-gray-400 sm:text-start">
                 Don&apos;t have an account? {""}
                 <Link
-                  to="/signup"
+                  to="/register"
                   className="text-brand-500 hover:text-brand-600 dark:text-brand-400"
                 >
                   Sign Up
