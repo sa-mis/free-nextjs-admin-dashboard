@@ -6,16 +6,20 @@ import { usePathname } from "next/navigation";
 import { useSidebar } from "../context/SidebarContext";
 import {
   BoxCubeIcon,
+  BuildingIcon,
+  BriefcaseIcon,
   CalenderIcon,
   ChevronDownIcon,
   GridIcon,
   HorizontaLDots,
+  LayersIcon,
   ListIcon,
   PageIcon,
   PieChartIcon,
   PlugInIcon,
   TableIcon,
   UserCircleIcon,
+  UsersIcon,
 } from "../icons/index";
 import SidebarWidget from "./SidebarWidget";
 
@@ -31,6 +35,16 @@ const navItems: NavItem[] = [
     icon: <GridIcon />,
     name: "Dashboard",
     subItems: [{ name: "Ecommerce", path: "/", pro: false }],
+  },
+  {
+    icon: <BuildingIcon />,
+    name: "Organization",
+    subItems: [
+      { name: "Companies", path: "/companies", pro: false },
+      { name: "Departments", path: "/departments", pro: false },
+      { name: "Divisions", path: "/divisions", pro: false },
+      { name: "Employees", path: "/employees", pro: false },
+    ],
   },
   {
     icon: <CalenderIcon />,
