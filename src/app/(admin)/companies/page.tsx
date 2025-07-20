@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import OrganizationTable from "../../../components/organization/OrganizationTable";
+import AdvancedOrganizationTable from "../../../components/organization/AdvancedOrganizationTable";
 import OrganizationFormModal from "../../../components/organization/OrganizationFormModal";
 import { Company, companyService, CreateCompanyData } from "../../../services/organization";
 
@@ -13,15 +13,17 @@ const CompaniesPage: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const columns = [
-    { key: "code", label: "Code" },
-    { key: "name", label: "Company Name" },
-    { key: "phone", label: "Phone" },
-    { key: "email", label: "Email" },
-    { key: "address", label: "Address" },
+    { key: "code", label: "Code", filterable: true, searchable: true, exportable: true },
+    { key: "name", label: "Company Name", filterable: true, searchable: true, exportable: true },
+    { key: "phone", label: "Phone", filterable: true, searchable: true, exportable: true },
+    { key: "email", label: "Email", filterable: true, searchable: true, exportable: true },
+    { key: "address", label: "Address", filterable: true, searchable: true, exportable: true },
     {
       key: "created_at",
       label: "Created At",
       render: (value: string) => new Date(value).toLocaleDateString(),
+      searchable: true,
+      exportable: true
     },
   ];
 
@@ -101,7 +103,7 @@ const CompaniesPage: React.FC = () => {
 
   return (
     <div className="p-6">
-      <OrganizationTable
+      <AdvancedOrganizationTable
         data={companies}
         columns={columns}
         onEdit={handleEdit}
@@ -109,6 +111,7 @@ const CompaniesPage: React.FC = () => {
         onAdd={handleAdd}
         addButtonText="Add Company"
         isLoading={isLoading}
+        title="Companies Management"
       />
 
       <OrganizationFormModal

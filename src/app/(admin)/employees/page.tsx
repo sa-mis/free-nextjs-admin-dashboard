@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import OrganizationTable from "../../../components/organization/OrganizationTable";
+import AdvancedOrganizationTable from "../../../components/organization/AdvancedOrganizationTable";
 import OrganizationFormModal from "../../../components/organization/OrganizationFormModal";
 import { Employee, employeeService, CreateEmployeeData, User, userService } from "../../../services/organization";
 
@@ -15,33 +15,47 @@ const EmployeesPage: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const columns = [
-    { key: "code", label: "Employee Code" },
+    { key: "code", label: "Employee Code", filterable: true, searchable: true, exportable: true },
     { 
       key: "name", 
       label: "Full Name",
-      render: (value: any, row: Employee) => `${row.first_name} ${row.last_name}`
+      render: (value: any, row: Employee) => `${row.first_name} ${row.last_name}`,
+      filterable: true,
+      searchable: true,
+      exportable: true
     },
-    { key: "position", label: "Position" },
-    { key: "phone", label: "Phone" },
+    { key: "position", label: "Position", filterable: true, searchable: true, exportable: true },
+    { key: "phone", label: "Phone", filterable: true, searchable: true, exportable: true },
     { 
       key: "user", 
       label: "Username",
-      render: (value: any, row: Employee) => row.user?.username || "-"
+      render: (value: any, row: Employee) => row.user?.username || "-",
+      filterable: true,
+      searchable: true,
+      exportable: true
     },
     { 
       key: "supervisor", 
       label: "Supervisor",
-      render: (value: any, row: Employee) => row.supervisor ? `${row.supervisor.first_name} ${row.supervisor.last_name}` : "-"
+      render: (value: any, row: Employee) => row.supervisor ? `${row.supervisor.first_name} ${row.supervisor.last_name}` : "-",
+      filterable: true,
+      searchable: true,
+      exportable: true
     },
     { 
       key: "is_active", 
       label: "Status",
-      render: (value: boolean) => value ? "Active" : "Inactive"
+      render: (value: boolean) => value ? "Active" : "Inactive",
+      filterable: true,
+      searchable: true,
+      exportable: true
     },
     {
       key: "hire_date",
       label: "Hire Date",
       render: (value: string) => new Date(value).toLocaleDateString(),
+      searchable: true,
+      exportable: true
     },
   ];
 
@@ -144,7 +158,7 @@ const EmployeesPage: React.FC = () => {
 
   return (
     <div className="p-6">
-      <OrganizationTable
+      <AdvancedOrganizationTable
         data={employees}
         columns={columns}
         onEdit={handleEdit}
@@ -152,6 +166,7 @@ const EmployeesPage: React.FC = () => {
         onAdd={handleAdd}
         addButtonText="Add Employee"
         isLoading={isLoading}
+        title="Employees Management"
       />
 
       <OrganizationFormModal

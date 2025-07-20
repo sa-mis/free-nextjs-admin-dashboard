@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import OrganizationTable from "../../../components/organization/OrganizationTable";
+import AdvancedOrganizationTable from "../../../components/organization/AdvancedOrganizationTable";
 import OrganizationFormModal from "../../../components/organization/OrganizationFormModal";
 import { Division, divisionService, CreateDivisionData, Department, departmentService, User, userService } from "../../../services/organization";
 
@@ -15,27 +15,38 @@ const DivisionsPage: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const columns = [
-    { key: "code", label: "Code" },
-    { key: "name", label: "Division Name" },
+    { key: "code", label: "Code", filterable: true, searchable: true, exportable: true },
+    { key: "name", label: "Division Name", filterable: true, searchable: true, exportable: true },
     { 
       key: "department", 
       label: "Department",
-      render: (value: any, row: Division) => row.department?.name || "-"
+      render: (value: any, row: Division) => row.department?.name || "-",
+      filterable: true,
+      searchable: true,
+      exportable: true
     },
     { 
       key: "manager", 
       label: "Manager",
-      render: (value: any, row: Division) => row.manager?.username || "-"
+      render: (value: any, row: Division) => row.manager?.username || "-",
+      filterable: true,
+      searchable: true,
+      exportable: true
     },
     { 
       key: "is_active", 
       label: "Status",
-      render: (value: boolean) => value ? "Active" : "Inactive"
+      render: (value: boolean) => value ? "Active" : "Inactive",
+      filterable: true,
+      searchable: true,
+      exportable: true
     },
     {
       key: "created_at",
       label: "Created At",
       render: (value: string) => new Date(value).toLocaleDateString(),
+      searchable: true,
+      exportable: true
     },
   ];
 
@@ -131,7 +142,7 @@ const DivisionsPage: React.FC = () => {
 
   return (
     <div className="p-6">
-      <OrganizationTable
+      <AdvancedOrganizationTable
         data={divisions}
         columns={columns}
         onEdit={handleEdit}
@@ -139,6 +150,7 @@ const DivisionsPage: React.FC = () => {
         onAdd={handleAdd}
         addButtonText="Add Division"
         isLoading={isLoading}
+        title="Divisions Management"
       />
 
       <OrganizationFormModal

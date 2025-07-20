@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import OrganizationTable from "../../../components/organization/OrganizationTable";
+import AdvancedOrganizationTable from "../../../components/organization/AdvancedOrganizationTable";
 import OrganizationFormModal from "../../../components/organization/OrganizationFormModal";
 import { Department, departmentService, CreateDepartmentData, Company, companyService, User, userService } from "../../../services/organization";
 
@@ -15,22 +15,30 @@ const DepartmentsPage: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const columns = [
-    { key: "code", label: "Code" },
-    { key: "name", label: "Department Name" },
+    { key: "code", label: "Code", filterable: true, searchable: true, exportable: true },
+    { key: "name", label: "Department Name", filterable: true, searchable: true, exportable: true },
     { 
       key: "company", 
       label: "Company",
-      render: (value: any, row: Department) => row.company?.name || "-"
+      render: (value: any, row: Department) => row.company?.name || "-",
+      filterable: true,
+      searchable: true,
+      exportable: true
     },
     { 
       key: "manager", 
       label: "Manager",
-      render: (value: any, row: Department) => row.manager?.username || "-"
+      render: (value: any, row: Department) => row.manager?.username || "-",
+      filterable: true,
+      searchable: true,
+      exportable: true
     },
     {
       key: "created_at",
       label: "Created At",
       render: (value: string) => new Date(value).toLocaleDateString(),
+      searchable: true,
+      exportable: true
     },
   ];
 
@@ -65,6 +73,7 @@ const DepartmentsPage: React.FC = () => {
       console.log("Departments data:", departmentsData); // Debug log
       console.log("Companies data:", companiesData); // Debug log
       console.log("Users data:", usersData); // Debug log
+      
       setDepartments(departmentsData);
       setCompanies(companiesData);
       setUsers(usersData);
@@ -119,7 +128,7 @@ const DepartmentsPage: React.FC = () => {
 
   return (
     <div className="p-6">
-      <OrganizationTable
+      <AdvancedOrganizationTable
         data={departments}
         columns={columns}
         onEdit={handleEdit}
@@ -127,6 +136,7 @@ const DepartmentsPage: React.FC = () => {
         onAdd={handleAdd}
         addButtonText="Add Department"
         isLoading={isLoading}
+        title="Departments Management"
       />
 
       <OrganizationFormModal

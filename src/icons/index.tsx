@@ -55,6 +55,7 @@ import BuildingIcon from "./building.svg";
 import UsersIcon from "./users.svg";
 import LayersIcon from "./layers.svg";
 import BriefcaseIcon from "./briefcase.svg";
+import SearchIcon from "./search.svg";
 
 export {
   DownloadIcon,
@@ -114,4 +115,5 @@ export {
   UsersIcon,
   LayersIcon,
   BriefcaseIcon,
+  SearchIcon,
 };
