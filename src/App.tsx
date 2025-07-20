@@ -24,7 +24,10 @@ import Images from '@/pages/Images'
 import Modals from '@/pages/Modals'
 import Videos from '@/pages/Videos'
 
-import CompaniesPage from '@/app/(admin)/companies/page'
+import CompaniesPage from '@/app/(admin)/companies/page';
+import DepartmentsPage from '@/app/(admin)/departments/page';
+import DivisionsPage from '@/app/(admin)/divisions/page';
+import EmployeesPage from '@/app/(admin)/employees/page';
 
 // Import layouts
 import AdminLayout from '@/layouts/AdminLayout'
@@ -45,6 +48,9 @@ function App() {
             <Route path="/" element={<AdminLayout><Dashboard /></AdminLayout>} />
             <Route path="/dashboard" element={<AdminLayout><Dashboard /></AdminLayout>} />
             <Route path="/companies" element={<AdminLayout><CompaniesPage /></AdminLayout>} />
+            <Route path="/departments" element={<AdminLayout><DepartmentsPage /></AdminLayout>} />
+            <Route path="/divisions" element={<AdminLayout><DivisionsPage /></AdminLayout>} />
+            <Route path="/employees" element={<AdminLayout><EmployeesPage /></AdminLayout>} />
             <Route path="/profile" element={<AdminLayout><Profile /></AdminLayout>} />
             <Route path="/calendar" element={<AdminLayout><Calendar /></AdminLayout>} />
             <Route path="/blank" element={<AdminLayout><Blank /></AdminLayout>} />

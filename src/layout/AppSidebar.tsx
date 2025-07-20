@@ -64,6 +64,9 @@ const navItems: NavItem[] = [
     icon: <BoxCubeIcon />,
     subItems: [
       { name: "Companies", path: "/companies", pro: false },
+      { name: "Departments", path: "/departments", pro: false },
+      { name: "Divisions", path: "/divisions", pro: false },
+      { name: "Employees", path: "/employees", pro: false },
     ],
   },
 ];
@@ -377,7 +380,7 @@ const AppSidebar: React.FC = () => {
             </div>
           </div>
         </nav>
-        {isExpanded || isHovered || isMobileOpen ? <SidebarWidget /> : null}
+        {/* {isExpanded || isHovered || isMobileOpen ? <SidebarWidget /> : null} */}
       </div>
     </aside>
   );
