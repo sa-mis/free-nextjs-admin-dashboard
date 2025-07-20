@@ -138,7 +138,8 @@ const OrganizationFormModal: React.FC<OrganizationFormModalProps> = ({
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
-      <div className="w-full max-w-2xl p-6">
+      {/* <div className="w-full max-w-2xl p-6"> */}
+      <div className="p-6 max-w-4xl mx-auto max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-xl font-semibold text-gray-800 dark:text-white/90">
             {title}

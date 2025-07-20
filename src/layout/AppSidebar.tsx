@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { useSidebar } from "../context/SidebarContext";
 import {
   BoxCubeIcon,
+  BoxIcon,
   BuildingIcon,
   BriefcaseIcon,
   CalenderIcon,
@@ -44,6 +45,17 @@ const navItems: NavItem[] = [
       { name: "Departments", path: "/departments", pro: false },
       { name: "Divisions", path: "/divisions", pro: false },
       { name: "Employees", path: "/employees", pro: false },
+    ],
+  },
+  {
+    icon: <BoxIcon />,
+    name: "Asset Management",
+    subItems: [
+      { name: "Assets", path: "/assets", pro: false },
+      { name: "Categories", path: "/asset-categories", pro: false },
+      { name: "Brands", path: "/brands", pro: false },
+      { name: "Models", path: "/models", pro: false },
+      { name: "Vendors", path: "/vendors", pro: false },
     ],
   },
   {

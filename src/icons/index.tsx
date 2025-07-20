@@ -20,6 +20,7 @@ import BoxIconLine from "./box-line.svg";
 import ShootingStarIcon from "./shooting-star.svg";
 import DollarLineIcon from "./dollar-line.svg";
 import TrashBinIcon from "./trash.svg";
+import TrashIcon from "./trash.svg";
 import AngleUpIcon from "./angle-up.svg";
 import AngleDownIcon from "./angle-down.svg";
 import PencilIcon from "./pencil.svg";
@@ -56,6 +57,10 @@ import UsersIcon from "./users.svg";
 import LayersIcon from "./layers.svg";
 import BriefcaseIcon from "./briefcase.svg";
 import SearchIcon from "./search.svg";
+import FilterIcon from "./filter.svg";
+import ExclamationTriangleIcon from "./exclamation-triangle.svg";
+import XCircleIcon from "./x-circle.svg";
+import CurrencyDollarIcon from "./currency-dollar.svg";
 
 export {
   DownloadIcon,
@@ -82,6 +87,7 @@ export {
   ShootingStarIcon,
   DollarLineIcon,
   TrashBinIcon,
+  TrashIcon,
   AngleUpIcon,
   AngleDownIcon,
   PencilIcon,
@@ -116,4 +122,8 @@ export {
   LayersIcon,
   BriefcaseIcon,
   SearchIcon,
+  FilterIcon,
+  ExclamationTriangleIcon,
+  XCircleIcon,
+  CurrencyDollarIcon,
 };
