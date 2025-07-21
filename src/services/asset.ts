@@ -299,5 +299,23 @@ export const assetAPI = {
   deleteVendor: async (id: number) => {
     const response = await api.delete(`/api/assets/vendors/${id}`);
     return response.data;
+  },
+
+  // Assign asset
+  assign: async (id: number, data: { assigned_to: number }) => {
+    const response = await api.patch(`/api/assets/${id}/assign`, data);
+    return response.data;
+  },
+
+  // Transfer asset
+  transfer: async (id: number, data: { to_division_id: number; to_location: string; to_assigned_to: number; reason?: string }) => {
+    const response = await api.post(`/api/assets/${id}/transfer`, data);
+    return response.data;
+  },
+
+  // Get asset history
+  getHistory: async (id: number) => {
+    const response = await api.get(`/api/assets/${id}/history`);
+    return response.data;
   }
 }; 

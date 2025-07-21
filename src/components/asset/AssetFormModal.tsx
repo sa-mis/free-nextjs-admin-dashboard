@@ -7,6 +7,7 @@ import Button from '@/components/ui/button/Button';
 import InputField from '@/components/form/input/InputField';
 import Label from '@/components/form/Label';
 import { assetAPI } from '@/services/asset';
+import { userService } from '@/services/organization';
 
 interface AssetFormModalProps {
   isOpen: boolean;
@@ -53,6 +54,15 @@ export function AssetFormModal({
   });
   const [models, setModels] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
+  const [users, setUsers] = useState<any[]>([]);
+  const [showAssign, setShowAssign] = useState(false);
+  const [showTransfer, setShowTransfer] = useState(false);
+  const [showHistory, setShowHistory] = useState(false);
+  const [history, setHistory] = useState<{ auditLogs: any[]; transfers: any[] }>({ auditLogs: [], transfers: [] });
+  const [assignUserId, setAssignUserId] = useState<number | undefined>(undefined);
+  const [transferData, setTransferData] = useState<{ to_division_id: string; to_location: string; to_assigned_to: string; reason: string }>({ to_division_id: '', to_location: '', to_assigned_to: '', reason: '' });
+  const [assignLoading, setAssignLoading] = useState(false);
+  const [transferLoading, setTransferLoading] = useState(false);
 
   useEffect(() => {
     if (asset) {
@@ -112,6 +122,12 @@ export function AssetFormModal({
     }
   }, [formData.brand_id]);
 
+  useEffect(() => {
+    userService.getActive().then(result => {
+      setUsers(Array.isArray(result) ? result : []);
+    });
+  }, []);
+
   const loadModels = async (brandId: number) => {
     try {
       const response = await assetAPI.getModelsByBrand(brandId);
@@ -119,6 +135,42 @@ export function AssetFormModal({
     } catch (error) {
       console.error('Error loading models:', error);
     }
+  };
+
+  const handleAssign = async () => {
+    if (!asset || !assignUserId) return;
+    setAssignLoading(true);
+    try {
+      await assetAPI.assign(asset.id, { assigned_to: assignUserId });
+      setShowAssign(false);
+      setAssignUserId(undefined);
+    } finally {
+      setAssignLoading(false);
+    }
+  };
+
+  const handleTransfer = async () => {
+    if (!asset) return;
+    setTransferLoading(true);
+    try {
+      await assetAPI.transfer(asset.id, {
+        to_division_id: Number(transferData.to_division_id),
+        to_location: transferData.to_location,
+        to_assigned_to: Number(transferData.to_assigned_to),
+        reason: transferData.reason
+      });
+      setShowTransfer(false);
+      setTransferData({ to_division_id: '', to_location: '', to_assigned_to: '', reason: '' });
+    } finally {
+      setTransferLoading(false);
+    }
+  };
+
+  const loadHistory = async () => {
+    if (!asset) return;
+    const res = await assetAPI.getHistory(asset.id);
+    setHistory(res.data);
+    setShowHistory(true);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -420,6 +472,107 @@ export function AssetFormModal({
             </Button>
           </div>
         </form>
+
+        {/* Assignment Section */}
+        {showAssign && (
+          <div className="mb-4 p-4 bg-gray-50 rounded">
+            <Label htmlFor="assign_user">Assign to User</Label>
+            <select
+              id="assign_user"
+              value={assignUserId || ''}
+              onChange={e => setAssignUserId(Number(e.target.value))}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md"
+            >
+              <option value="">Select User</option>
+              {Array.isArray(users) && users.map(user => (
+                <option key={user.id} value={user.id}>{user.username} ({user.email})</option>
+              ))}
+            </select>
+            <div className="flex gap-2 mt-2">
+              <Button onClick={handleAssign} disabled={assignLoading}>{assignLoading ? 'Assigning...' : 'Assign'}</Button>
+              <Button variant="outline" onClick={() => setShowAssign(false)}>Cancel</Button>
+            </div>
+          </div>
+        )}
+        <Button onClick={() => setShowAssign(true)} className="mb-2">Assign Asset</Button>
+
+        {/* Transfer Section */}
+        {showTransfer && (
+          <div className="mb-4 p-4 bg-gray-50 rounded">
+            <Label htmlFor="transfer_division">To Division</Label>
+            <select
+              id="transfer_division"
+              value={transferData.to_division_id}
+              onChange={e => setTransferData(prev => ({ ...prev, to_division_id: e.target.value }))}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md"
+            >
+              <option value="">Select Division</option>
+              {divisions.map(division => (
+                <option key={division.id} value={division.id}>{division.name}</option>
+              ))}
+            </select>
+            <Label htmlFor="transfer_location">To Location</Label>
+            <InputField
+              id="transfer_location"
+              value={transferData.to_location}
+              onChange={e => setTransferData(prev => ({ ...prev, to_location: e.target.value }))}
+              placeholder="Enter new location"
+            />
+            <Label htmlFor="transfer_user">To User</Label>
+            <select
+              id="transfer_user"
+              value={transferData.to_assigned_to}
+              onChange={e => setTransferData(prev => ({ ...prev, to_assigned_to: e.target.value }))}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md"
+            >
+              <option value="">Select User</option>
+              {Array.isArray(users) && users.map(user => (
+                <option key={user.id} value={user.id}>{user.username} ({user.email})</option>
+              ))}
+            </select>
+            <Label htmlFor="transfer_reason">Reason</Label>
+            <InputField
+              id="transfer_reason"
+              value={transferData.reason}
+              onChange={e => setTransferData(prev => ({ ...prev, reason: e.target.value }))}
+              placeholder="Enter reason for transfer"
+            />
+            <div className="flex gap-2 mt-2">
+              <Button onClick={handleTransfer} disabled={transferLoading}>{transferLoading ? 'Transferring...' : 'Transfer'}</Button>
+              <Button variant="outline" onClick={() => setShowTransfer(false)}>Cancel</Button>
+            </div>
+          </div>
+        )}
+        <Button onClick={() => setShowTransfer(true)} className="mb-2">Transfer Asset</Button>
+
+        {/* History Section */}
+        <Button onClick={loadHistory} className="mb-2">View History</Button>
+        {showHistory && (
+          <div className="mb-4 p-4 bg-gray-50 rounded max-h-64 overflow-y-auto">
+            <h3 className="font-semibold mb-2">Asset History</h3>
+            <div>
+              <strong>Audit Log:</strong>
+              <ul className="text-xs">
+                {history.auditLogs.map((log: any) => (
+                  <li key={log.id} className="mb-1">
+                    [{log.performed_at}] {log.action_type} by User {log.performed_by} <br/>
+                    Old: {JSON.stringify(log.old_values)} <br/>
+                    New: {JSON.stringify(log.new_values)}
+                  </li>
+                ))}
+              </ul>
+              <strong>Transfers:</strong>
+              <ul className="text-xs">
+                {history.transfers.map((tr: any) => (
+                  <li key={tr.id} className="mb-1">
+                    [{tr.transfer_date}] {tr.from_location} → {tr.to_location}, User {tr.from_assigned_to} → {tr.to_assigned_to}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <Button variant="outline" onClick={() => setShowHistory(false)}>Close</Button>
+          </div>
+        )}
       </div>
     </Modal>
   );
