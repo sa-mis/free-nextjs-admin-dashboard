@@ -8,6 +8,7 @@ import Button from '@/components/ui/button/Button';
 import InputField from '@/components/form/input/InputField';
 import { Modal } from '@/components/ui/modal';
 import Label from '@/components/form/Label';
+import AdvancedCustomTable from '@/components/custom/AdvancedCustomTable';
 
 interface VendorFormModalProps {
   isOpen: boolean;
@@ -208,16 +209,24 @@ export default function VendorsPage() {
     setIsModalOpen(true);
   };
 
-  const handleDelete = async (id: number) => {
+  const handleDelete = async (vendor: Vendor) => {
     if (confirm('Are you sure you want to delete this vendor?')) {
       try {
-        await assetAPI.deleteVendor(id);
+        await assetAPI.deleteVendor(vendor.id);
         loadVendors();
       } catch (error) {
         console.error('Error deleting vendor:', error);
       }
     }
   };
+
+  const columns = [
+    { key: 'code', label: 'Code', filterable: true, searchable: true, exportable: true },
+    { key: 'name', label: 'Name', filterable: true, searchable: true, exportable: true },
+    { key: 'contact_person', label: 'Contact Person', filterable: true, searchable: true, exportable: true },
+    { key: 'phone', label: 'Phone', filterable: true, searchable: true, exportable: true },
+    { key: 'email', label: 'Email', filterable: true, searchable: true, exportable: true, render: (value: string) => value ? (<a href={`mailto:${value}`} className="text-blue-600 hover:underline">{value}</a>) : '-' },
+  ];
 
   return (
     <div className="mx-auto max-w-screen-2xl p-4 md:p-6 2xl:p-10">
@@ -230,63 +239,16 @@ export default function VendorsPage() {
         </Button>
       </div>
 
-      <ComponentCard>
-        {loading ? (
-          <div className="flex items-center justify-center py-8">
-            <div className="text-gray-500">Loading vendors...</div>
-          </div>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full table-auto">
-              <thead>
-                <tr className="border-b border-gray-200 bg-gray-50 dark:border-gray-700 dark:bg-gray-800">
-                  <th className="px-4 py-3 text-left font-medium text-gray-700 dark:text-gray-300">Code</th>
-                  <th className="px-4 py-3 text-left font-medium text-gray-700 dark:text-gray-300">Name</th>
-                  <th className="px-4 py-3 text-left font-medium text-gray-700 dark:text-gray-300">Contact Person</th>
-                  <th className="px-4 py-3 text-left font-medium text-gray-700 dark:text-gray-300">Phone</th>
-                  <th className="px-4 py-3 text-left font-medium text-gray-700 dark:text-gray-300">Email</th>
-                  <th className="px-4 py-3 text-left font-medium text-gray-700 dark:text-gray-300">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {vendors.map((vendor) => (
-                  <tr key={vendor.id} className="border-b border-gray-200 dark:border-gray-700">
-                    <td className="px-4 py-3 text-gray-900 dark:text-white">{vendor.code}</td>
-                    <td className="px-4 py-3 text-gray-900 dark:text-white">{vendor.name}</td>
-                    <td className="px-4 py-3 text-gray-600 dark:text-gray-400">{vendor.contact_person}</td>
-                    <td className="px-4 py-3 text-gray-600 dark:text-gray-400">{vendor.phone}</td>
-                    <td className="px-4 py-3 text-gray-600 dark:text-gray-400">
-                      {vendor.email ? (
-                        <a href={`mailto:${vendor.email}`} className="text-blue-600 hover:underline">
-                          {vendor.email}
-                        </a>
-                      ) : '-'}
-                    </td>
-                    <td className="px-4 py-3">
-                      <div className="flex space-x-2">
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => handleEdit(vendor)}
-                        >
-                          Edit
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => handleDelete(vendor.id)}
-                        >
-                          Delete
-                        </Button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
-      </ComponentCard>
+      <AdvancedCustomTable
+        data={vendors}
+        columns={columns}
+        onEdit={handleEdit}
+        onDelete={handleDelete}
+        onAdd={() => { setSelectedVendor(null); setIsModalOpen(true); }}
+        addButtonText="Add Vendor"
+        isLoading={loading}
+        title="Vendors Management"
+      />
 
       <VendorFormModal
         isOpen={isModalOpen}

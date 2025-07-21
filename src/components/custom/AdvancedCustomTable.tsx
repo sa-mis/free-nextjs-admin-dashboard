@@ -21,7 +21,7 @@ interface Column {
   exportable?: boolean; // New property for export
 }
 
-interface AdvancedOrganizationTableProps {
+interface AdvancedCustomTableProps {
   data: any[];
   columns: Column[];
   onEdit: (item: any) => void;
@@ -32,7 +32,7 @@ interface AdvancedOrganizationTableProps {
   title?: string;
 }
 
-const AdvancedOrganizationTable: React.FC<AdvancedOrganizationTableProps> = ({
+const AdvancedCustomTable: React.FC<AdvancedCustomTableProps> = ({
   data,
   columns,
   onEdit,
@@ -288,7 +288,7 @@ const AdvancedOrganizationTable: React.FC<AdvancedOrganizationTableProps> = ({
           <div>
             <Select
               value={pageSize.toString()}
-              onChange={(value) => handlePageSizeChange(value)}
+              onChange={(value) => handlePageSizeChange(String(value))}
               options={[
                 { value: "5", label: "5 per page" },
                 { value: "10", label: "10 per page" },
@@ -463,4 +463,4 @@ const AdvancedOrganizationTable: React.FC<AdvancedOrganizationTableProps> = ({
   );
 };
 
-export default AdvancedOrganizationTable; 
+export default AdvancedCustomTable; 

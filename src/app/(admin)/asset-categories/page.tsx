@@ -8,6 +8,7 @@ import Button from '@/components/ui/button/Button';
 import InputField from '@/components/form/input/InputField';
 import { Modal } from '@/components/ui/modal';
 import Label from '@/components/form/Label';
+import AdvancedCustomTable from '@/components/custom/AdvancedCustomTable';
 
 interface AssetCategoryFormModalProps {
   isOpen: boolean;
@@ -175,16 +176,23 @@ export default function AssetCategoriesPage() {
     setIsModalOpen(true);
   };
 
-  const handleDelete = async (id: number) => {
+  const handleDelete = async (category: AssetCategory) => {
     if (confirm('Are you sure you want to delete this category?')) {
       try {
-        await assetAPI.deleteCategory(id);
+        await assetAPI.deleteCategory(category.id);
         loadCategories();
       } catch (error) {
         console.error('Error deleting category:', error);
       }
     }
   };
+
+  const columns = [
+    { key: 'code', label: 'Code', filterable: true, searchable: true, exportable: true },
+    { key: 'name', label: 'Name', filterable: true, searchable: true, exportable: true },
+    { key: 'description', label: 'Description', filterable: true, searchable: true, exportable: true },
+    { key: 'parent_name', label: 'Parent', filterable: true, searchable: true, exportable: true },
+  ];
 
   return (
     <div className="mx-auto max-w-screen-2xl p-4 md:p-6 2xl:p-10">
@@ -197,57 +205,16 @@ export default function AssetCategoriesPage() {
         </Button>
       </div>
 
-      <ComponentCard>
-        {loading ? (
-          <div className="flex items-center justify-center py-8">
-            <div className="text-gray-500">Loading categories...</div>
-          </div>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full table-auto">
-              <thead>
-                <tr className="border-b border-gray-200 bg-gray-50 dark:border-gray-700 dark:bg-gray-800">
-                  <th className="px-4 py-3 text-left font-medium text-gray-700 dark:text-gray-300">Code</th>
-                  <th className="px-4 py-3 text-left font-medium text-gray-700 dark:text-gray-300">Name</th>
-                  <th className="px-4 py-3 text-left font-medium text-gray-700 dark:text-gray-300">Description</th>
-                  <th className="px-4 py-3 text-left font-medium text-gray-700 dark:text-gray-300">Parent</th>
-                  <th className="px-4 py-3 text-left font-medium text-gray-700 dark:text-gray-300">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {categories.map((category) => (
-                  <tr key={category.id} className="border-b border-gray-200 dark:border-gray-700">
-                    <td className="px-4 py-3 text-gray-900 dark:text-white">{category.code}</td>
-                    <td className="px-4 py-3 text-gray-900 dark:text-white">{category.name}</td>
-                    <td className="px-4 py-3 text-gray-600 dark:text-gray-400">{category.description}</td>
-                    <td className="px-4 py-3 text-gray-600 dark:text-gray-400">
-                      {category.parent_name || '-'}
-                    </td>
-                    <td className="px-4 py-3">
-                      <div className="flex space-x-2">
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => handleEdit(category)}
-                        >
-                          Edit
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => handleDelete(category.id)}
-                        >
-                          Delete
-                        </Button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
-      </ComponentCard>
+      <AdvancedCustomTable
+        data={categories}
+        columns={columns}
+        onEdit={handleEdit}
+        onDelete={handleDelete}
+        onAdd={() => { setSelectedCategory(null); setIsModalOpen(true); }}
+        addButtonText="Add Category"
+        isLoading={loading}
+        title="Asset Categories Management"
+      />
 
       <AssetCategoryFormModal
         isOpen={isModalOpen}

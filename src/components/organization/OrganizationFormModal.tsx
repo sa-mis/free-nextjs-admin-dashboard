@@ -170,7 +170,6 @@ const OrganizationFormModal: React.FC<OrganizationFormModalProps> = ({
 
           <div className="flex justify-end gap-3 pt-6">
             <Button
-              type="button"
               variant="outline"
               onClick={onClose}
               disabled={isLoading}
@@ -178,7 +177,6 @@ const OrganizationFormModal: React.FC<OrganizationFormModalProps> = ({
               Cancel
             </Button>
             <Button
-              type="submit"
               disabled={isLoading}
               className="flex items-center gap-2"
             >

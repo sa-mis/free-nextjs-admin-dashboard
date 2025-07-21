@@ -8,6 +8,7 @@ import Button from '@/components/ui/button/Button';
 import InputField from '@/components/form/input/InputField';
 import { Modal } from '@/components/ui/modal';
 import Label from '@/components/form/Label';
+import AdvancedCustomTable from '@/components/custom/AdvancedCustomTable';
 
 interface ModelFormModalProps {
   isOpen: boolean;
@@ -217,16 +218,24 @@ export default function ModelsPage() {
     setIsModalOpen(true);
   };
 
-  const handleDelete = async (id: number) => {
+  const handleDelete = async (model: Model) => {
     if (confirm('Are you sure you want to delete this model?')) {
       try {
-        await assetAPI.deleteModel(id);
+        await assetAPI.deleteModel(model.id);
         loadModels();
       } catch (error) {
         console.error('Error deleting model:', error);
       }
     }
   };
+
+  const columns = [
+    { key: 'code', label: 'Code', filterable: true, searchable: true, exportable: true },
+    { key: 'name', label: 'Name', filterable: true, searchable: true, exportable: true },
+    { key: 'brand_name', label: 'Brand', filterable: true, searchable: true, exportable: true },
+    { key: 'description', label: 'Description', filterable: true, searchable: true, exportable: true },
+    { key: 'is_active', label: 'Status', filterable: true, searchable: true, exportable: true, render: (value: boolean) => value ? (<span className="px-2 py-1 rounded-full text-xs bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">Active</span>) : (<span className="px-2 py-1 rounded-full text-xs bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">Inactive</span>) },
+  ];
 
   return (
     <div className="mx-auto max-w-screen-2xl p-4 md:p-6 2xl:p-10">
@@ -239,65 +248,16 @@ export default function ModelsPage() {
         </Button>
       </div>
 
-      <ComponentCard>
-        {loading ? (
-          <div className="flex items-center justify-center py-8">
-            <div className="text-gray-500">Loading models...</div>
-          </div>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full table-auto">
-              <thead>
-                <tr className="border-b border-gray-200 bg-gray-50 dark:border-gray-700 dark:bg-gray-800">
-                  <th className="px-4 py-3 text-left font-medium text-gray-700 dark:text-gray-300">Code</th>
-                  <th className="px-4 py-3 text-left font-medium text-gray-700 dark:text-gray-300">Name</th>
-                  <th className="px-4 py-3 text-left font-medium text-gray-700 dark:text-gray-300">Brand</th>
-                  <th className="px-4 py-3 text-left font-medium text-gray-700 dark:text-gray-300">Description</th>
-                  <th className="px-4 py-3 text-left font-medium text-gray-700 dark:text-gray-300">Status</th>
-                  <th className="px-4 py-3 text-left font-medium text-gray-700 dark:text-gray-300">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {models.map((model) => (
-                  <tr key={model.id} className="border-b border-gray-200 dark:border-gray-700">
-                    <td className="px-4 py-3 text-gray-900 dark:text-white">{model.code}</td>
-                    <td className="px-4 py-3 text-gray-900 dark:text-white">{model.name}</td>
-                    <td className="px-4 py-3 text-gray-600 dark:text-gray-400">{model.brand_name}</td>
-                    <td className="px-4 py-3 text-gray-600 dark:text-gray-400">{model.description}</td>
-                    <td className="px-4 py-3">
-                      <span className={`px-2 py-1 rounded-full text-xs ${
-                        model.is_active 
-                          ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
-                          : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
-                      }`}>
-                        {model.is_active ? 'Active' : 'Inactive'}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3">
-                      <div className="flex space-x-2">
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => handleEdit(model)}
-                        >
-                          Edit
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => handleDelete(model.id)}
-                        >
-                          Delete
-                        </Button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
-      </ComponentCard>
+      <AdvancedCustomTable
+        data={models}
+        columns={columns}
+        onEdit={handleEdit}
+        onDelete={handleDelete}
+        onAdd={() => { setSelectedModel(null); setIsModalOpen(true); }}
+        addButtonText="Add Model"
+        isLoading={loading}
+        title="Models Management"
+      />
 
       <ModelFormModal
         isOpen={isModalOpen}

@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { assetAPI, Asset, AssetQuery } from '@/services/asset';
 import { divisionService } from '@/services/organization';
 import { toast } from 'react-hot-toast';
-import { AssetTable } from '@/components/asset/AssetTable';
+import AdvancedCustomTable from '@/components/custom/AdvancedCustomTable';
 import { AssetFormModal } from '@/components/asset/AssetFormModal';
 import { AssetDashboard } from '@/components/asset/AssetDashboard';
 import Button from '@/components/ui/button/Button';
@@ -141,6 +141,19 @@ export default function AssetsPage() {
     }
   };
 
+  const columns = [
+    { key: 'name', label: 'Asset Name', filterable: true, searchable: true, exportable: true },
+    { key: 'asset_tag', label: 'Asset Tag', filterable: true, searchable: true, exportable: true },
+    { key: 'category_name', label: 'Category', filterable: true, searchable: true, exportable: true },
+    { key: 'brand_name', label: 'Brand', filterable: true, searchable: true, exportable: true },
+    { key: 'model_name', label: 'Model', filterable: true, searchable: true, exportable: true },
+    { key: 'location', label: 'Location', filterable: true, searchable: true, exportable: true },
+    { key: 'division_name', label: 'Division', filterable: true, searchable: true, exportable: true },
+    { key: 'status', label: 'Status', filterable: true, searchable: true, exportable: true, render: (value: string) => <span className={getStatusColor(value)}>{value}</span> },
+    { key: 'condition_status', label: 'Condition', filterable: true, searchable: true, exportable: true, render: (value: string) => <span className={getConditionColor(value)}>{value}</span> },
+    { key: 'purchase_price', label: 'Value', filterable: true, searchable: true, exportable: true, render: (value: number) => value ? value.toLocaleString('en-US', { style: 'currency', currency: 'USD' }) : '-' },
+  ];
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -159,64 +172,59 @@ export default function AssetsPage() {
       <AssetDashboard />
 
       {/* Filters */}
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <InputField
-            placeholder="Search assets..."
-            value={query.search || ''}
-            onChange={(e) => handleSearch(e.target.value)}
-          />
-          
-          <select
-            value={query.status || ''}
-            onChange={(e) => handleFilter('status', e.target.value || undefined)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            <option value="">All Status</option>
-            <option value="active">Active</option>
-            <option value="maintenance">Maintenance</option>
-            <option value="inactive">Inactive</option>
-            <option value="disposed">Disposed</option>
-          </select>
-
-          <select
-            value={query.category_id || ''}
-            onChange={(e) => handleFilter('category_id', e.target.value ? parseInt(e.target.value) : undefined)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            <option value="">All Categories</option>
-            {categories.map((category: any) => (
-              <option key={category.id} value={category.id}>
-                {category.name}
-              </option>
-            ))}
-          </select>
-
-          <select
-            value={query.division_id || ''}
-            onChange={(e) => handleFilter('division_id', e.target.value ? parseInt(e.target.value) : undefined)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            <option value="">All Divisions</option>
-            {divisions.map((division: any) => (
-              <option key={division.id} value={division.id}>
-                {division.name}
-              </option>
-            ))}
-          </select>
-        </div>
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <InputField
+          placeholder="Search assets..."
+          value={query.search || ''}
+          onChange={(e) => handleSearch(e.target.value)}
+        />
+        <select
+          value={query.status || ''}
+          onChange={(e) => handleFilter('status', e.target.value || undefined)}
+          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+        >
+          <option value="">All Status</option>
+          <option value="active">Active</option>
+          <option value="maintenance">Maintenance</option>
+          <option value="inactive">Inactive</option>
+          <option value="disposed">Disposed</option>
+        </select>
+        <select
+          value={query.category_id || ''}
+          onChange={(e) => handleFilter('category_id', e.target.value ? parseInt(e.target.value) : undefined)}
+          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+        >
+          <option value="">All Categories</option>
+          {categories.map((category: any) => (
+            <option key={category.id} value={category.id}>
+              {category.name}
+            </option>
+          ))}
+        </select>
+        <select
+          value={query.division_id || ''}
+          onChange={(e) => handleFilter('division_id', e.target.value ? parseInt(e.target.value) : undefined)}
+          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+        >
+          <option value="">All Divisions</option>
+          {divisions.map((division: any) => (
+            <option key={division.id} value={division.id}>
+              {division.name}
+            </option>
+          ))}
+        </select>
       </div>
 
       {/* Assets Table */}
-      <AssetTable
-        assets={assets}
-        loading={loading}
-        pagination={pagination}
+      <AdvancedCustomTable
+        data={assets}
+        columns={columns}
         onEdit={handleEdit}
-        onDelete={handleDelete}
-        onPageChange={handlePageChange}
-        getStatusColor={getStatusColor}
-        getConditionColor={getConditionColor}
+        onDelete={(asset) => handleDelete(asset.id)}
+        onAdd={handleCreate}
+        addButtonText="Add Asset"
+        isLoading={loading}
+        title="Assets Management"
       />
 
       {/* Asset Form Modal */}

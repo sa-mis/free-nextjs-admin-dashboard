@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import AdvancedOrganizationTable from "../../../components/organization/AdvancedOrganizationTable";
+import AdvancedCustomTable from "../../../components/custom/AdvancedCustomTable";
 import OrganizationFormModal from "../../../components/organization/OrganizationFormModal";
 import { Employee, employeeService, CreateEmployeeData, User, userService } from "../../../services/organization";
 
@@ -158,7 +158,7 @@ const EmployeesPage: React.FC = () => {
 
   return (
     <div className="p-6">
-      <AdvancedOrganizationTable
+      <AdvancedCustomTable
         data={employees}
         columns={columns}
         onEdit={handleEdit}

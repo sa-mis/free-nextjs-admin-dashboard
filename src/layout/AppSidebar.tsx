@@ -52,6 +52,9 @@ const navItems: NavItem[] = [
     name: "Asset Management",
     subItems: [
       { name: "Assets", path: "/assets", pro: false },
+      { name: "Accessories", path: "/accessories", pro: false },
+      { name: "Consumables", path: "/consumables", pro: false },
+      { name: "Licenses", path: "/licenses", pro: false },
       { name: "Categories", path: "/asset-categories", pro: false },
       { name: "Brands", path: "/brands", pro: false },
       { name: "Models", path: "/models", pro: false },

@@ -124,9 +124,20 @@ export function AssetFormModal({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    
     try {
-      await onSave(formData);
+      // Clean date fields: convert empty string or invalid date to null
+      const cleanData: Record<string, any> = { ...formData };
+      [
+        'purchase_date',
+        'received_date',
+        'warranty_start_date',
+        'warranty_end_date'
+      ].forEach((field) => {
+        if (!cleanData[field] || cleanData[field] === '' || cleanData[field] === 'Invalid date') {
+          cleanData[field] = null;
+        }
+      });
+      await onSave(cleanData);
     } finally {
       setLoading(false);
     }
@@ -147,7 +158,9 @@ export function AssetFormModal({
           {/* Basic Information */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <Label htmlFor="asset_tag">Asset Tag *</Label>
+              <Label htmlFor="asset_tag">
+                Asset Tag <span className="text-error-500 ml-1">*</span>
+              </Label>
               <InputField
                 id="asset_tag"
                 value={formData.asset_tag}
@@ -156,7 +169,9 @@ export function AssetFormModal({
               />
             </div>
             <div>
-              <Label htmlFor="name">Asset Name *</Label>
+              <Label htmlFor="name">
+                Asset Name <span className="text-error-500 ml-1">*</span>
+              </Label>
               <InputField
                 id="name"
                 value={formData.name}
