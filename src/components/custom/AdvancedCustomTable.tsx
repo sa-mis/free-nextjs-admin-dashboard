@@ -145,6 +145,15 @@ const AdvancedCustomTable: React.FC<AdvancedCustomTableProps> = ({
     setCurrentPage(1); // Reset to first page when changing page size
   };
 
+  // Utility to format date/time as dd/MM/yyyy hh:mm:ss
+  function formatDateTime(date: string | number | Date | undefined): string {
+    if (!date) return '-';
+    const d = new Date(date);
+    if (isNaN(d.getTime())) return '-';
+    const pad = (n: number) => n.toString().padStart(2, '0');
+    return `${pad(d.getDate())}/${pad(d.getMonth() + 1)}/${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+  }
+
   // Helper function to extract text from rendered values
   const getDisplayValue = (column: Column, row: any): string => {
     const value = row[column.key];
@@ -159,15 +168,14 @@ const AdvancedCustomTable: React.FC<AdvancedCustomTableProps> = ({
       if (column.key === 'department') {
         return row.department?.name || '-';
       }
-      if (column.key === 'created_at') {
-        try {
-          return new Date(String(value)).toLocaleDateString();
-        } catch {
-          return String(value || '');
-        }
+      if (column.key.endsWith('_at') || column.key.endsWith('_date') || column.key.endsWith('_time')) {
+        return formatDateTime(value);
       }
       // For other rendered values, return the original value
       return String(value || '');
+    }
+    if (column.key.endsWith('_at') || column.key.endsWith('_date') || column.key.endsWith('_time')) {
+      return formatDateTime(value);
     }
     return String(value || '');
   };
@@ -198,9 +206,56 @@ const AdvancedCustomTable: React.FC<AdvancedCustomTableProps> = ({
 
   const renderCell = (column: Column, row: any) => {
     const value = row[column.key];
-    
+
+    // Use custom render if provided
     if (column.render) {
       return column.render(value, row);
+    }
+
+    // Auto-badge for status and boolean-like fields
+    if (
+      column.key === 'status' ||
+      column.key === 'is_active' ||
+      column.key === 'is_read' ||
+      column.key.startsWith('is_') ||
+      column.key.startsWith('has_') ||
+      column.key.endsWith('_active') ||
+      column.key.endsWith('_status') ||
+      column.key.endsWith('_type')
+    ) {
+      // Determine badge color and label
+      let badgeColor: 'primary' | 'success' | 'error' | 'warning' | 'info' | 'light' | 'dark' = 'primary';
+      let label = '';
+      if (typeof value === 'boolean') {
+        badgeColor = value ? 'success' : 'error';
+        label = value ? 'Active' : 'Inactive';
+      } else if (typeof value === 'string') {
+        const v = value.toLowerCase();
+        if (v === 'active' || v === 'success' || v === 'enabled' || v === 'true') {
+          badgeColor = 'success';
+        } else if (v === 'inactive' || 
+            v === 'error' || 
+            v === 'disabled' || 
+            v === 'false' || 
+            v === 'cancelled' || 
+            v === 'expired' || 
+            v === 'out_of_service' || 
+            v === 'out_of_order' || 
+            v === 'out_of_stock' || 
+            v === 'out_of_warranty') {
+          badgeColor = 'error';
+        } else if (v === 'pending' || v === 'waiting') {
+          badgeColor = 'warning';
+        } else {
+          badgeColor = 'primary';
+        }
+        label = value.charAt(0).toUpperCase() + value.slice(1);
+      } else {
+        label = String(value);
+      }
+      return (
+        <Badge color={badgeColor as 'primary' | 'success' | 'error' | 'warning' | 'info' | 'light' | 'dark'} size="sm">{label}</Badge>
+      );
     }
 
     // Default rendering based on data type
@@ -217,6 +272,10 @@ const AdvancedCustomTable: React.FC<AdvancedCustomTableProps> = ({
 
     if (value === null || value === undefined) {
       return <span className="text-gray-400">-</span>;
+    }
+
+    if (column.key.endsWith('_at') || column.key.endsWith('_date') || column.key.endsWith('_time')) {
+      return <span className="text-gray-800 dark:text-white/90">{formatDateTime(value)}</span>;
     }
 
     return <span className="text-gray-800 dark:text-white/90">{value}</span>;
@@ -313,8 +372,8 @@ const AdvancedCustomTable: React.FC<AdvancedCustomTableProps> = ({
 
       {/* Table */}
       <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]">
-        <div className="max-w-full overflow-x-auto">
-          <div className="min-w-[800px]">
+      <div className="max-w-full overflow-x-auto">
+        <div className="min-w-[1102px]">
             <Table>
               <TableHeader className="border-b border-gray-100 dark:border-white/[0.05]">
                 <TableRow>

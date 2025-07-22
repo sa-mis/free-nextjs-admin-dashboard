@@ -21,7 +21,7 @@ const CompaniesPage: React.FC = () => {
     {
       key: "created_at",
       label: "Created At",
-      render: (value: string) => new Date(value).toLocaleDateString(),
+      render: (value: string) => formatDateTime(value),
       searchable: true,
       exportable: true
     },
@@ -34,6 +34,14 @@ const CompaniesPage: React.FC = () => {
     { name: "email", label: "Email", type: "email" as const, required: true, placeholder: "Enter email address" },
     { name: "address", label: "Address", type: "textarea" as const, required: true, placeholder: "Enter company address" },
   ];
+
+  const formatDateTime = (date: string | number | Date | undefined): string => {
+    if (!date) return '-';
+    const d = new Date(date);
+    if (isNaN(d.getTime())) return '-';
+    const pad = (n: number) => n.toString().padStart(2, '0');
+    return `${pad(d.getDate())}/${pad(d.getMonth() + 1)}/${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+  };
 
   const loadCompanies = async () => {
     try {

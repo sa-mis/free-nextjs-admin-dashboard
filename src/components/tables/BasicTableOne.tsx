@@ -1,4 +1,5 @@
-import React from "react";
+"use client";
+import React, { useState } from "react";
 import {
   Table,
   TableBody,
@@ -9,6 +10,7 @@ import {
 
 import Badge from "../ui/badge/Badge";
 import Image from "next/image";
+import Pagination from "./Pagination";
 
 interface Order {
   id: number;
@@ -17,7 +19,9 @@ interface Order {
     name: string;
     role: string;
   };
-  projectName: string;
+  projectName1: string;
+  projectName2: string;
+  projectName3: string;
   team: {
     images: string[];
   };
@@ -34,7 +38,9 @@ const tableData: Order[] = [
       name: "Lindsey Curtis",
       role: "Web Designer",
     },
-    projectName: "Agency Website",
+    projectName1: "TailAdmin Next.js is a free and open-source Admin Dashboard Template built on Next.js and Tailwind CSS, that empowers developers with a comprehensive toolkit for crafting seamless, data-driven back-ends, dashboards, and admin panels.",
+    projectName2: "TailAdmin Next.js is a free and open-source Admin Dashboard Template built on Next.js and Tailwind CSS, that empowers developers with a comprehensive toolkit for crafting seamless, data-driven back-ends, dashboards, and admin panels.",
+    projectName3: "TailAdmin Next.js is a free and open-source Admin Dashboard Template built on Next.js and Tailwind CSS, that empowers developers with a comprehensive toolkit for crafting seamless, data-driven back-ends, dashboards, and admin panels.",
     team: {
       images: [
         "/images/user/user-22.jpg",
@@ -52,7 +58,9 @@ const tableData: Order[] = [
       name: "Kaiya George",
       role: "Project Manager",
     },
-    projectName: "Technology",
+    projectName1: "TailAdmin Next.js is a free and open-source Admin Dashboard Template built on Next.js and Tailwind CSS, that empowers developers with a comprehensive toolkit for crafting seamless, data-driven back-ends, dashboards, and admin panels.",
+    projectName2: "TailAdmin Next.js is a free and open-source Admin Dashboard Template built on Next.js and Tailwind CSS, that empowers developers with a comprehensive toolkit for crafting seamless, data-driven back-ends, dashboards, and admin panels.",
+    projectName3: "TailAdmin Next.js is a free and open-source Admin Dashboard Template built on Next.js and Tailwind CSS, that empowers developers with a comprehensive toolkit for crafting seamless, data-driven back-ends, dashboards, and admin panels.",
     team: {
       images: ["/images/user/user-25.jpg", "/images/user/user-26.jpg"],
     },
@@ -66,7 +74,9 @@ const tableData: Order[] = [
       name: "Zain Geidt",
       role: "Content Writing",
     },
-    projectName: "Blog Writing",
+    projectName1: "Website",
+    projectName2: "Website",
+    projectName3: "Website",
     team: {
       images: ["/images/user/user-27.jpg"],
     },
@@ -80,7 +90,9 @@ const tableData: Order[] = [
       name: "Abram Schleifer",
       role: "Digital Marketer",
     },
-    projectName: "Social Media",
+    projectName1: "Website",
+    projectName2: "Website",
+    projectName3: "Website",
     team: {
       images: [
         "/images/user/user-28.jpg",
@@ -98,7 +110,309 @@ const tableData: Order[] = [
       name: "Carla George",
       role: "Front-end Developer",
     },
-    projectName: "Website",
+    projectName1: "Website",
+    projectName2: "Website",
+    projectName3: "Website",
+    team: {
+      images: [
+        "/images/user/user-31.jpg",
+        "/images/user/user-32.jpg",
+        "/images/user/user-33.jpg",
+      ],
+    },
+    budget: "4.5K",
+    status: "Active",
+  },
+  {
+    id: 6,
+    user: {
+      image: "/images/user/user-21.jpg",
+      name: "Carla George",
+      role: "Front-end Developer",
+    },
+    projectName1: "Website",
+    projectName2: "Website",
+    projectName3: "Website",
+    team: {
+      images: [
+        "/images/user/user-31.jpg",
+        "/images/user/user-32.jpg",
+        "/images/user/user-33.jpg",
+      ],
+    },
+    budget: "4.5K",
+    status: "Active",
+  },
+  {
+    id: 7,
+    user: {
+      image: "/images/user/user-21.jpg",
+      name: "Carla George",
+      role: "Front-end Developer",
+    },
+    projectName1: "Website",
+    projectName2: "Website",
+    projectName3: "Website",
+    team: {
+      images: [
+        "/images/user/user-31.jpg",
+        "/images/user/user-32.jpg",
+        "/images/user/user-33.jpg",
+      ],
+    },
+    budget: "4.5K",
+    status: "Active",
+  },
+  {
+    id: 8,
+    user: {
+      image: "/images/user/user-21.jpg",
+      name: "Carla George",
+      role: "Front-end Developer",
+    },
+    projectName1: "Website",
+    projectName2: "Website",
+    projectName3: "Website",
+    team: {
+      images: [
+        "/images/user/user-31.jpg",
+        "/images/user/user-32.jpg",
+        "/images/user/user-33.jpg",
+      ],
+    },
+    budget: "4.5K",
+    status: "Active",
+  },
+  {
+    id: 9,
+    user: {
+      image: "/images/user/user-21.jpg",
+      name: "Carla George",
+      role: "Front-end Developer",
+    },
+    projectName1: "Website",
+    projectName2: "Website",
+    projectName3: "Website",
+    team: {
+      images: [
+        "/images/user/user-31.jpg",
+        "/images/user/user-32.jpg",
+        "/images/user/user-33.jpg",
+      ],
+    },
+    budget: "4.5K",
+    status: "Active",
+  },
+  {
+    id: 10,
+    user: {
+      image: "/images/user/user-21.jpg",
+      name: "Carla George",
+      role: "Front-end Developer",
+    },
+    projectName1: "Website",
+    projectName2: "Website",
+    projectName3: "Website",
+    team: {
+      images: [
+        "/images/user/user-31.jpg",
+        "/images/user/user-32.jpg",
+        "/images/user/user-33.jpg",
+      ],
+    },
+    budget: "4.5K",
+    status: "Active",
+  },
+  {
+    id: 11,
+    user: {
+      image: "/images/user/user-21.jpg",
+      name: "Carla George",
+      role: "Front-end Developer",
+    },
+    projectName1: "Website",
+    projectName2: "Website",
+    projectName3: "Website",
+    team: {
+      images: [
+        "/images/user/user-31.jpg",
+        "/images/user/user-32.jpg",
+        "/images/user/user-33.jpg",
+      ],
+    },
+    budget: "4.5K",
+    status: "Active",
+  },
+  {
+    id: 12,
+    user: {
+      image: "/images/user/user-21.jpg",
+      name: "Carla George",
+      role: "Front-end Developer",
+    },
+    projectName1: "Website",
+    projectName2: "Website",
+    projectName3: "Website",
+    team: {
+      images: [
+        "/images/user/user-31.jpg",
+        "/images/user/user-32.jpg",
+        "/images/user/user-33.jpg",
+      ],
+    },
+    budget: "4.5K",
+    status: "Active",
+  },
+  {
+    id: 13,
+    user: {
+      image: "/images/user/user-21.jpg",
+      name: "Carla George",
+      role: "Front-end Developer",
+    },
+    projectName1: "Website",
+    projectName2: "Website",
+    projectName3: "Website",
+    team: {
+      images: [
+        "/images/user/user-31.jpg",
+        "/images/user/user-32.jpg",
+        "/images/user/user-33.jpg",
+      ],
+    },
+    budget: "4.5K",
+    status: "Active",
+  },
+  {
+    id: 14,
+    user: {
+      image: "/images/user/user-21.jpg",
+      name: "Carla George",
+      role: "Front-end Developer",
+    },
+    projectName1: "Website",
+    projectName2: "Website",
+    projectName3: "Website",
+    team: {
+      images: [
+        "/images/user/user-31.jpg",
+        "/images/user/user-32.jpg",
+        "/images/user/user-33.jpg",
+      ],
+    },
+    budget: "4.5K",
+    status: "Active",
+  },
+  {
+    id: 15,
+    user: {
+      image: "/images/user/user-21.jpg",
+      name: "Carla George",
+      role: "Front-end Developer",
+    },
+    projectName1: "Website",
+    projectName2: "Website",
+    projectName3: "Website",
+    team: {
+      images: [
+        "/images/user/user-31.jpg",
+        "/images/user/user-32.jpg",
+        "/images/user/user-33.jpg",
+      ],
+    },
+    budget: "4.5K",
+    status: "Active",
+  },
+  {
+    id: 16,
+    user: {
+      image: "/images/user/user-21.jpg",
+      name: "Carla George",
+      role: "Front-end Developer",
+    },
+    projectName1: "Website",
+    projectName2: "Website",
+    projectName3: "Website",
+    team: {
+      images: [
+        "/images/user/user-31.jpg",
+        "/images/user/user-32.jpg",
+        "/images/user/user-33.jpg",
+      ],
+    },
+    budget: "4.5K",
+    status: "Active",
+  },
+  {
+    id: 17,
+    user: {
+      image: "/images/user/user-21.jpg",
+      name: "Carla George",
+      role: "Front-end Developer",
+    },
+    projectName1: "Website",
+    projectName2: "Website",
+    projectName3: "Website",
+    team: {
+      images: [
+        "/images/user/user-31.jpg",
+        "/images/user/user-32.jpg",
+        "/images/user/user-33.jpg",
+      ],
+    },
+    budget: "4.5K",
+    status: "Active",
+  },
+  {
+    id: 18,
+    user: {
+      image: "/images/user/user-21.jpg",
+      name: "Carla George",
+      role: "Front-end Developer",
+    },
+    projectName1: "Website",
+    projectName2: "Website",
+    projectName3: "Website",
+    team: {
+      images: [
+        "/images/user/user-31.jpg",
+        "/images/user/user-32.jpg",
+        "/images/user/user-33.jpg",
+      ],
+    },
+    budget: "4.5K",
+    status: "Active",
+  },
+  {
+    id: 19,
+    user: {
+      image: "/images/user/user-21.jpg",
+      name: "Carla George",
+      role: "Front-end Developer",
+    },
+    projectName1: "Website",
+    projectName2: "Website",
+    projectName3: "Website",
+    team: {
+      images: [
+        "/images/user/user-31.jpg",
+        "/images/user/user-32.jpg",
+        "/images/user/user-33.jpg",
+      ],
+    },
+    budget: "4.5K",
+    status: "Active",
+  },
+  {
+    id: 20,
+    user: {
+      image: "/images/user/user-21.jpg",
+      name: "Carla George",
+      role: "Front-end Developer",
+    },
+    projectName1: "Website",
+    projectName2: "Website",
+    projectName3: "Website",
     team: {
       images: [
         "/images/user/user-31.jpg",
@@ -112,7 +426,11 @@ const tableData: Order[] = [
 ];
 
 export default function BasicTableOne() {
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(3);
+
   return (
+    <>
     <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]">
       <div className="max-w-full overflow-x-auto">
         <div className="min-w-[1102px]">
@@ -125,6 +443,18 @@ export default function BasicTableOne() {
                   className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
                 >
                   User
+                </TableCell>
+                <TableCell
+                  isHeader
+                  className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
+                >
+                  Project Name
+                </TableCell>
+                <TableCell
+                  isHeader
+                  className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
+                >
+                  Project Name
                 </TableCell>
                 <TableCell
                   isHeader
@@ -178,7 +508,13 @@ export default function BasicTableOne() {
                     </div>
                   </TableCell>
                   <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                    {order.projectName}
+                    {order.projectName1}
+                  </TableCell>
+                  <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
+                    {order.projectName2}
+                  </TableCell>
+                  <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
+                    {order.projectName3}
                   </TableCell>
                   <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
                     <div className="flex -space-x-2">
@@ -222,5 +558,13 @@ export default function BasicTableOne() {
         </div>
       </div>
     </div>
+    <div className="flex justify-between items-center">
+    <Pagination
+      currentPage={currentPage}
+      totalPages={totalPages}
+      onPageChange={setCurrentPage}
+    />
+    </div>
+    </>
   );
 }

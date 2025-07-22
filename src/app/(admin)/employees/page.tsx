@@ -53,7 +53,7 @@ const EmployeesPage: React.FC = () => {
     {
       key: "hire_date",
       label: "Hire Date",
-      render: (value: string) => new Date(value).toLocaleDateString(),
+      render: (value: string) => formatDateTime(value),
       searchable: true,
       exportable: true
     },

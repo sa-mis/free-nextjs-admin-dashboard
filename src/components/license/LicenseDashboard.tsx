@@ -5,10 +5,18 @@ interface License {
   license_key: string;
   software_name: string;
   version: string;
-  license_type: string;
+  license_type: 'perpetual' | 'subscription' | 'trial';
   seats_total: number;
-  vendor: string;
-  status: string;
+  seats_used: number;
+  purchase_date?: string;
+  start_date?: string;
+  end_date?: string;
+  vendor_id: number;
+  vendor_name?: string;
+  purchase_price?: number;
+  annual_cost?: number;
+  notes?: string;
+  status: 'active' | 'expired' | 'cancelled';
 }
 
 export default function LicenseDashboard({ data }: { data: License[] }) {

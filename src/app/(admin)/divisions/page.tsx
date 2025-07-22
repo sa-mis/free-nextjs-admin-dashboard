@@ -44,7 +44,7 @@ const DivisionsPage: React.FC = () => {
     {
       key: "created_at",
       label: "Created At",
-      render: (value: string) => new Date(value).toLocaleDateString(),
+      render: (value: string) => formatDateTime(value),
       searchable: true,
       exportable: true
     },

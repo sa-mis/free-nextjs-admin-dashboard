@@ -9,7 +9,7 @@ import { CloseIcon } from "../../icons";
 interface FormField {
   name: string;
   label: string;
-  type: "text" | "email" | "tel" | "date" | "select" | "textarea";
+  type: "text" | "email" | "tel" | "date" | "select" | "textarea" | "number";
   required?: boolean;
   placeholder?: string;
   options?: { value: string | number; label: string }[];
