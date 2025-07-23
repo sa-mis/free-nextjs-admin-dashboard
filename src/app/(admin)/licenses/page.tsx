@@ -68,10 +68,10 @@ const columns = [
   // { key: 'purchase_date', label: 'Purchase Date', filterable: true, searchable: true, exportable: true },
   { key: 'start_date', label: 'Start Date', filterable: true, searchable: true, exportable: true },
   { key: 'end_date', label: 'End Date', filterable: true, searchable: true, exportable: true },
-  { key: 'vendor_name', label: 'Vendor', filterable: true, searchable: true, exportable: true },
+  // { key: 'vendor_name', label: 'Vendor', filterable: true, searchable: true, exportable: true },
   // { key: 'purchase_price', label: 'Purchase Price', filterable: true, searchable: true, exportable: true },
   // { key: 'annual_cost', label: 'Annual Cost', filterable: true, searchable: true, exportable: true },
-  { key: 'notes', label: 'Notes', filterable: false, searchable: true, exportable: true },
+  // { key: 'notes', label: 'Notes', filterable: false, searchable: true, exportable: true },
   { key: 'status', label: 'Status', filterable: true, searchable: true, exportable: true },
 ];
 

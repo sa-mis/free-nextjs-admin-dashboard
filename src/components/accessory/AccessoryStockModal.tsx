@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { addStockMovement } from '@/services/accessory';
+import { accessoryAPI } from '@/services/accessory';
 
 interface AccessoryStockModalProps {
   open: boolean;
@@ -28,7 +28,7 @@ export default function AccessoryStockModal({ open, onClose, onSuccess, accessor
     setLoading(true);
     setError('');
     try {
-      await addStockMovement(accessory.id, form);
+      await accessoryAPI.addStockMovement(accessory.id, form);
       onSuccess();
       onClose();
     } catch (err: any) {

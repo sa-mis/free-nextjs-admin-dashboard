@@ -177,6 +177,21 @@ export function AssetFormModal({
     setShowHistory(true);
   };
 
+  function cleanAccessoryPayload(form: any) {
+    // List all related dropdown fields that should be integer or null
+    const fields = ['brand_id', 'model_id', 'vendor_id', 'category_id'];
+    const cleaned = { ...form };
+    fields.forEach((field) => {
+      if (cleaned[field] === '' || cleaned[field] === undefined) {
+        cleaned[field] = null;
+      } else {
+        cleaned[field] = Number(cleaned[field]);
+      }
+    });
+    return cleaned;
+  }
+
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { assignAccessory } from '@/services/accessory';
+import { accessoryAPI } from '@/services/accessory';
 
 interface AccessoryAssignModalProps {
   open: boolean;
@@ -28,7 +28,7 @@ export default function AccessoryAssignModal({ open, onClose, onSuccess, accesso
     setLoading(true);
     setError('');
     try {
-      await assignAccessory(accessory.id, form);
+      await accessoryAPI.assignAccessory(accessory.id, form);
       onSuccess();
       onClose();
     } catch (err: any) {
