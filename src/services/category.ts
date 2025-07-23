@@ -53,22 +53,4 @@ export const categoryAPI = {
     const response = await api.get('/api/categories/hierarchy');
     return response.data;
   },
-
-  // // Create category
-  // createCategory: async (data: Partial<AssetCategory>) => {
-  //   const response = await api.post('/api/categories', data);
-  //   return response.data;
-  // },
-
-  // // Update category
-  // updateCategory: async (id: number, data: Partial<AssetCategory>) => {
-  //   const response = await api.put(`/api/categories/${id}`, data);
-  //   return response.data;
-  // },
-
-  // // Delete category
-  // deleteCategory: async (id: number) => {
-  //   const response = await api.delete(`/api/categories/${id}`);
-  //   return response.data;
-  // },
 }

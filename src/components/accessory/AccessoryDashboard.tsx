@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { getAccessoryDashboard } from '@/services/accessory';
+import { accessoryAPI } from '@/services/accessory';
 
 export default function AccessoryDashboard() {
   const [stats, setStats] = useState<any>(null);
@@ -7,7 +7,7 @@ export default function AccessoryDashboard() {
 
   useEffect(() => {
     setLoading(true);
-    getAccessoryDashboard().then(res => {
+    accessoryAPI.getAccessoryDashboard().then(res => {
       setStats(res.data);
       setLoading(false);
     });
