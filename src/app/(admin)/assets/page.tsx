@@ -2,6 +2,9 @@
 
 import { useState, useEffect } from 'react';
 import { assetAPI, Asset, AssetQuery } from '@/services/asset';
+import { categoryAPI } from '@/services/category';
+import { brandAPI } from '@/services/brand';
+import { vendorAPI } from '@/services/vendor';
 import { divisionService } from '@/services/organization';
 import { toast } from 'react-hot-toast';
 import AdvancedCustomTable from '@/components/custom/AdvancedCustomTable';
@@ -55,9 +58,9 @@ export default function AssetsPage() {
     try {
       const [divisionsRes, categoriesRes, brandsRes, vendorsRes] = await Promise.all([
         divisionService.getAll(),
-        assetAPI.getCategories(),
-        assetAPI.getBrands(),
-        assetAPI.getVendors()
+        categoryAPI.getAll(),
+        brandAPI.getAll(),
+        vendorAPI.getAll()
       ]);
 
       setDivisions(divisionsRes);
@@ -142,8 +145,8 @@ export default function AssetsPage() {
   };
 
   const columns = [
-    { key: 'name', label: 'Asset Name', filterable: true, searchable: true, exportable: true },
     { key: 'asset_tag', label: 'Asset Tag', filterable: true, searchable: true, exportable: true },
+    { key: 'name', label: 'Asset Name', filterable: true, searchable: true, exportable: true },
     { key: 'category_name', label: 'Category', filterable: true, searchable: true, exportable: true },
     { key: 'brand_name', label: 'Brand', filterable: true, searchable: true, exportable: true },
     { key: 'model_name', label: 'Model', filterable: true, searchable: true, exportable: true },

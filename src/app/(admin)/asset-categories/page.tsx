@@ -1,8 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { AssetCategory } from '@/services/asset';
-import { assetAPI } from '@/services/asset';
+import { categoryAPI, AssetCategory } from '@/services/category';
+// import { assetAPI } from '@/services/asset';
 import ComponentCard from '@/components/common/ComponentCard';
 import Button from '@/components/ui/button/Button';
 import InputField from '@/components/form/input/InputField';
@@ -147,7 +147,7 @@ export default function AssetCategoriesPage() {
   const loadCategories = async () => {
     try {
       setLoading(true);
-      const response = await assetAPI.getCategories();
+      const response = await categoryAPI.getAll();
       setCategories(response.data);
     } catch (error) {
       console.error('Error loading categories:', error);
@@ -159,9 +159,9 @@ export default function AssetCategoriesPage() {
   const handleSave = async (data: Partial<AssetCategory>) => {
     try {
       if (selectedCategory) {
-        await assetAPI.updateCategory(selectedCategory.id, data);
+        await categoryAPI.update(selectedCategory.id, data);
       } else {
-        await assetAPI.createCategory(data);
+        await categoryAPI.create(data);
       }
       setIsModalOpen(false);
       setSelectedCategory(null);
@@ -179,7 +179,7 @@ export default function AssetCategoriesPage() {
   const handleDelete = async (category: AssetCategory) => {
     if (confirm('Are you sure you want to delete this category?')) {
       try {
-        await assetAPI.deleteCategory(category.id);
+        await categoryAPI.delete(category.id);
         loadCategories();
       } catch (error) {
         console.error('Error deleting category:', error);

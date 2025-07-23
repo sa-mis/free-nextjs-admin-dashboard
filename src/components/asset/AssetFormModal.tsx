@@ -7,7 +7,11 @@ import Button from '@/components/ui/button/Button';
 import InputField from '@/components/form/input/InputField';
 import Label from '@/components/form/Label';
 import { assetAPI } from '@/services/asset';
+import { categoryAPI } from '@/services/category';
+import { brandAPI } from '@/services/brand';
+import { vendorAPI } from '@/services/vendor';
 import { userService } from '@/services/organization';
+import { modelAPI } from '@/services/model';
 
 interface AssetFormModalProps {
   isOpen: boolean;
@@ -130,7 +134,7 @@ export function AssetFormModal({
 
   const loadModels = async (brandId: number) => {
     try {
-      const response = await assetAPI.getModelsByBrand(brandId);
+      const response = await modelAPI.getModelsByBrand(brandId);
       setModels(response.data);
     } catch (error) {
       console.error('Error loading models:', error);
