@@ -8,7 +8,28 @@ import { userService } from '@/services/organization';
 import { licenseAPI } from '@/services/license';
 
 const licenseFields = [
-  // ...same as in main licenses page, or import if shared
+  { name: 'license_key', label: 'License Key', type: 'text', required: true, placeholder: 'Enter license key' },
+  { name: 'name', label: 'Software Name', type: 'text', required: true, placeholder: 'Enter software name' },
+  { name: 'version', label: 'Version', type: 'text', required: false, placeholder: 'Enter version' },
+  { name: 'license_type', label: 'Type', type: 'select', required: true, options: [
+    { value: 'subscription', label: 'Subscription' },
+    { value: 'perpetual', label: 'Perpetual' },
+    { value: 'trial', label: 'Trial' },
+  ] },
+  { name: 'seats_total', label: 'Seats Total', type: 'number', required: true, placeholder: 'Enter total seats' },
+  { name: 'seats_used', label: 'Seats Used', type: 'number', required: false, placeholder: 'Enter used seats' },
+  { name: 'purchase_date', label: 'Purchase Date', type: 'date', required: false },
+  { name: 'start_date', label: 'Start Date', type: 'date', required: false },
+  { name: 'end_date', label: 'End Date', type: 'date', required: false },
+  { name: 'vendor_id', label: 'Vendor', type: 'number', required: false, placeholder: 'Enter vendor id' },
+  { name: 'purchase_price', label: 'Purchase Price', type: 'number', required: false, placeholder: 'Enter purchase price' },
+  { name: 'annual_cost', label: 'Annual Cost', type: 'number', required: false, placeholder: 'Enter annual cost' },
+  { name: 'notes', label: 'Notes', type: 'textarea', required: false, placeholder: 'Enter notes' },
+  { name: 'status', label: 'Status', type: 'select', required: true, options: [
+    { value: 'active', label: 'Active' },
+    { value: 'expired', label: 'Expired' },
+    { value: 'cancelled', label: 'Cancelled' },
+  ] },
 ];
 
 export default function LicenseCreatePage() {
@@ -35,8 +56,9 @@ export default function LicenseCreatePage() {
     setIsSubmitting(true);
     try {
       // 1. Create license
-      const licenseRes = await licenseAPI.create(formData); // TODO: implement licenseAPI.create if not present
-      const license_id = licenseRes.data?.id;
+      const licenseRes = await licenseAPI.create(formData);
+      const license_id = licenseRes.data?.data?.id;
+      
       // 2. Assign license if assets/users selected
       if (license_id && (selectedAssets.length > 0 || selectedUsers.length > 0)) {
         await licenseAPI.assignLicense(license_id, {
@@ -45,9 +67,11 @@ export default function LicenseCreatePage() {
           assigned_date: new Date().toISOString().slice(0, 10),
         });
       }
-      router.push("/admin/licenses");
+      router.push("/licenses");
     } catch (err) {
-      // TODO: Show error feedback
+      console.error('Error creating license:', err);
+      alert('Failed to create license. Please try again.');
+    } finally {
       setIsSubmitting(false);
     }
   };
@@ -175,7 +199,7 @@ export default function LicenseCreatePage() {
           <div className="text-gray-500">No history yet.</div>
         </div>
         <div className="flex justify-end gap-3">
-          <Button variant="outline" onClick={() => router.push("/admin/licenses")}>Cancel</Button>
+          <Button variant="outline" onClick={() => router.push("/licenses")}>Cancel</Button>
           <Button type="submit" disabled={isSubmitting}>{isSubmitting ? "Saving..." : "Create License"}</Button>
         </div>
       </form>

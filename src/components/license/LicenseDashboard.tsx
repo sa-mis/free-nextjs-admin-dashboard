@@ -3,7 +3,7 @@ import React from 'react';
 interface License {
   id: number;
   license_key: string;
-  software_name: string;
+  name: string;
   version: string;
   license_type: 'perpetual' | 'subscription' | 'trial';
   seats_total: number;

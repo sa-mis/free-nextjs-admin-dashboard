@@ -71,6 +71,15 @@ const navItems: NavItem[] = [
     name: "User Profile",
     path: "/profile",
   },
+  {
+    icon: <UsersIcon />,
+    name: "User Management",
+    subItems: [
+      { name: "Users", path: "/users", pro: false },
+      { name: "Roles", path: "/roles", pro: false },
+      { name: "Permissions", path: "/permissions", pro: false },
+    ],
+  },
 
   // {
   //   name: "Forms",

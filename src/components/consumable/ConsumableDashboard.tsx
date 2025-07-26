@@ -1,20 +1,10 @@
 import React from 'react';
-
-interface Consumable {
-  id: number;
-  name: string;
-  code: string;
-  category: string;
-  unit: string;
-  location: string;
-  stock: number;
-  status: string;
-}
+import { Consumable } from '@/types/consumable';
 
 export default function ConsumableDashboard({ data }: { data: Consumable[] }) {
-  const total = data.length;
-  const inStock = data.filter(c => c.status === 'in_stock').length;
-  const outOfStock = data.filter(c => c.status === 'out_of_stock').length;
+  const total = Array.isArray(data) ? data.length : 0;
+  const inStock = Array.isArray(data) ? data.filter(c => c.status === 'active').length : 0;
+  const outOfStock = Array.isArray(data) ? data.filter(c => c.status === 'out_of_stock').length : 0;
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">

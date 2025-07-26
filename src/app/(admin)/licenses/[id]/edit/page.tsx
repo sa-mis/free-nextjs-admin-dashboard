@@ -9,7 +9,7 @@ import { licenseAPI } from '@/services/license';
 
 const licenseFields = [
   { name: 'license_key', label: 'License Key', type: 'text', required: true, placeholder: 'Enter license key' },
-  { name: 'software_name', label: 'Software Name', type: 'text', required: true, placeholder: 'Enter software name' },
+  { name: 'name', label: 'Software Name', type: 'text', required: true, placeholder: 'Enter software name' },
   { name: 'version', label: 'Version', type: 'text', required: false, placeholder: 'Enter version' },
   { name: 'license_type', label: 'Type', type: 'select', required: true, options: [
     { value: 'subscription', label: 'Subscription' },
@@ -41,20 +41,45 @@ export default function LicenseEditPage() {
   const [selectedAssets, setSelectedAssets] = useState<number[]>([]);
   const [selectedUsers, setSelectedUsers] = useState<number[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [history, setHistory] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
   const [availableAssets, setAvailableAssets] = useState<any[]>([]);
   const [availableUsers, setAvailableUsers] = useState<any[]>([]);
   const [assignments, setAssignments] = useState<any[]>([]);
 
   useEffect(() => {
-    // TODO: Fetch license data by licenseId, assignments, and history
-    setFormData({ status: "active" });
-    setHistory([]);
-    assetAPI.getAll({ limit: 1000 }).then(res => setAvailableAssets(res.data || []));
-    userService.getAll().then(res => setAvailableUsers(res || []));
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const id = Array.isArray(licenseId) ? licenseId[0] : licenseId;
+        
+        // Fetch license data
+        const licenseRes = await licenseAPI.getById(Number(id));
+        if (licenseRes.data.success) {
+          setFormData(licenseRes.data.data);
+        }
+        
+        // Fetch assignments
+        const assignmentsRes = await licenseAPI.getAssignments(Number(id));
+        if (assignmentsRes.data.success) {
+          setAssignments(assignmentsRes.data.data);
+        }
+        
+        // Fetch available assets and users
+        const assetsRes = await assetAPI.getAll({ limit: 1000 });
+        setAvailableAssets(assetsRes.data || []);
+        
+        const usersRes = await userService.getAll();
+        setAvailableUsers(usersRes || []);
+        
+      } catch (error) {
+        console.error('Error fetching license data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
     if (licenseId) {
-      const id = Array.isArray(licenseId) ? licenseId[0] : licenseId;
-      licenseAPI.getAssignments(Number(id)).then(res => setAssignments(res.data?.data || []));
+      fetchData();
     }
   }, [licenseId]);
 
@@ -68,7 +93,8 @@ export default function LicenseEditPage() {
     try {
       // 1. Update license
       const id = Array.isArray(licenseId) ? licenseId[0] : licenseId;
-      await licenseAPI.update(Number(id), formData); // TODO: implement licenseAPI.update if not present
+      await licenseAPI.update(Number(id), formData);
+      
       // 2. Assign license if assets/users selected
       if (licenseId && (selectedAssets.length > 0 || selectedUsers.length > 0)) {
         await licenseAPI.assignLicense(Number(id), {
@@ -77,17 +103,37 @@ export default function LicenseEditPage() {
           assigned_date: new Date().toISOString().slice(0, 10),
         });
       }
-      router.push("/admin/licenses");
+      router.push("/licenses");
     } catch (err) {
-      // TODO: Show error feedback
+      console.error('Error updating license:', err);
+      alert('Failed to update license. Please try again.');
+    } finally {
       setIsSubmitting(false);
     }
   };
 
   const handleUnassign = async (assignment_id: number) => {
-    await licenseAPI.unassignLicense(assignment_id);
-    setAssignments(assignments.filter(a => a.id !== assignment_id));
+    try {
+      await licenseAPI.unassignLicense(assignment_id);
+      // Refresh assignments
+      const id = Array.isArray(licenseId) ? licenseId[0] : licenseId;
+      const assignmentsRes = await licenseAPI.getAssignments(Number(id));
+      if (assignmentsRes.data.success) {
+        setAssignments(assignmentsRes.data.data);
+      }
+    } catch (error) {
+      console.error('Error unassigning license:', error);
+      alert('Failed to unassign license. Please try again.');
+    }
   };
+
+  if (loading) {
+    return (
+      <div className="mx-auto max-w-screen-lg p-4 md:p-6 2xl:p-10">
+        <div className="text-center">Loading...</div>
+      </div>
+    );
+  }
 
   return (
     <div className="mx-auto max-w-screen-lg p-4 md:p-6 2xl:p-10">
@@ -215,21 +261,23 @@ export default function LicenseEditPage() {
             <ul className="text-xs">
               {assignments.map((item, idx) => (
                 <li key={item.id} className="flex items-center gap-2 mb-1">
-                  {item.asset_id && item.Asset ? (
-                    <span>Asset: {item.Asset.name} ({item.Asset.asset_tag})</span>
-                  ) : item.user_id && item.User ? (
-                    <span>User: {item.User.username} ({item.User.email})</span>
+                  {item.assigned_to?.type === 'asset' ? (
+                    <span>Asset: {item.assigned_to.name} ({item.assigned_to.asset_tag})</span>
+                  ) : item.assigned_to?.type === 'user' ? (
+                    <span>User: {item.assigned_to.username} ({item.assigned_to.email})</span>
                   ) : null}
                   <span>Assigned: {item.assigned_date}</span>
-                  {item.unassigned_date && <span>Unassigned: {item.unassigned_date}</span>}
-                  <button className="ml-2 text-red-500 underline" onClick={() => handleUnassign(item.id)}>Unassign</button>
+                  <span>Status: {item.status}</span>
+                  {item.status === 'assigned' && (
+                    <button className="ml-2 text-red-500 underline" onClick={() => handleUnassign(item.id)}>Unassign</button>
+                  )}
                 </li>
               ))}
             </ul>
           )}
         </div>
         <div className="flex justify-end gap-3">
-          <Button variant="outline" onClick={() => router.push("/admin/licenses")}>Cancel</Button>
+          <Button variant="outline" onClick={() => router.push("/licenses")}>Cancel</Button>
           <Button type="submit" disabled={isSubmitting}>{isSubmitting ? "Saving..." : "Update License"}</Button>
         </div>
       </form>

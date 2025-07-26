@@ -1,82 +1,134 @@
 'use client'
 
-import React, { useState } from 'react';
-import AdvancedCustomTable from '@/components/custom/AdvancedCustomTable';
+import React, { useEffect, useState } from 'react';
 import Button from '@/components/ui/button/Button';
 import ConsumableDashboard from '@/components/consumable/ConsumableDashboard';
-import OrganizationFormModal from '@/components/organization/OrganizationFormModal';
-
-// Placeholder data type and data
-interface Consumable {
-  id: number;
-  name: string;
-  code: string;
-  category: string;
-  unit: string;
-  location: string;
-  stock: number;
-  status: string;
-}
-
-const initialConsumables: Consumable[] = [
-  { id: 1, name: 'Consumable 1', code: 'C001', category: 'Category 1', unit: 'Box', location: 'Warehouse', stock: 100, status: 'in_stock' },
-  { id: 2, name: 'Consumable 2', code: 'C002', category: 'Category 2', unit: 'Pack', location: 'Office', stock: 0, status: 'out_of_stock' },
-];
-
-const consumableFields = [
-  { name: 'name', label: 'Consumable Name', type: 'text', required: true, placeholder: 'Enter consumable name' },
-  { name: 'code', label: 'Code', type: 'text', required: true, placeholder: 'Enter code' },
-  { name: 'category', label: 'Category', type: 'text', required: true, placeholder: 'Enter category' },
-  { name: 'unit', label: 'Unit', type: 'text', required: true, placeholder: 'Enter unit' },
-  { name: 'location', label: 'Location', type: 'text', required: false, placeholder: 'Enter location' },
-  { name: 'stock', label: 'Stock', type: 'number', required: true, placeholder: 'Enter stock' },
-  { name: 'status', label: 'Status', type: 'select', required: true, options: [
-    { value: 'in_stock', label: 'In Stock' },
-    { value: 'out_of_stock', label: 'Out of Stock' },
-  ] },
-];
+import ConsumableTable from '@/components/consumable/ConsumableTable';
+import ConsumableFormModal from '@/components/consumable/ConsumableFormModal';
+import ConsumableAssignModal from '@/components/consumable/ConsumableAssignModal';
+import ConsumableStockModal from '@/components/consumable/ConsumableStockModal';
+import { consumableAPI } from '@/services/consumable';
+import { Consumable, ConsumableAssignment, ConsumableStockMovement } from '@/types/consumable';
 
 export default function ConsumablesPage() {
-  const [consumables, setConsumables] = useState<Consumable[]>(initialConsumables);
+  const [consumables, setConsumables] = useState<Consumable[]>([]);
   const [loading, setLoading] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [pagination, setPagination] = useState({ page: 1, limit: 10, total: 0 });
+  const [modalOpen, setModalOpen] = useState(false);
   const [editingConsumable, setEditingConsumable] = useState<Consumable | null>(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [assignModalOpen, setAssignModalOpen] = useState(false);
+  const [stockModalOpen, setStockModalOpen] = useState(false);
+  const [selectedConsumable, setSelectedConsumable] = useState<Consumable | null>(null);
+  const [formError, setFormError] = useState<string | undefined>();
+  const [assignError, setAssignError] = useState<string | undefined>();
+  const [stockError, setStockError] = useState<string | undefined>();
+  const [formLoading, setFormLoading] = useState(false);
+  const [assignLoading, setAssignLoading] = useState(false);
+  const [stockLoading, setStockLoading] = useState(false);
 
-  const handleEdit = (consumable: Consumable) => {
-    setEditingConsumable(consumable);
-    setIsModalOpen(true);
-  };
+  // Fetch consumables
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        const res = await consumableAPI.getAll({ page: pagination.page, limit: pagination.limit });
+        console.log('Consumable API response:', res);
+        // Handle the backend response structure: { success: true, data: [...], pagination: {...} }
+        const consumablesData = res.data || [];
+        const mappedConsumables = consumablesData.map((c: any) => ({
+          ...c,
+          code: c.consumable_tag || '',
+          category: c.category_name || '',
+          stock: c.stock_quantity || 0,
+          status: c.status || 'active',
+          unit: c.unit || '',
+          location: c.location || '',
+        }));
+        setConsumables(mappedConsumables);
+        setPagination(p => ({ ...p, total: res.pagination?.total || 0 }));
+      } catch (e) {
+        console.error('Error fetching consumables:', e);
+        setConsumables([]);
+      }
+      setLoading(false);
+    };
+    fetchData();
+  }, [pagination.page, pagination.limit]);
 
-  const handleDelete = (consumable: Consumable) => {
-    setConsumables(prev => prev.filter(c => c.id !== consumable.id));
-  };
-
+  // CRUD Handlers
   const handleAdd = () => {
     setEditingConsumable(null);
-    setIsModalOpen(true);
+    setModalOpen(true);
+    setFormError(undefined);
   };
-
-  const handleSave = async (data: Partial<Consumable>) => {
-    setIsSubmitting(true);
-    if (editingConsumable) {
-      setConsumables(prev => prev.map(c => c.id === editingConsumable.id ? { ...c, ...data } as Consumable : c));
-    } else {
-      setConsumables(prev => [...prev, { ...data, id: Date.now() } as Consumable]);
+  const handleEdit = (consumable: Consumable) => {
+    setEditingConsumable(consumable);
+    setModalOpen(true);
+    setFormError(undefined);
+  };
+  const handleDelete = async (consumable: Consumable) => {
+    setLoading(true);
+    try {
+      await consumableAPI.delete(consumable.id);
+      setConsumables(prev => prev.filter(c => c.id !== consumable.id));
+      setPagination(p => ({ ...p, total: p.total - 1 }));
+    } catch (e: any) {
+      // handle error
     }
-    setIsModalOpen(false);
-    setIsSubmitting(false);
+    setLoading(false);
+  };
+  const handleSave = async (data: Partial<Consumable>) => {
+    setFormLoading(true);
+    setFormError(undefined);
+    try {
+      if (editingConsumable) {
+        await consumableAPI.update(editingConsumable.id, data);
+      } else {
+        await consumableAPI.create(data);
+      }
+      setModalOpen(false);
+      setPagination(p => ({ ...p })); // trigger reload
+    } catch (e: any) {
+      setFormError(e.message || 'Error saving consumable');
+    }
+    setFormLoading(false);
   };
 
-  const columns = [
-    { key: 'name', label: 'Consumable Name', filterable: true, searchable: true, exportable: true },
-    { key: 'code', label: 'Code', filterable: true, searchable: true, exportable: true },
-    { key: 'category', label: 'Category', filterable: true, searchable: true, exportable: true },
-    { key: 'unit', label: 'Unit', filterable: true, searchable: true, exportable: true },
-    { key: 'location', label: 'Location', filterable: true, searchable: true, exportable: true },
-    { key: 'stock', label: 'Stock', filterable: true, searchable: true, exportable: true },
-    { key: 'status', label: 'Status', filterable: true, searchable: true, exportable: true },
-  ];
+  // Assign/Stock Handlers
+  const handleAssign = (consumable: Consumable) => {
+    setSelectedConsumable(consumable);
+    setAssignModalOpen(true);
+    setAssignError(undefined);
+  };
+  const handleStock = (consumable: Consumable) => {
+    setSelectedConsumable(consumable);
+    setStockModalOpen(true);
+    setStockError(undefined);
+  };
+  const handleAssignSubmit = async (data: Partial<ConsumableAssignment>) => {
+    if (!selectedConsumable) return;
+    setAssignLoading(true);
+    setAssignError(undefined);
+    try {
+      await consumableAPI.assign(selectedConsumable.id, data);
+      setAssignModalOpen(false);
+    } catch (e: any) {
+      setAssignError(e.message || 'Error assigning consumable');
+    }
+    setAssignLoading(false);
+  };
+  const handleStockSubmit = async (data: Partial<ConsumableStockMovement>) => {
+    if (!selectedConsumable) return;
+    setStockLoading(true);
+    setStockError(undefined);
+    try {
+      await consumableAPI.addStockMovement(selectedConsumable.id, data);
+      setStockModalOpen(false);
+    } catch (e: any) {
+      setStockError(e.message || 'Error saving stock movement');
+    }
+    setStockLoading(false);
+  };
 
   return (
     <div className="mx-auto max-w-screen-2xl p-4 md:p-6 2xl:p-10">
@@ -87,24 +139,37 @@ export default function ConsumablesPage() {
         <Button onClick={handleAdd}>Add Consumable</Button>
       </div>
       <ConsumableDashboard data={consumables} />
-      <AdvancedCustomTable
+      <ConsumableTable
         data={consumables}
-        columns={columns}
+        loading={loading}
+        pagination={pagination}
+        setPagination={setPagination}
         onEdit={handleEdit}
         onDelete={handleDelete}
-        onAdd={handleAdd}
-        addButtonText="Add Consumable"
-        isLoading={loading}
-        title="Consumables Management"
+        onAssign={handleAssign}
+        onStock={handleStock}
       />
-      <OrganizationFormModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+      <ConsumableFormModal
+        open={modalOpen}
+        onClose={() => setModalOpen(false)}
         onSubmit={handleSave}
-        title={editingConsumable ? 'Edit Consumable' : 'Add New Consumable'}
-        fields={consumableFields}
-        initialData={editingConsumable || { status: 'in_stock' }}
-        isLoading={isSubmitting}
+        initialData={editingConsumable || {}}
+        loading={formLoading}
+        error={formError}
+      />
+      <ConsumableAssignModal
+        open={assignModalOpen}
+        onClose={() => setAssignModalOpen(false)}
+        onSubmit={handleAssignSubmit}
+        loading={assignLoading}
+        error={assignError}
+      />
+      <ConsumableStockModal
+        open={stockModalOpen}
+        onClose={() => setStockModalOpen(false)}
+        onSubmit={handleStockSubmit}
+        loading={stockLoading}
+        error={stockError}
       />
     </div>
   );

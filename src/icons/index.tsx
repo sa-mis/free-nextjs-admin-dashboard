@@ -61,6 +61,7 @@ import FilterIcon from "./filter.svg";
 import ExclamationTriangleIcon from "./exclamation-triangle.svg";
 import XCircleIcon from "./x-circle.svg";
 import CurrencyDollarIcon from "./currency-dollar.svg";
+import ShieldIcon from "./shield.svg";
 
 export {
   DownloadIcon,
@@ -126,4 +127,5 @@ export {
   ExclamationTriangleIcon,
   XCircleIcon,
   CurrencyDollarIcon,
+  ShieldIcon,
 };
