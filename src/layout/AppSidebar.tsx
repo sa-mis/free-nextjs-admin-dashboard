@@ -62,6 +62,18 @@ const navItems: NavItem[] = [
     ],
   },
   {
+    icon: <LayersIcon />,
+    name: "Preventive Maintenance",
+    subItems: [
+      { name: "Maintenance Types", path: "/maintenance-types", pro: false },
+      { name: "Tool Categories", path: "/tool-categories", pro: false },
+      { name: "Tools", path: "/tools", pro: false },
+      { name: "PM Schedules", path: "/pm-schedules", pro: false },
+      { name: "PM Calendar", path: "/pm-calendar", pro: false },
+      { name: "Work Orders", path: "/work-orders", pro: false },
+    ],
+  },
+  {
     icon: <CalenderIcon />,
     name: "Calendar",
     path: "/calendar",
