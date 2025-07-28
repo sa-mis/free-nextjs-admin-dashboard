@@ -10,6 +10,7 @@ interface Permission {
   description?: string;
   role_count?: number;
   created_at?: string;
+  roles?: { id: number; name: string }[];
 }
 
 function formatDate(date?: string) {
@@ -67,13 +68,14 @@ export default function PermissionTable({
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Permission</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Description</th>
                 <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Roles</th>
+                <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Associated Roles</th>
                 <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Created</th>
                 <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Actions</th>
               </tr>
             </thead>
             <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
               {data.length === 0 ? (
-                <tr><td colSpan={5} className="text-center py-6 text-gray-400">No data</td></tr>
+                <tr><td colSpan={6} className="text-center py-6 text-gray-400">No data</td></tr>
               ) : data.map(row => (
                 <tr key={row.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
                   <td className="px-6 py-4 whitespace-nowrap">
@@ -87,18 +89,29 @@ export default function PermissionTable({
                     <Badge variant="solid" color="info">{row.role_count || 0}</Badge>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-center">
+                    <div className="flex flex-wrap gap-1 justify-center">
+                      {row.roles && row.roles.length > 0 ? (
+                        row.roles.map(role => (
+                          <Badge key={role.id} variant="solid" color="primary">{role.name}</Badge>
+                        ))
+                      ) : (
+                        <span className="text-xs text-gray-400">-</span>
+                      )}
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-center">
                     <div className="text-sm text-gray-900 dark:text-white">{formatDate(row.created_at)}</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                     <div className="flex space-x-2 justify-center">
                       <Button variant="outline" size="sm" onClick={() => setSelectedPermission(row)} className="text-blue-600 hover:text-blue-900">
-                        <EyeIcon className="w-4 h-4" />
+                        <EyeIcon className="w-5 h-5" />
                       </Button>
                       <Button variant="outline" size="sm" onClick={() => onEdit(row)} className="text-green-600 hover:text-green-900">
-                        <PencilIcon className="w-4 h-4" />
+                        <PencilIcon className="w-5 h-5" />
                       </Button>
                       <Button variant="outline" size="sm" onClick={() => handleDelete(row.id)} className="text-red-600 hover:text-red-900">
-                        <TrashIcon className="w-4 h-4" />
+                        <TrashIcon className="w-5 h-5" />
                       </Button>
                     </div>
                   </td>

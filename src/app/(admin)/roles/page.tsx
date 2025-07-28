@@ -8,8 +8,11 @@ import RolePermissionAssignModal from '@/components/role/RolePermissionAssignMod
 import ComponentCard from '@/components/common/ComponentCard';
 import PageBreadcrumb from '@/components/common/PageBreadCrumb';
 import { roleAPI } from '@/services/role';
+import { usePageAuth } from '@/hooks/usePageAuth';
+import PermissionDenied from '@/components/common/PermissionDenied';
 
 export default function RolesPage() {
+  const { loading: authLoading, hasPermission } = usePageAuth('role.view');
   const [formOpen, setFormOpen] = useState(false);
   const [selected, setSelected] = useState<any>(null);
   const [assignOpen, setAssignOpen] = useState(false);
@@ -53,6 +56,9 @@ export default function RolesPage() {
     setSelected(role);
     setAssignOpen(true);
   };
+
+  if (authLoading) return <div>Loading...</div>;
+  if (!hasPermission) return <PermissionDenied />;
 
   return (
     <div>

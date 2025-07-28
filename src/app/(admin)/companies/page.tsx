@@ -4,8 +4,11 @@ import React, { useEffect, useState } from "react";
 import AdvancedCustomTable from "../../../components/custom/AdvancedCustomTable";
 import OrganizationFormModal from "../../../components/organization/OrganizationFormModal";
 import { Company, companyService, CreateCompanyData } from "../../../services/organization";
+import { usePageAuth } from '@/hooks/usePageAuth';
+import PermissionDenied from '@/components/common/PermissionDenied';
 
 const CompaniesPage: React.FC = () => {
+  const { loading, hasPermission } = usePageAuth('company.view');
   const [companies, setCompanies] = useState<Company[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -108,6 +111,9 @@ const CompaniesPage: React.FC = () => {
       setIsSubmitting(false);
     }
   };
+
+  if (loading) return <div>Loading...</div>;
+  if (!hasPermission) return <PermissionDenied />;
 
   return (
     <div className="p-6">

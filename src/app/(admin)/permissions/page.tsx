@@ -7,6 +7,8 @@ import PermissionFormModal from '@/components/permission/PermissionFormModal';
 import ComponentCard from '@/components/common/ComponentCard';
 import PageBreadcrumb from '@/components/common/PageBreadCrumb';
 import { permissionAPI } from '@/services/permission';
+import { usePageAuth } from '@/hooks/usePageAuth';
+import PermissionDenied from '@/components/common/PermissionDenied';
 
 export default function PermissionsPage() {
   const [formOpen, setFormOpen] = useState(false);
@@ -18,6 +20,8 @@ export default function PermissionsPage() {
 
   // Pagination state
   const [pagination, setPagination] = useState({ page: 1, limit: 10, total: 0 });
+
+  const { loading: authLoading, hasPermission } = usePageAuth('permission.view');
 
   // Fetch function
   const fetchPermissions = useCallback(async () => {
@@ -36,6 +40,9 @@ export default function PermissionsPage() {
   useEffect(() => {
     fetchPermissions();
   }, [fetchPermissions]);
+
+  if (authLoading) return <div>Loading...</div>;
+  if (!hasPermission) return <PermissionDenied />;
 
   const handleEdit = (permission: any) => {
     setSelected(permission);

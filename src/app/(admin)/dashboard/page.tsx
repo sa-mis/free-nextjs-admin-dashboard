@@ -4,27 +4,17 @@ import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { authService } from '@/services/auth';
 import toast from 'react-hot-toast';
+import { useAuth } from '@/context/AuthContext';
 
 const DashboardPage = () => {
   const router = useRouter();
-  const [loading, setLoading] = useState(true);
-  const [user, setUser] = useState(null);
+  const { user, loading, isAuthenticated } = useAuth();
 
   useEffect(() => {
-    const verifyAuth = async () => {
-      try {
-        const profile = await authService.getProfile();
-        setUser(profile);
-      } catch (error) {
-        toast.error('Please login to access the dashboard.');
-        router.push('/login');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    verifyAuth();
-  }, [router]);
+    if (!loading && !isAuthenticated) {
+      router.push('/login');
+    }
+  }, [loading, isAuthenticated, router]);
 
   if (loading) {
     return <div className="flex items-center justify-center min-h-screen">Loading...</div>;

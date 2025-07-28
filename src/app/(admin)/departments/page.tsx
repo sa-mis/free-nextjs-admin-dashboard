@@ -5,8 +5,11 @@ import AdvancedCustomTable from "../../../components/custom/AdvancedCustomTable"
 import OrganizationFormModal from "../../../components/organization/OrganizationFormModal";
 import { Department, departmentService, CreateDepartmentData, Company, companyService, User, userService } from "../../../services/organization";
 import { formatDateTime } from "../../../util/format";
+import { usePageAuth } from '@/hooks/usePageAuth';
+import PermissionDenied from '@/components/common/PermissionDenied';
 
 const DepartmentsPage: React.FC = () => {
+  const { loading, hasPermission } = usePageAuth('department.view');
   const [departments, setDepartments] = useState<Department[]>([]);
   const [companies, setCompanies] = useState<Company[]>([]);
   const [users, setUsers] = useState<User[]>([]);
@@ -126,6 +129,9 @@ const DepartmentsPage: React.FC = () => {
       setIsSubmitting(false);
     }
   };
+
+  if (loading) return <div>Loading...</div>;
+  if (!hasPermission) return <PermissionDenied />;
 
   return (
     <div className="p-6">

@@ -9,6 +9,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import toast from "react-hot-toast";
+import { useAuth } from '@/context/AuthContext';
 
 export default function SignInForm() {
   const [showPassword, setShowPassword] = useState(false);
@@ -17,13 +18,13 @@ export default function SignInForm() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const router = useRouter();
+  const { login } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await authService.login({ username, email, password });
-      toast.success('Login successful!');
-      router.push('/dashboard');
+      await login({ username, email, password, remember: isChecked });
+      // toast and redirect handled in AuthContext
     } catch (error: any) {
       toast.error(error.response?.data?.message || 'Login failed.');
     }

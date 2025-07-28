@@ -8,8 +8,13 @@ import UserRoleAssignModal from '@/components/user/UserRoleAssignModal';
 import ComponentCard from '@/components/common/ComponentCard';
 import PageBreadcrumb from '@/components/common/PageBreadCrumb';
 import { userAPI } from '@/services/user';
+import { usePageAuth } from '@/hooks/usePageAuth';
+import PermissionDenied from '@/components/common/PermissionDenied';
+
+import LoaderShowcase from '@/components/ui/loading/LoaderShowCase';
 
 export default function UsersPage() {
+  const { loading: authLoading, hasPermission } = usePageAuth('user.view');
   const [formOpen, setFormOpen] = useState(false);
   const [selected, setSelected] = useState<any>(null);
   const [assignOpen, setAssignOpen] = useState(false);
@@ -54,6 +59,9 @@ export default function UsersPage() {
     setAssignOpen(true);
   };
 
+  if (authLoading) return <div>Loading...</div>;
+  if (!hasPermission) return <PermissionDenied />;
+
   return (
     <div>
       <PageBreadcrumb pageTitle="Users" />
@@ -92,6 +100,7 @@ export default function UsersPage() {
             user={selected}
           />
         </ComponentCard>
+        <LoaderShowcase />
       </div>
     </div>
   );

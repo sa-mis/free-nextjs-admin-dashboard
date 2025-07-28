@@ -28,7 +28,24 @@ export const roleAPI = {
   },
 
   assignPermissions: async (roleId: number, permissionIds: number[]) => {
-    const res = await api.put(`/api/roles/${roleId}/permissions`, { permission_ids: permissionIds });
+    console.log('assignPermissions called with roleId:', roleId);
+    console.log('assignPermissions called with permissionIds:', permissionIds);
+    
+    // Ensure roleId is a number
+    const roleIdNum = parseInt(roleId.toString());
+    if (isNaN(roleIdNum)) {
+      throw new Error('Invalid role ID');
+    }
+    
+    // Ensure permissionIds is an array of numbers
+    const permissionIdsNum = permissionIds.map(id => parseInt(id.toString())).filter(id => !isNaN(id));
+    
+    const payload = { permission_ids: permissionIdsNum };
+    console.log('assignPermissions payload:', payload);
+    console.log('assignPermissions payload type:', typeof payload);
+    console.log('assignPermissions payload JSON:', JSON.stringify(payload));
+    
+    const res = await api.put(`/api/roles/${roleIdNum}/permissions`, payload);
     return res.data;
   },
 

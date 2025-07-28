@@ -11,6 +11,7 @@ interface AuthContextType {
   login: (credentials: any) => Promise<void>;
   logout: () => void;
   loading: boolean;
+  permissions: string[];
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -18,24 +19,29 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState<any | null>(null);
+  const [permissions, setPermissions] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const token = localStorage.getItem('token');
+        const token = localStorage.getItem('token') || sessionStorage.getItem('token');
         if (token) {
           const profile = await authService.getProfile();
           setUser(profile.data.user);
           setIsAuthenticated(true);
+          setPermissions(profile.data.user?.permissions || []);
         } else {
           setIsAuthenticated(false);
+          setPermissions([]);
         }
       } catch (error) {
         console.error('Authentication check failed:', error);
         setIsAuthenticated(false);
+        setPermissions([]);
         localStorage.removeItem('token');
+        sessionStorage.removeItem('token');
       } finally {
         setLoading(false);
       }
@@ -47,16 +53,22 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setLoading(true);
     try {
       const data = await authService.login(credentials);
-      localStorage.setItem('token', data.token);
-      // const profile = await authService.getProfile();
-      // setUser(profile);
+      if (credentials.remember) {
+        localStorage.setItem('token', data.token);
+        sessionStorage.removeItem('token');
+      } else {
+        sessionStorage.setItem('token', data.token);
+        localStorage.removeItem('token');
+      }
       setUser(data.data.user);
       setIsAuthenticated(true);
+      setPermissions(data.data.user?.permissions || []);
       toast.success('Login successful!');
       router.push('/dashboard');
     } catch (error: any) {
       toast.error(error.response?.data?.message || 'Login failed.');
       setIsAuthenticated(false);
+      setPermissions([]);
       throw error; // Re-throw to allow component to handle
     } finally {
       setLoading(false);
@@ -65,14 +77,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const logout = () => {
     localStorage.removeItem('token');
+    sessionStorage.removeItem('token');
     setIsAuthenticated(false);
     setUser(null);
+    setPermissions([]);
     toast.success('Logged out successfully.');
     router.push('/login');
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, user, login, logout, loading }}>
+    <AuthContext.Provider value={{ isAuthenticated, user, login, logout, loading, permissions }}>
       {children}
     </AuthContext.Provider>
   );

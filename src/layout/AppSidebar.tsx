@@ -74,6 +74,13 @@ const navItems: NavItem[] = [
     ],
   },
   {
+    icon: <BriefcaseIcon />,
+    name: "Service Requests",
+    subItems: [
+      { name: "Service Requests", path: "/service-requests", pro: false },
+    ],
+  },
+  {
     icon: <CalenderIcon />,
     name: "Calendar",
     path: "/calendar",

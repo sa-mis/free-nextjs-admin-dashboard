@@ -62,6 +62,16 @@ import ExclamationTriangleIcon from "./exclamation-triangle.svg";
 import XCircleIcon from "./x-circle.svg";
 import CurrencyDollarIcon from "./currency-dollar.svg";
 import ShieldIcon from "./shield.svg";
+import ClockIcon from "./clock.svg";
+import UserGroupIcon from "./user-group.svg";
+import BuildingOfficeIcon from "./building-office.svg";
+import ChartBarIcon from "./chart-bar.svg";
+import CalendarIcon from "./calendar.svg";
+import DocumentTextIcon from "./document-text.svg";
+import WrenchScrewdriverIcon from "./wrench-screwdriver.svg";
+import ArrowTrendingUpIcon from "./arrow-trending-up.svg";
+import MapPinIcon from "./map-pin.svg";
+import TagIcon from "./tag.svg";
 
 export {
   DownloadIcon,
@@ -128,4 +138,14 @@ export {
   XCircleIcon,
   CurrencyDollarIcon,
   ShieldIcon,
+  ClockIcon,
+  UserGroupIcon,
+  BuildingOfficeIcon,
+  ChartBarIcon,
+  CalendarIcon,
+  DocumentTextIcon,
+  WrenchScrewdriverIcon,
+  ArrowTrendingUpIcon,
+  MapPinIcon,
+  TagIcon,
 };

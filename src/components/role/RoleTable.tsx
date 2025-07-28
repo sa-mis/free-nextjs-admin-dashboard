@@ -98,17 +98,17 @@ export default function RoleTable({
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                     <div className="flex space-x-2 justify-center">
-                      <Button variant="outline" size="sm" onClick={() => setSelectedRole(row)} className="text-blue-600 hover:text-blue-900">
-                        <EyeIcon className="w-4 h-4" />
+                      <Button variant="outline" size="md" onClick={() => setSelectedRole(row)} className="text-blue-600 hover:text-blue-900">
+                        <EyeIcon className="w-5 h-5" />
                       </Button>
-                      <Button variant="outline" size="sm" onClick={() => onEdit(row)} className="text-green-600 hover:text-green-900">
-                        <PencilIcon className="w-4 h-4" />
+                      <Button variant="outline" size="md" onClick={() => onEdit(row)} className="text-green-600 hover:text-green-900">
+                        <PencilIcon className="w-5 h-5" />
                       </Button>
-                      <Button variant="outline" size="sm" onClick={() => onAssignPermissions(row)} className="text-purple-600 hover:text-purple-900">
-                        <ShieldIcon className="w-4 h-4" />
+                      <Button variant="outline" size="md" onClick={() => onAssignPermissions(row)} className="text-purple-600 hover:text-purple-900">
+                        <ShieldIcon className="w-5 h-5" />
                       </Button>
-                      <Button variant="outline" size="sm" onClick={() => handleDelete(row.id)} className="text-red-600 hover:text-red-900">
-                        <TrashIcon className="w-4 h-4" />
+                      <Button variant="outline" size="md" onClick={() => handleDelete(row.id)} className="text-red-600 hover:text-red-900">
+                        <TrashIcon className="w-5 h-5" />
                       </Button>
                     </div>
                   </td>

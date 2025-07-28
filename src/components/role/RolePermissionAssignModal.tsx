@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { roleAPI } from '@/services/role';
 import { permissionAPI } from '@/services/permission';
 import Button from '@/components/ui/button/Button';
@@ -12,11 +12,52 @@ interface RolePermissionAssignModalProps {
   role?: any;
 }
 
+interface PermissionGroup {
+  page: string;
+  permissions: any[];
+}
+
 export default function RolePermissionAssignModal({ open, onClose, onSuccess, role }: RolePermissionAssignModalProps) {
   const [selectedPermissions, setSelectedPermissions] = useState<number[]>([]);
   const [permissions, setPermissions] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<any>({});
+
+  // Group permissions by page
+  const permissionGroups = useMemo(() => {
+    const groups: { [key: string]: any[] } = {};
+    
+    permissions.forEach(permission => {
+      const parts = permission.name.split('.');
+      const page = parts[0] || 'Other';
+      if (!groups[page]) {
+        groups[page] = [];
+      }
+      groups[page].push(permission);
+    });
+
+    return Object.entries(groups).map(([page, permissions]) => ({
+      page,
+      permissions: permissions.sort((a, b) => a.name.localeCompare(b.name))
+    })).sort((a, b) => a.page.localeCompare(b.page));
+  }, [permissions]);
+
+  // Check if all permissions are selected
+  const allSelected = useMemo(() => {
+    return permissions.length > 0 && selectedPermissions.length === permissions.length;
+  }, [permissions, selectedPermissions]);
+
+  // Check if all permissions in a group are selected
+  const isGroupSelected = (group: PermissionGroup) => {
+    return group.permissions.length > 0 && 
+           group.permissions.every(p => selectedPermissions.includes(p.id));
+  };
+
+  // Check if some permissions in a group are selected
+  const isGroupPartiallySelected = (group: PermissionGroup) => {
+    const selectedInGroup = group.permissions.filter(p => selectedPermissions.includes(p.id));
+    return selectedInGroup.length > 0 && selectedInGroup.length < group.permissions.length;
+  };
 
   useEffect(() => {
     if (open && role) {
@@ -54,9 +95,48 @@ export default function RolePermissionAssignModal({ open, onClose, onSuccess, ro
     );
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSelectAll = () => {
+    if (allSelected) {
+      setSelectedPermissions([]);
+    } else {
+      setSelectedPermissions(permissions.map(p => p.id));
+    }
+  };
+
+  const handleSelectGroup = (group: PermissionGroup) => {
+    const groupPermissionIds = group.permissions.map(p => p.id);
+    const allGroupSelected = group.permissions.every(p => selectedPermissions.includes(p.id));
+    
+    if (allGroupSelected) {
+      // Deselect all permissions in this group
+      setSelectedPermissions(prev => prev.filter(id => !groupPermissionIds.includes(id)));
+    } else {
+      // Select all permissions in this group
+      setSelectedPermissions(prev => {
+        const newSelected = [...prev];
+        groupPermissionIds.forEach(id => {
+          if (!newSelected.includes(id)) {
+            newSelected.push(id);
+          }
+        });
+        return newSelected;
+      });
+    }
+  };
+
+  const handleSubmit = async () => {
     if (!role) return;
+
+    console.log('handleSubmit - role:', role);
+    console.log('handleSubmit - role.id:', role.id);
+    console.log('handleSubmit - selectedPermissions:', selectedPermissions);
+
+    // Safety check for role.id
+    if (!role.id || typeof role.id !== 'number') {
+      console.error('Invalid role.id:', role.id);
+      setErrors({ general: 'Invalid role ID' });
+      return;
+    }
 
     setLoading(true);
     setErrors({});
@@ -65,6 +145,7 @@ export default function RolePermissionAssignModal({ open, onClose, onSuccess, ro
       await roleAPI.assignPermissions(role.id, selectedPermissions);
       onSuccess();
     } catch (error: any) {
+      console.error('handleSubmit error:', error);
       if (error.response?.data?.errors) {
         setErrors(error.response.data.errors);
       } else {
@@ -79,50 +160,126 @@ export default function RolePermissionAssignModal({ open, onClose, onSuccess, ro
 
   return (
     <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
-      <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
-        <div className="mt-3">
-          <h3 className="text-lg font-medium text-gray-900 mb-4">Assign Permissions to Role</h3>
-          <div className="mb-4">
-            <p className="text-sm text-gray-600">
-              <strong>Role:</strong> {role.name}
-            </p>
-          </div>
-          <form onSubmit={handleSubmit} className="space-y-4">
+      <div className="min-h-screen bg-white flex flex-col">
+        {/* Header */}
+        <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 shadow-sm z-10">
+          <div className="flex items-center justify-between">
             <div>
-              <Label>Permissions</Label>
-              <div className="max-h-60 overflow-y-auto border border-gray-300 rounded-md p-3 space-y-2">
-                {permissions.map(permission => (
-                  <div key={permission.id} className="flex items-center">
-                    <Checkbox
-                      id={`permission-${permission.id}`}
-                      checked={selectedPermissions.includes(permission.id)}
-                      onChange={() => handlePermissionToggle(permission.id)}
-                      label={permission.name}
-                    />
-                    {permission.description && (
-                      <span className="text-xs text-gray-500 ml-2">- {permission.description}</span>
-                    )}
-                  </div>
-                ))}
-              </div>
-              {errors.permission_ids && (
-                <p className="text-red-500 text-sm mt-1">{errors.permission_ids}</p>
-              )}
+              <h2 className="text-2xl font-bold text-gray-900">Assign Permissions to Role</h2>
+              <p className="text-sm text-gray-600 mt-1">
+                <strong>Role:</strong> {role.name}
+              </p>
             </div>
+            <div className="text-sm text-gray-600">
+              {selectedPermissions.length} of {permissions.length} permissions selected
+            </div>
+          </div>
+        </div>
 
-            {errors.general && (
-              <div className="text-red-500 text-sm">{errors.general}</div>
-            )}
+        {/* Content */}
+        <div className="flex-1 px-6 py-6 overflow-y-auto">
+          {/* Select All Section */}
+          <div className="mb-6 p-4 bg-gray-50 rounded-lg border">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-3">
+                <Checkbox
+                  id="select-all-permissions"
+                  checked={allSelected}
+                  onChange={handleSelectAll}
+                  label="Select All Permissions"
+                />
+                <span className="text-sm text-gray-600">
+                  {selectedPermissions.length} of {permissions.length} permissions selected
+                </span>
+              </div>
+            </div>
+          </div>
 
-            <div className="flex justify-end space-x-3">
-              <Button type="button" variant="outline" onClick={onClose}>
+          {/* Permission Groups */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            {permissionGroups.map((group) => (
+              <div key={group.page} className="bg-white border border-gray-200 rounded-lg shadow-sm">
+                {/* Group Header */}
+                <div className="px-4 py-3 bg-gray-50 border-b border-gray-200 rounded-t-lg">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-3">
+                      <Checkbox
+                        id={`select-group-${group.page}`}
+                        checked={isGroupSelected(group)}
+                        onChange={() => handleSelectGroup(group)}
+                        label={group.page}
+                      />
+                      {isGroupPartiallySelected(group) && (
+                        <span className="text-xs text-blue-600 bg-blue-100 px-2 py-1 rounded">
+                          Partial
+                        </span>
+                      )}
+                    </div>
+                    <span className="text-sm text-gray-500">
+                      {group.permissions.filter(p => selectedPermissions.includes(p.id)).length} / {group.permissions.length}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Group Permissions */}
+                <div className="p-4 space-y-2 max-h-48 overflow-y-auto">
+                  {group.permissions.map(permission => (
+                    <div key={permission.id} className="flex items-start space-x-3 p-2 hover:bg-gray-50 rounded">
+                      <Checkbox
+                        id={`permission-${permission.id}`}
+                        checked={selectedPermissions.includes(permission.id)}
+                        onChange={() => handlePermissionToggle(permission.id)}
+                        label=""
+                      />
+                      <div className="flex-1 min-w-0">
+                        <div className="text-sm font-medium text-gray-900">
+                          {permission.name.split('.').slice(1).join('.')}
+                        </div>
+                        {permission.description && (
+                          <div className="text-xs text-gray-500 mt-1">
+                            {permission.description}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Error Messages */}
+          {errors.permission_ids && (
+            <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+              <p className="text-red-600 text-sm">{errors.permission_ids}</p>
+            </div>
+          )}
+
+          {errors.general && (
+            <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+              <p className="text-red-600 text-sm">{errors.general}</p>
+            </div>
+          )}
+        </div>
+
+        {/* Sticky Footer */}
+        <div className="sticky bottom-0 bg-white border-t border-gray-200 px-6 py-4 shadow-lg">
+          <div className="flex items-center justify-between">
+            <div className="text-sm text-gray-600">
+              {selectedPermissions.length} of {permissions.length} permissions selected
+            </div>
+            <div className="flex items-center space-x-3">
+              <Button variant="outline" onClick={onClose}>
                 Cancel
               </Button>
-              <Button type="submit" disabled={loading}>
+              <Button 
+                disabled={loading}
+                onClick={handleSubmit}
+              >
                 {loading ? 'Assigning...' : 'Assign Permissions'}
               </Button>
             </div>
-          </form>
+          </div>
         </div>
       </div>
     </div>
