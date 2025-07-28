@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { permissionAPI } from '@/services/permission';
+import { Modal } from '@/components/ui/modal';
 import Button from '@/components/ui/button/Button';
 import InputField from '@/components/form/input/InputField';
 import Label from '@/components/form/Label';
@@ -70,12 +71,11 @@ export default function PermissionFormModal({ open, onClose, onSuccess, initialD
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
-      <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
-        <div className="mt-3">
-          <h3 className="text-lg font-medium text-gray-900 mb-4">
-            {initialData ? 'Edit Permission' : 'Create Permission'}
-          </h3>
+    <Modal isOpen={open} onClose={onClose}>
+      <div className="p-6 max-h-[90vh] overflow-y-auto">
+        <h2 className="text-lg font-medium text-gray-900 dark:text-white mb-6">
+          {initialData ? 'Edit Permission' : 'Add New Permission'}
+        </h2>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <Label htmlFor="name">Permission Name</Label>
@@ -95,29 +95,28 @@ export default function PermissionFormModal({ open, onClose, onSuccess, initialD
                 id="description"
                 value={formData.description}
                 onChange={(e) => handleChange('description', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
                 rows={3}
               />
               {errors.description && (
-                <p className="text-red-500 text-sm mt-1">{errors.description}</p>
+                <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.description}</p>
               )}
             </div>
 
             {errors.general && (
-              <div className="text-red-500 text-sm">{errors.general}</div>
+              <div className="text-red-500 dark:text-red-400 mb-4">{errors.general}</div>
             )}
 
-            <div className="flex justify-end space-x-3">
-              <Button type="button" variant="outline" onClick={onClose}>
+            <div className="flex justify-end space-x-3 pt-6">
+              <Button variant="outline" onClick={onClose} disabled={loading}>
                 Cancel
               </Button>
-              <Button type="submit" disabled={loading}>
+              <Button disabled={loading}>
                 {loading ? 'Saving...' : (initialData ? 'Update' : 'Create')}
               </Button>
             </div>
           </form>
         </div>
-      </div>
-    </div>
+      </Modal>
   );
 } 

@@ -107,14 +107,11 @@ export default function ConsumableFormModal({ open, onClose, onSubmit, initialDa
 
   return (
     <Modal isOpen={open} onClose={onClose}>
-      <div className="p-0 w-full max-w-lg sm:max-w-xl md:max-w-2xl flex flex-col">
-        {/* Modal Header */}
-        <div className="px-6 pt-6 pb-2 border-b border-gray-100 dark:border-gray-700 sticky top-0 bg-white dark:bg-gray-900 z-10">
-          <h2 className="text-lg font-bold">{form.id ? 'Edit' : 'Create'} Consumable</h2>
-          {error && <div className="text-red-500 mt-2">{error}</div>}
-        </div>
-        {/* Modal Body (Scrollable) */}
-        <div className="overflow-y-auto px-6 py-4 flex-1 max-h-[70vh]">
+      <div className="p-6 max-h-[90vh] overflow-y-auto">
+        <h2 className="text-lg font-medium text-gray-900 dark:text-white mb-6">
+          {form.id ? 'Edit Consumable' : 'Add New Consumable'}
+        </h2>
+        {error && <div className="text-red-500 mb-4">{error}</div>}
           <Form onSubmit={handleSubmit}>
             {/* Section: Basic Info */}
             <div className="mb-6">

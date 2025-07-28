@@ -8,6 +8,7 @@ import {
   BoxCubeIcon,
   BoxIcon,
   BuildingIcon,
+  BuildingOfficeIcon,
   BriefcaseIcon,
   CalenderIcon,
   ChevronDownIcon,

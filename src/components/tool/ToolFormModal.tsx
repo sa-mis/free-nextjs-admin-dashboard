@@ -46,6 +46,7 @@ const ToolFormModal: React.FC<ToolFormModalProps> = ({
     register,
     handleSubmit,
     reset,
+    setValue,
     formState: { errors },
   } = useForm<FormData>();
 
@@ -104,8 +105,12 @@ const ToolFormModal: React.FC<ToolFormModalProps> = ({
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title={tool ? 'Edit Tool' : 'Add Tool'}>
-      <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-6">
+    <Modal isOpen={isOpen} onClose={onClose}>
+      <div className="p-6 max-h-[90vh] overflow-y-auto">
+        <h2 className="text-lg font-medium text-gray-900 dark:text-white mb-6">
+          {tool ? 'Edit Tool' : 'Add New Tool'}
+        </h2>
+        <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <Label htmlFor="name">Name *</Label>
@@ -113,9 +118,14 @@ const ToolFormModal: React.FC<ToolFormModalProps> = ({
               id="name"
               type="text"
               {...register('name', { required: 'Name is required' })}
-              error={errors.name?.message}
+              error={!!errors.name?.message}
               placeholder="Enter tool name"
+              min={undefined}
+              max={undefined}
             />
+            {errors.name?.message && (
+              <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.name.message}</p>
+            )}
           </div>
 
           <div>
@@ -142,6 +152,8 @@ const ToolFormModal: React.FC<ToolFormModalProps> = ({
               type="text"
               {...register('serial_number')}
               placeholder="Enter serial number"
+              min={undefined}
+              max={undefined}
             />
           </div>
 
@@ -152,6 +164,8 @@ const ToolFormModal: React.FC<ToolFormModalProps> = ({
               type="text"
               {...register('model_number')}
               placeholder="Enter model number"
+              min={undefined}
+              max={undefined}
             />
           </div>
         </div>
@@ -194,6 +208,8 @@ const ToolFormModal: React.FC<ToolFormModalProps> = ({
               id="purchase_date"
               type="date"
               {...register('purchase_date')}
+              min={undefined}
+              max={undefined}
             />
           </div>
 
@@ -203,6 +219,8 @@ const ToolFormModal: React.FC<ToolFormModalProps> = ({
               id="warranty_expiry_date"
               type="date"
               {...register('warranty_expiry_date')}
+              min={undefined}
+              max={undefined}
             />
           </div>
         </div>
@@ -214,6 +232,8 @@ const ToolFormModal: React.FC<ToolFormModalProps> = ({
             type="text"
             {...register('location')}
             placeholder="Enter tool location"
+            min={undefined}
+            max={undefined}
           />
         </div>
 
@@ -242,15 +262,16 @@ const ToolFormModal: React.FC<ToolFormModalProps> = ({
         <div className="flex items-center justify-between">
           <Label htmlFor="is_active">Active Status</Label>
           <Switch
-            id="is_active"
-            {...register('is_active')}
+            label=""
             defaultChecked={tool?.is_active ?? true}
+            onChange={(checked) => {
+              setValue('is_active', checked);
+            }}
           />
         </div>
 
         <div className="flex justify-end space-x-3 pt-6">
           <Button
-            type="button"
             variant="outline"
             onClick={onClose}
             disabled={loading}
@@ -258,7 +279,6 @@ const ToolFormModal: React.FC<ToolFormModalProps> = ({
             Cancel
           </Button>
           <Button
-            type="submit"
             disabled={loading}
             className="flex items-center gap-2"
           >
@@ -273,6 +293,7 @@ const ToolFormModal: React.FC<ToolFormModalProps> = ({
           </Button>
         </div>
       </form>
+      </div>
     </Modal>
   );
 };

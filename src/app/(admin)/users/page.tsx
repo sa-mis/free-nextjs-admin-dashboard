@@ -100,7 +100,7 @@ export default function UsersPage() {
             user={selected}
           />
         </ComponentCard>
-        <LoaderShowcase />
+        {/* <LoaderShowcase /> */}
       </div>
     </div>
   );

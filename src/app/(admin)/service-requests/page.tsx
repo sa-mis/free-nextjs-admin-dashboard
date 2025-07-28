@@ -173,7 +173,7 @@ export default function ServiceRequestsPage() {
           serviceRequest={selected}
         />
 
-        <LoaderShowcase />
+        {/* <LoaderShowcase /> */}
       </div>
     </div>
   );

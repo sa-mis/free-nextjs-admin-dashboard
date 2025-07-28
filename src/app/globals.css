@@ -201,7 +201,7 @@
 }
 
 @utility menu-item-inactive {
-  @apply text-gray-700 hover:bg-gray-100 group-hover:text-gray-700 dark:text-gray-300 dark:hover:bg-white/5 dark:hover:text-gray-300;
+  @apply text-gray-700 hover:bg-gray-100 group-hover:text-gray-700 dark:text-gray-200 dark:hover:bg-white/5 dark:hover:text-gray-100;
 }
 
 @utility menu-item-icon {
@@ -213,7 +213,7 @@
 }
 
 @utility menu-item-icon-inactive {
-  @apply text-gray-500 group-hover:text-gray-700 dark:text-gray-400 dark:group-hover:text-gray-300;
+  @apply text-gray-500 group-hover:text-gray-700 dark:text-gray-300 dark:group-hover:text-gray-200;
 }
 
 @utility menu-item-arrow {
@@ -225,7 +225,7 @@
 }
 
 @utility menu-item-arrow-inactive {
-  @apply text-gray-500 group-hover:text-gray-700 dark:text-gray-400 dark:group-hover:text-gray-300;
+  @apply text-gray-500 group-hover:text-gray-700 dark:text-gray-300 dark:group-hover:text-gray-200;
 }
 
 @utility menu-dropdown-item {
@@ -237,7 +237,7 @@
 }
 
 @utility menu-dropdown-item-inactive {
-  @apply text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-white/5;
+  @apply text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-white/5 dark:hover:text-gray-100;
 }
 
 @utility menu-dropdown-badge {
@@ -737,4 +737,85 @@ span.flatpickr-weekday,
     0 1px 2px 0 rgba(16, 24, 40, 0.06);
   opacity: 0.8;
   cursor: grabbing; /* Changes the cursor to indicate dragging */
+}
+
+/* Custom animations for modal border effect */
+@keyframes spin-slow {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes spin-slow-reverse {
+  0% {
+    transform: rotate(360deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+@keyframes border-glow {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(147, 51, 234, 0.8);
+  }
+}
+
+@keyframes border-glow-gold {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(251, 191, 36, 0.6);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(245, 158, 11, 0.9);
+  }
+}
+
+@keyframes border-glow-rgb {
+  0% {
+    box-shadow: 0 0 20px rgba(239, 68, 68, 0.7);
+  }
+  16.67% {
+    box-shadow: 0 0 25px rgba(236, 72, 153, 0.8);
+  }
+  33.33% {
+    box-shadow: 0 0 30px rgba(147, 51, 234, 0.9);
+  }
+  50% {
+    box-shadow: 0 0 25px rgba(59, 130, 246, 0.8);
+  }
+  66.67% {
+    box-shadow: 0 0 20px rgba(34, 197, 94, 0.7);
+  }
+  83.33% {
+    box-shadow: 0 0 25px rgba(251, 191, 36, 0.8);
+  }
+  100% {
+    box-shadow: 0 0 20px rgba(239, 68, 68, 0.7);
+  }
+}
+
+.animate-spin-slow {
+  animation: spin-slow 8s linear infinite;
+}
+
+.animate-spin-slow-reverse {
+  animation: spin-slow-reverse 6s linear infinite;
+}
+
+.animate-border-glow {
+  animation: border-glow 2s ease-in-out infinite;
+}
+
+.animate-border-glow-gold {
+  animation: border-glow-gold 2s ease-in-out infinite;
+}
+
+.animate-border-glow-rgb {
+  animation: border-glow-rgb 3s ease-in-out infinite;
 }

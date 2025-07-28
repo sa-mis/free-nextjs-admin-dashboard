@@ -138,19 +138,10 @@ const OrganizationFormModal: React.FC<OrganizationFormModalProps> = ({
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
-      {/* <div className="w-full max-w-2xl p-6"> */}
-      <div className="p-6 max-w-4xl mx-auto max-h-[90vh] overflow-y-auto">
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-xl font-semibold text-gray-800 dark:text-white/90">
-            {title}
-          </h2>
-          <button
-            onClick={onClose}
-            className="p-2 hover:bg-gray-100 rounded-full dark:hover:bg-gray-800"
-          >
-            <CloseIcon className="w-5 h-5" />
-          </button>
-        </div>
+      <div className="p-6 max-h-[90vh] overflow-y-auto">
+        <h2 className="text-lg font-medium text-gray-900 dark:text-white mb-6">
+          {title}
+        </h2>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {fields.map((field) => (

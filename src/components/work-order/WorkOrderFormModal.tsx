@@ -101,8 +101,12 @@ const WorkOrderFormModal: React.FC<WorkOrderFormModalProps> = ({
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title={workOrder ? 'Edit Work Order' : 'Add Work Order'}>
-      <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-6">
+    <Modal isOpen={isOpen} onClose={onClose}>
+      <div className="p-6 max-h-[90vh] overflow-y-auto">
+        <h2 className="text-lg font-medium text-gray-900 dark:text-white mb-6">
+          {workOrder ? 'Edit Work Order' : 'Add New Work Order'}
+        </h2>
+        <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <Label htmlFor="title">Title *</Label>
@@ -208,6 +212,8 @@ const WorkOrderFormModal: React.FC<WorkOrderFormModalProps> = ({
               id="estimated_start_date"
               type="date"
               {...register('estimated_start_date')}
+              min={undefined}
+              max={undefined}
             />
           </div>
 
@@ -217,6 +223,8 @@ const WorkOrderFormModal: React.FC<WorkOrderFormModalProps> = ({
               id="estimated_end_date"
               type="date"
               {...register('estimated_end_date')}
+              min={undefined}
+              max={undefined}
             />
           </div>
         </div>
@@ -227,14 +235,19 @@ const WorkOrderFormModal: React.FC<WorkOrderFormModalProps> = ({
             <InputField
               id="estimated_hours"
               type="number"
-              step="0.5"
+              step={0.5}
               {...register('estimated_hours', { 
                 required: 'Estimated hours is required',
                 min: { value: 0, message: 'Hours must be at least 0' }
               })}
-              error={errors.estimated_hours?.message}
+              error={!!errors.estimated_hours?.message}
               placeholder="Enter estimated hours"
+              min={undefined}
+              max={undefined}
             />
+            {errors.estimated_hours?.message && (
+              <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.estimated_hours.message}</p>
+            )}
           </div>
 
           <div>
@@ -242,14 +255,19 @@ const WorkOrderFormModal: React.FC<WorkOrderFormModalProps> = ({
             <InputField
               id="estimated_cost"
               type="number"
-              step="0.01"
+              step={0.01}
               {...register('estimated_cost', { 
                 required: 'Estimated cost is required',
                 min: { value: 0, message: 'Cost must be at least 0' }
               })}
-              error={errors.estimated_cost?.message}
+              error={!!errors.estimated_cost?.message}
               placeholder="Enter estimated cost"
+              min={undefined}
+              max={undefined}
             />
+            {errors.estimated_cost?.message && (
+              <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.estimated_cost.message}</p>
+            )}
           </div>
 
           <div>
@@ -259,6 +277,8 @@ const WorkOrderFormModal: React.FC<WorkOrderFormModalProps> = ({
               type="text"
               {...register('location')}
               placeholder="Enter location"
+              min={undefined}
+              max={undefined}
             />
           </div>
         </div>
@@ -310,6 +330,7 @@ const WorkOrderFormModal: React.FC<WorkOrderFormModalProps> = ({
           </Button>
         </div>
       </form>
+      </div>
     </Modal>
   );
 };
