@@ -17,11 +17,27 @@ interface PermissionGroup {
   permissions: any[];
 }
 
+interface PaginationInfo {
+  currentPage: number;
+  totalPages: number;
+  totalItems: number;
+  itemsPerPage: number;
+}
+
 export default function RolePermissionAssignModal({ open, onClose, onSuccess, role }: RolePermissionAssignModalProps) {
   const [selectedPermissions, setSelectedPermissions] = useState<number[]>([]);
   const [permissions, setPermissions] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<any>({});
+  
+  // Pagination state
+  const [pagination, setPagination] = useState<PaginationInfo>({
+    currentPage: 1,
+    totalPages: 1,
+    totalItems: 0,
+    itemsPerPage: 50
+  });
+  const [loadingPermissions, setLoadingPermissions] = useState(false);
 
   // Group permissions by page
   const permissionGroups = useMemo(() => {
@@ -61,18 +77,50 @@ export default function RolePermissionAssignModal({ open, onClose, onSuccess, ro
 
   useEffect(() => {
     if (open && role) {
-      fetchPermissions();
+      // Reset pagination and permissions when modal opens
+      setPagination(prev => ({ ...prev, currentPage: 1 }));
+      setPermissions([]);
+      fetchPermissions(1);
       fetchRolePermissions();
       setErrors({});
     }
   }, [open, role]);
 
-  const fetchPermissions = async () => {
+  // Debug pagination state
+  useEffect(() => {
+    console.log('Pagination state changed:', pagination);
+  }, [pagination]);
+
+  const fetchPermissions = async (page: number = 1) => {
     try {
-      const res = await permissionAPI.getPermissions({ limit: 100 });
-      setPermissions(res.data.permissions || []);
+      setLoadingPermissions(true);
+      const res = await permissionAPI.getPermissions({ 
+        page, 
+        limit: pagination.itemsPerPage 
+      });
+      
+      console.log('Permission API Response:', res);
+      const permissions = res.data?.permissions || [];
+      const totalItems = res.total || 0;
+      const totalPages = Math.ceil(totalItems / pagination.itemsPerPage);
+      console.log('Parsed data:', { permissions: permissions.length, totalItems, totalPages, currentPage: page });
+      
+      if (page === 1) {
+        setPermissions(permissions);
+      } else {
+        setPermissions(prev => [...prev, ...permissions]);
+      }
+      
+      setPagination(prev => ({
+        ...prev,
+        currentPage: page,
+        totalPages: totalPages,
+        totalItems: totalItems
+      }));
     } catch (error) {
       console.error('Error fetching permissions:', error);
+    } finally {
+      setLoadingPermissions(false);
     }
   };
 
@@ -84,6 +132,12 @@ export default function RolePermissionAssignModal({ open, onClose, onSuccess, ro
       setSelectedPermissions(rolePermissionIds);
     } catch (error) {
       console.error('Error fetching role permissions:', error);
+    }
+  };
+
+  const loadMorePermissions = () => {
+    if (pagination.currentPage < pagination.totalPages && !loadingPermissions) {
+      fetchPermissions(pagination.currentPage + 1);
     }
   };
 
@@ -171,7 +225,7 @@ export default function RolePermissionAssignModal({ open, onClose, onSuccess, ro
               </p>
             </div>
             <div className="text-sm text-gray-600">
-              {selectedPermissions.length} of {permissions.length} permissions selected
+              {selectedPermissions.length} permissions selected
             </div>
           </div>
         </div>
@@ -189,15 +243,23 @@ export default function RolePermissionAssignModal({ open, onClose, onSuccess, ro
                   label="Select All Permissions"
                 />
                 <span className="text-sm text-gray-600">
-                  {selectedPermissions.length} of {permissions.length} permissions selected
+                  {selectedPermissions.length} permissions selected
                 </span>
               </div>
             </div>
           </div>
 
           {/* Permission Groups */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-            {permissionGroups.map((group) => (
+          {loadingPermissions && permissions.length === 0 ? (
+            <div className="flex justify-center items-center py-8">
+              <div className="text-center">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
+                <p className="mt-2 text-gray-600">Loading permissions...</p>
+              </div>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+              {permissionGroups.map((group) => (
               <div key={group.page} className="bg-white border border-gray-200 rounded-lg shadow-sm">
                 {/* Group Header */}
                 <div className="px-4 py-3 bg-gray-50 border-b border-gray-200 rounded-t-lg">
@@ -246,7 +308,36 @@ export default function RolePermissionAssignModal({ open, onClose, onSuccess, ro
                 </div>
               </div>
             ))}
-          </div>
+            </div>
+          )}
+
+                     {/* Load More Button */}
+           {pagination.currentPage < pagination.totalPages && permissions.length > 0 && (
+            <div className="mt-6 flex justify-center">
+              <Button
+                variant="outline"
+                onClick={loadMorePermissions}
+                disabled={loadingPermissions}
+                className="px-6"
+              >
+                {loadingPermissions ? 'Loading...' : `Load More (${pagination.currentPage}/${pagination.totalPages})`}
+              </Button>
+            </div>
+          )}
+
+                     {/* Pagination Info */}
+           <div className="mt-4 text-center text-sm text-gray-600">
+             Showing {permissions.length} of {pagination.totalItems} permissions
+             {pagination.totalPages > 1 && (
+               <span className="ml-2">
+                 (Page {pagination.currentPage} of {pagination.totalPages})
+               </span>
+             )}
+             {/* Debug info */}
+             <div className="text-xs text-gray-400 mt-1">
+               Debug: totalItems={pagination.totalItems}, totalPages={pagination.totalPages}, currentPage={pagination.currentPage}
+             </div>
+           </div>
 
           {/* Error Messages */}
           {errors.permission_ids && (
@@ -266,7 +357,7 @@ export default function RolePermissionAssignModal({ open, onClose, onSuccess, ro
         <div className="sticky bottom-0 bg-white border-t border-gray-200 px-6 py-4 shadow-lg">
           <div className="flex items-center justify-between">
             <div className="text-sm text-gray-600">
-              {selectedPermissions.length} of {permissions.length} permissions selected
+              {selectedPermissions.length} permissions selected
             </div>
             <div className="flex items-center space-x-3">
               <Button variant="outline" onClick={onClose}>
