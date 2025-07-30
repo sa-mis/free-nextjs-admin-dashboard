@@ -24,6 +24,8 @@ import { departmentService } from "@/services/organization";
 import { userAPI } from "@/services/user";
 import { maintenanceTypeAPI } from "@/services/maintenanceType";
 import toast from "react-hot-toast";
+import { usePageAuth } from "@/hooks/usePageAuth";
+import PermissionDenied from "@/components/common/PermissionDenied";
 
 interface CalendarEvent extends EventInput {
   extendedProps: {
@@ -41,6 +43,7 @@ interface FilterOptions {
 }
 
 const PmCalendar: React.FC = () => {
+  const { loading: authLoading, hasPermission } = usePageAuth('pm-schedule.view');
   const [events, setEvents] = useState<CalendarEvent[]>([]);
   const [pmSchedules, setPmSchedules] = useState<PmSchedule[]>([]);
   const [filterOptions, setFilterOptions] = useState<FilterOptions>({
@@ -228,6 +231,9 @@ const PmCalendar: React.FC = () => {
     );
   }
 
+  if (authLoading) return <div>Loading...</div>;
+  if (!hasPermission) return <PermissionDenied />;
+  
   return (
     <div className="space-y-6">
       {/* Header */}

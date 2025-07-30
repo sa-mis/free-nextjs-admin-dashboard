@@ -8,8 +8,11 @@ import PmScheduleFormModal from '@/components/pm-schedule/PmScheduleFormModal';
 import PmScheduleDashboard from '@/components/pm-schedule/PmScheduleDashboard';
 import Button from '@/components/ui/button/Button';
 import PlusIcon from '@/icons/plus.svg';
+import { usePageAuth } from '@/hooks/usePageAuth';
+import PermissionDenied from '@/components/common/PermissionDenied';
 
 const PmSchedulesPage: React.FC = () => {
+  const { loading: authLoading, hasPermission } = usePageAuth('pm-schedule.view');
   const [pmSchedules, setPmSchedules] = useState<PmSchedule[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedPmSchedule, setSelectedPmSchedule] = useState<PmSchedule | null>(null);
@@ -115,6 +118,9 @@ const PmSchedulesPage: React.FC = () => {
     }
   };
 
+  if (authLoading) return <div>Loading...</div>;
+  if (!hasPermission) return <PermissionDenied />;
+  
   return (
     <div className="p-6">
       <div className="mb-6">

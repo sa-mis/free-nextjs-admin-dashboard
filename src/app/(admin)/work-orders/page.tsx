@@ -8,8 +8,11 @@ import WorkOrderFormModal from '@/components/work-order/WorkOrderFormModal';
 import WorkOrderDashboard from '@/components/work-order/WorkOrderDashboard';
 import Button from '@/components/ui/button/Button';
 import PlusIcon from '@/icons/plus.svg';
+import { usePageAuth } from '@/hooks/usePageAuth';
+import PermissionDenied from '@/components/common/PermissionDenied';
 
 const WorkOrdersPage: React.FC = () => {
+  const { loading: authLoading, hasPermission } = usePageAuth('work-order.view');
   const [workOrders, setWorkOrders] = useState<WorkOrder[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedWorkOrder, setSelectedWorkOrder] = useState<WorkOrder | null>(null);
@@ -108,6 +111,9 @@ const WorkOrdersPage: React.FC = () => {
     }
   };
 
+  if (authLoading) return <div>Loading...</div>;
+  if (!hasPermission) return <PermissionDenied />;
+  
   return (
     <div className="p-6">
       <div className="mb-6">

@@ -1,14 +1,15 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Vendor } from '@/services/asset';
-import { assetAPI } from '@/services/asset';
+import { vendorAPI, Vendor } from '@/services/vendor';
 import ComponentCard from '@/components/common/ComponentCard';
 import Button from '@/components/ui/button/Button';
 import InputField from '@/components/form/input/InputField';
 import { Modal } from '@/components/ui/modal';
 import Label from '@/components/form/Label';
 import AdvancedCustomTable from '@/components/custom/AdvancedCustomTable';
+import { usePageAuth } from '@/hooks/usePageAuth';
+import PermissionDenied from '@/components/common/PermissionDenied';
 
 interface VendorFormModalProps {
   isOpen: boolean;
@@ -168,6 +169,7 @@ function VendorFormModal({
 }
 
 export default function VendorsPage() {
+  const { loading: authLoading, hasPermission } = usePageAuth('vendor.view');
   const [vendors, setVendors] = useState<Vendor[]>([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -180,7 +182,7 @@ export default function VendorsPage() {
   const loadVendors = async () => {
     try {
       setLoading(true);
-      const response = await assetAPI.getVendors();
+      const response = await vendorAPI.getVendors();
       setVendors(response.data);
     } catch (error) {
       console.error('Error loading vendors:', error);
@@ -192,9 +194,9 @@ export default function VendorsPage() {
   const handleSave = async (data: Partial<Vendor>) => {
     try {
       if (selectedVendor) {
-        await assetAPI.updateVendor(selectedVendor.id, data);
+        await vendorAPI.update(selectedVendor.id, data);
       } else {
-        await assetAPI.createVendor(data);
+        await vendorAPI.create(data);
       }
       setIsModalOpen(false);
       setSelectedVendor(null);
@@ -212,7 +214,7 @@ export default function VendorsPage() {
   const handleDelete = async (vendor: Vendor) => {
     if (confirm('Are you sure you want to delete this vendor?')) {
       try {
-        await assetAPI.deleteVendor(vendor.id);
+        await vendorAPI.delete(vendor.id);
         loadVendors();
       } catch (error) {
         console.error('Error deleting vendor:', error);
@@ -228,6 +230,9 @@ export default function VendorsPage() {
     { key: 'email', label: 'Email', filterable: true, searchable: true, exportable: true, render: (value: string) => value ? (<a href={`mailto:${value}`} className="text-blue-600 hover:underline">{value}</a>) : '-' },
   ];
 
+  if (authLoading) return <div>Loading...</div>;
+  if (!hasPermission) return <PermissionDenied />;
+  
   return (
     <div className="mx-auto max-w-screen-2xl p-4 md:p-6 2xl:p-10">
       <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">

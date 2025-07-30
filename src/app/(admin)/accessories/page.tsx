@@ -9,8 +9,11 @@ import AccessoryStockModal from '@/components/accessory/AccessoryStockModal';
 import ComponentCard from '@/components/common/ComponentCard';
 import PageBreadcrumb from '@/components/common/PageBreadCrumb';
 import { accessoryAPI } from '@/services/accessory';
+import { usePageAuth } from '@/hooks/usePageAuth';
+import PermissionDenied from '@/components/common/PermissionDenied';
 
 export default function AccessoriesPage() {
+  const { loading: authLoading, hasPermission } = usePageAuth('accessory.view');
   const [formOpen, setFormOpen] = useState(false);
   const [selected, setSelected] = useState<any>(null);
   const [assignOpen, setAssignOpen] = useState(false);
@@ -52,6 +55,9 @@ export default function AccessoriesPage() {
     setSelected(accessory);
     setStockOpen(true);
   };
+
+  if (authLoading) return <div>Loading...</div>;
+  if (!hasPermission) return <PermissionDenied />;
 
   return (
     <div>

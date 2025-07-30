@@ -5,8 +5,11 @@ import AdvancedCustomTable from "../../../components/custom/AdvancedCustomTable"
 import OrganizationFormModal from "../../../components/organization/OrganizationFormModal";
 import { Employee, employeeService, CreateEmployeeData, User, userService } from "../../../services/organization";
 import { formatDateTime } from "../../../util/format";
+import { usePageAuth } from "@/hooks/usePageAuth";
+import PermissionDenied from "@/components/common/PermissionDenied";
 
 const EmployeesPage: React.FC = () => {
+  const { loading: authLoading, hasPermission } = usePageAuth('employee.view');
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [users, setUsers] = useState<User[]>([]);
   const [supervisors, setSupervisors] = useState<Employee[]>([]);
@@ -157,6 +160,9 @@ const EmployeesPage: React.FC = () => {
     }
   };
 
+  if (authLoading) return <div>Loading...</div>;
+  if (!hasPermission) return <PermissionDenied />;
+  
   return (
     <div className="p-6">
       <AdvancedCustomTable

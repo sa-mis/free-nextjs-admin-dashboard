@@ -8,8 +8,11 @@ import ToolFormModal from '@/components/tool/ToolFormModal';
 import ToolDashboard from '@/components/tool/ToolDashboard';
 import Button from '@/components/ui/button/Button';
 import PlusIcon from '@/icons/plus.svg';
+import { usePageAuth } from '@/hooks/usePageAuth';
+import PermissionDenied from '@/components/common/PermissionDenied';
 
 const ToolsPage: React.FC = () => {
+  const { loading: authLoading, hasPermission } = usePageAuth('tool.view');
   const [tools, setTools] = useState<Tool[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedTool, setSelectedTool] = useState<Tool | null>(null);
@@ -106,6 +109,9 @@ const ToolsPage: React.FC = () => {
     }
   };
 
+  if (authLoading) return <div>Loading...</div>;
+  if (!hasPermission) return <PermissionDenied />;
+  
   return (
     <div className="p-6">
       <div className="mb-6">

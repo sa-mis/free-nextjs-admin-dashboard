@@ -8,8 +8,11 @@ import ToolCategoryFormModal from '@/components/tool-category/ToolCategoryFormMo
 import ToolCategoryDashboard from '@/components/tool-category/ToolCategoryDashboard';
 import Button from '@/components/ui/button/Button';
 import PlusIcon from '@/icons/plus.svg';
+import { usePageAuth } from '@/hooks/usePageAuth';
+import PermissionDenied from '@/components/common/PermissionDenied';
 
 const ToolCategoriesPage: React.FC = () => {
+  const { loading: authLoading, hasPermission } = usePageAuth('tool-category.view');
   const [toolCategories, setToolCategories] = useState<ToolCategory[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedToolCategory, setSelectedToolCategory] = useState<ToolCategory | null>(null);
@@ -74,6 +77,9 @@ const ToolCategoriesPage: React.FC = () => {
     }
   };
 
+  if (authLoading) return <div>Loading...</div>;
+  if (!hasPermission) return <PermissionDenied />;
+  
   return (
     <div className="p-6">
       <div className="mb-6">

@@ -9,6 +9,8 @@ import InputField from '@/components/form/input/InputField';
 import { Modal } from '@/components/ui/modal';
 import Label from '@/components/form/Label';
 import AdvancedCustomTable from '@/components/custom/AdvancedCustomTable';
+import { usePageAuth } from '@/hooks/usePageAuth';
+import PermissionDenied from '@/components/common/PermissionDenied';
 
 interface AssetCategoryFormModalProps {
   isOpen: boolean;
@@ -135,6 +137,7 @@ function AssetCategoryFormModal({
 }
 
 export default function AssetCategoriesPage() {
+  const { loading: authLoading, hasPermission } = usePageAuth('asset.view');
   const [categories, setCategories] = useState<AssetCategory[]>([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -194,6 +197,9 @@ export default function AssetCategoriesPage() {
     { key: 'parent_name', label: 'Parent', filterable: true, searchable: true, exportable: true },
   ];
 
+  if (authLoading) return <div>Loading...</div>;
+  if (!hasPermission) return <PermissionDenied />;
+  
   return (
     <div className="mx-auto max-w-screen-2xl p-4 md:p-6 2xl:p-10">
       <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">

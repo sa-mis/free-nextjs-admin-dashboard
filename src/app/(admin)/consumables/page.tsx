@@ -9,8 +9,11 @@ import ConsumableAssignModal from '@/components/consumable/ConsumableAssignModal
 import ConsumableStockModal from '@/components/consumable/ConsumableStockModal';
 import { consumableAPI } from '@/services/consumable';
 import { Consumable, ConsumableAssignment, ConsumableStockMovement } from '@/types/consumable';
+import { usePageAuth } from '@/hooks/usePageAuth';
+import PermissionDenied from '@/components/common/PermissionDenied';
 
 export default function ConsumablesPage() {
+  const { loading: authLoading, hasPermission } = usePageAuth('consumable.view');
   const [consumables, setConsumables] = useState<Consumable[]>([]);
   const [loading, setLoading] = useState(false);
   const [pagination, setPagination] = useState({ page: 1, limit: 10, total: 0 });
@@ -130,6 +133,9 @@ export default function ConsumablesPage() {
     setStockLoading(false);
   };
 
+  if (authLoading) return <div>Loading...</div>;
+  if (!hasPermission) return <PermissionDenied />;
+  
   return (
     <div className="mx-auto max-w-screen-2xl p-4 md:p-6 2xl:p-10">
       <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">

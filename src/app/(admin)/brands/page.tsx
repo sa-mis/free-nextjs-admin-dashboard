@@ -1,14 +1,15 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Brand } from '@/services/asset';
-import { assetAPI } from '@/services/asset';
-import ComponentCard from '@/components/common/ComponentCard';
+import { brandAPI, Brand } from '@/services/brand';
+import ComponentCard from  '@/components/common/ComponentCard';
 import Button from '@/components/ui/button/Button';
 import InputField from '@/components/form/input/InputField';
 import { Modal } from '@/components/ui/modal';
 import Label from '@/components/form/Label';
 import AdvancedCustomTable from '@/components/custom/AdvancedCustomTable';
+import { usePageAuth } from '@/hooks/usePageAuth';
+import PermissionDenied from '@/components/common/PermissionDenied';
 
 interface BrandFormModalProps {
   isOpen: boolean;
@@ -157,6 +158,7 @@ function BrandFormModal({
 }
 
 export default function BrandsPage() {
+  const { loading: authLoading, hasPermission } = usePageAuth('brand.view');
   const [brands, setBrands] = useState<Brand[]>([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -169,7 +171,7 @@ export default function BrandsPage() {
   const loadBrands = async () => {
     try {
       setLoading(true);
-      const response = await assetAPI.getBrands();
+      const response = await brandAPI.getBrands();
       setBrands(response.data);
     } catch (error) {
       console.error('Error loading brands:', error);
@@ -181,9 +183,9 @@ export default function BrandsPage() {
   const handleSave = async (data: Partial<Brand>) => {
     try {
       if (selectedBrand) {
-        await assetAPI.updateBrand(selectedBrand.id, data);
+        await brandAPI.update(selectedBrand.id, data);
       } else {
-        await assetAPI.createBrand(data);
+        await brandAPI.create(data);
       }
       setIsModalOpen(false);
       setSelectedBrand(null);
@@ -201,7 +203,7 @@ export default function BrandsPage() {
   const handleDelete = async (brand: Brand) => {
     if (confirm('Are you sure you want to delete this brand?')) {
       try {
-        await assetAPI.deleteBrand(brand.id);
+        await brandAPI.delete(brand.id);
         loadBrands();
       } catch (error) {
         console.error('Error deleting brand:', error);
@@ -217,6 +219,9 @@ export default function BrandsPage() {
     { key: 'is_active', label: 'Status', filterable: true, searchable: true, exportable: true, render: (value: boolean) => value ? (<span className="px-2 py-1 rounded-full text-xs bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">Active</span>) : (<span className="px-2 py-1 rounded-full text-xs bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">Inactive</span>) },
   ];
 
+  if (authLoading) return <div>Loading...</div>;
+  if (!hasPermission) return <PermissionDenied />;
+  
   return (
     <div className="mx-auto max-w-screen-2xl p-4 md:p-6 2xl:p-10">
       <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">

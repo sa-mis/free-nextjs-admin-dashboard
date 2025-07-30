@@ -8,8 +8,11 @@ import MaintenanceTypeFormModal from '@/components/maintenance-type/MaintenanceT
 import MaintenanceTypeDashboard from '@/components/maintenance-type/MaintenanceTypeDashboard';
 import Button from '@/components/ui/button/Button';
 import PlusIcon from '@/icons/plus.svg';
+import { usePageAuth } from '@/hooks/usePageAuth';
+import PermissionDenied from '@/components/common/PermissionDenied';
 
 const MaintenanceTypesPage: React.FC = () => {
+  const { loading: authLoading, hasPermission } = usePageAuth('maintenance-type.view');
   const [maintenanceTypes, setMaintenanceTypes] = useState<MaintenanceType[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedMaintenanceType, setSelectedMaintenanceType] = useState<MaintenanceType | null>(null);
@@ -74,6 +77,9 @@ const MaintenanceTypesPage: React.FC = () => {
     }
   };
 
+  if (authLoading) return <div>Loading...</div>;
+  if (!hasPermission) return <PermissionDenied />;
+  
   return (
     <div className="p-6">
       <div className="mb-6">

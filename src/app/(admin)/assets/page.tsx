@@ -13,8 +13,11 @@ import { AssetDashboard } from '@/components/asset/AssetDashboard';
 import Button from '@/components/ui/button/Button';
 import InputField from '@/components/form/input/InputField';
 import { PlusIcon } from '@/icons';
+import { usePageAuth } from '@/hooks/usePageAuth';
+import PermissionDenied from '@/components/common/PermissionDenied';
 
 export default function AssetsPage() {
+  const { loading: authLoading, hasPermission } = usePageAuth('asset.view');
   const [assets, setAssets] = useState<Asset[]>([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
@@ -156,6 +159,9 @@ export default function AssetsPage() {
     { key: 'condition_status', label: 'Condition', filterable: true, searchable: true, exportable: true, render: (value: string) => <span className={getConditionColor(value)}>{value}</span> },
     { key: 'purchase_price', label: 'Value', filterable: true, searchable: true, exportable: true, render: (value: number) => value ? value.toLocaleString('en-US', { style: 'currency', currency: 'USD' }) : '-' },
   ];
+
+  if (authLoading) return <div>Loading...</div>;
+  if (!hasPermission) return <PermissionDenied />;
 
   return (
     <div className="space-y-6">

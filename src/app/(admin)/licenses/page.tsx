@@ -8,6 +8,8 @@ import LicenseDashboard from '@/components/license/LicenseDashboard';
 import ComponentCard from '@/components/common/ComponentCard';
 import PageBreadcrumb from '@/components/common/PageBreadCrumb';
 import { licenseAPI } from '@/services/license';
+import { usePageAuth } from '@/hooks/usePageAuth';
+import PermissionDenied from '@/components/common/PermissionDenied';
 
 // License interface
 interface License {
@@ -42,6 +44,7 @@ const columns = [
 ];
 
 export default function LicensesPage() {
+  const { loading: authLoading, hasPermission } = usePageAuth('license.view');
   const router = useRouter();
   const [licenses, setLicenses] = useState<License[]>([]);
   const [loading, setLoading] = useState(true);
@@ -99,6 +102,9 @@ export default function LicensesPage() {
     router.push('/licenses/create');
   };
 
+  if (authLoading) return <div>Loading...</div>;
+  if (!hasPermission) return <PermissionDenied />;
+  
   return (
     <div>
       <PageBreadcrumb pageTitle="Licenses" />

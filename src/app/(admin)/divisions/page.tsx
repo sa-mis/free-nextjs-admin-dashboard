@@ -5,8 +5,11 @@ import AdvancedCustomTable from "../../../components/custom/AdvancedCustomTable"
 import OrganizationFormModal from "../../../components/organization/OrganizationFormModal";
 import { Division, divisionService, CreateDivisionData, Department, departmentService, User, userService } from "../../../services/organization";
 import { formatDateTime } from "../../../util/format";
+import { usePageAuth } from "@/hooks/usePageAuth";
+import PermissionDenied from "@/components/common/PermissionDenied";
 
 const DivisionsPage: React.FC = () => {
+  const { loading: authLoading, hasPermission } = usePageAuth('division.view');
   const [divisions, setDivisions] = useState<Division[]>([]);
   const [departments, setDepartments] = useState<Department[]>([]);
   const [users, setUsers] = useState<User[]>([]);
@@ -14,7 +17,7 @@ const DivisionsPage: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingDivision, setEditingDivision] = useState<Division | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-
+  
   const columns = [
     { key: "code", label: "Code", filterable: true, searchable: true, exportable: true },
     { key: "name", label: "Division Name", filterable: true, searchable: true, exportable: true },
@@ -141,6 +144,9 @@ const DivisionsPage: React.FC = () => {
     }
   };
 
+  if (authLoading) return <div>Loading...</div>;
+  if (!hasPermission) return <PermissionDenied />;
+  
   return (
     <div className="p-6">
       <AdvancedCustomTable

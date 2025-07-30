@@ -9,6 +9,8 @@ import InputField from '@/components/form/input/InputField';
 import { Modal } from '@/components/ui/modal';
 import Label from '@/components/form/Label';
 import AdvancedCustomTable from '@/components/custom/AdvancedCustomTable';
+import { usePageAuth } from '@/hooks/usePageAuth';
+import PermissionDenied from '@/components/common/PermissionDenied';
 
 interface ModelFormModalProps {
   isOpen: boolean;
@@ -166,6 +168,7 @@ function ModelFormModal({
 }
 
 export default function ModelsPage() {
+  const { loading: authLoading, hasPermission } = usePageAuth('model.view');
   const [models, setModels] = useState<Model[]>([]);
   const [brands, setBrands] = useState<Brand[]>([]);
   const [loading, setLoading] = useState(true);
@@ -237,6 +240,9 @@ export default function ModelsPage() {
     { key: 'is_active', label: 'Status', filterable: true, searchable: true, exportable: true, render: (value: boolean) => value ? (<span className="px-2 py-1 rounded-full text-xs bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">Active</span>) : (<span className="px-2 py-1 rounded-full text-xs bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">Inactive</span>) },
   ];
 
+  if (authLoading) return <div>Loading...</div>;
+  if (!hasPermission) return <PermissionDenied />;
+  
   return (
     <div className="mx-auto max-w-screen-2xl p-4 md:p-6 2xl:p-10">
       <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
