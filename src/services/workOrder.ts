@@ -87,65 +87,65 @@ export interface WorkOrderDashboard {
 export const workOrderAPI = {
   // Get all work orders
   getAll: async (params?: any): Promise<{ data: WorkOrder[]; total: number }> => {
-    const response = await api.get('/work-orders', { params });
+    const response = await api.get('/api/work-orders', { params });
     return response.data;
   },
 
   // Get single work order
   getById: async (id: number): Promise<WorkOrder> => {
-    const response = await api.get(`/work-orders/${id}`);
+    const response = await api.get(`/api/work-orders/${id}`);
     return response.data;
   },
 
   // Create work order
   create: async (data: Partial<WorkOrder>): Promise<WorkOrder> => {
-    const response = await api.post('/work-orders', data);
+    const response = await api.post('/api/work-orders', data);
     return response.data;
   },
 
   // Update work order
   update: async (id: number, data: Partial<WorkOrder>): Promise<WorkOrder> => {
-    const response = await api.put(`/work-orders/${id}`, data);
+    const response = await api.put(`/api/work-orders/${id}`, data);
     return response.data;
   },
 
   // Delete work order
   delete: async (id: number): Promise<void> => {
-    await api.delete(`/work-orders/${id}`);
+    await api.delete(`/api/work-orders/${id}`);
   },
 
   // Update work order status
   updateStatus: async (id: number, status: WorkOrder['status']): Promise<WorkOrder> => {
-    const response = await api.patch(`/work-orders/${id}/status`, { status });
+    const response = await api.patch(`/api/work-orders/${id}/status`, { status });
     return response.data;
   },
 
   // Get dashboard statistics
   getDashboard: async (): Promise<WorkOrderDashboard> => {
-    const response = await api.get('/work-orders/dashboard');
+    const response = await api.get('/api/work-orders/dashboard');
     return response.data;
   },
 
   // Get work order tasks
   getTasks: async (id: number): Promise<WorkOrderTask[]> => {
-    const response = await api.get(`/work-orders/${id}/tasks`);
+    const response = await api.get(`/api/work-orders/${id}/tasks`);
     return response.data;
   },
 
   // Add task to work order
   addTask: async (id: number, task: Partial<WorkOrderTask>): Promise<WorkOrderTask> => {
-    const response = await api.post(`/work-orders/${id}/tasks`, task);
+    const response = await api.post(`/api/work-orders/${id}/tasks`, task);
     return response.data;
   },
 
   // Update work order task
   updateTask: async (id: number, taskId: number, task: Partial<WorkOrderTask>): Promise<WorkOrderTask> => {
-    const response = await api.put(`/work-orders/${id}/tasks/${taskId}`, task);
+    const response = await api.put(`/api/work-orders/${id}/tasks/${taskId}`, task);
     return response.data;
   },
 
   // Delete work order task
   deleteTask: async (id: number, taskId: number): Promise<void> => {
-    await api.delete(`/work-orders/${id}/tasks/${taskId}`);
+    await api.delete(`/api/work-orders/${id}/tasks/${taskId}`);
   },
 }; 

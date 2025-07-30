@@ -25,36 +25,36 @@ export interface ToolCategoryDashboard {
 export const toolCategoryAPI = {
   // Get all tool categories
   getAll: async (params?: any): Promise<{ data: ToolCategory[]; total: number }> => {
-    const response = await api.get('/tool-categories', { params });
+    const response = await api.get('/api/tool-categories', { params });
     return response.data;
   },
 
   // Get single tool category
   getById: async (id: number): Promise<ToolCategory> => {
-    const response = await api.get(`/tool-categories/${id}`);
+    const response = await api.get(`/api/tool-categories/${id}`);
     return response.data;
   },
 
   // Create tool category
   create: async (data: Partial<ToolCategory>): Promise<ToolCategory> => {
-    const response = await api.post('/tool-categories', data);
+    const response = await api.post('/api/tool-categories', data);
     return response.data;
   },
 
   // Update tool category
   update: async (id: number, data: Partial<ToolCategory>): Promise<ToolCategory> => {
-    const response = await api.put(`/tool-categories/${id}`, data);
+    const response = await api.put(`/api/tool-categories/${id}`, data);
     return response.data;
   },
 
   // Delete tool category
   delete: async (id: number): Promise<void> => {
-    await api.delete(`/tool-categories/${id}`);
+    await api.delete(`/api/tool-categories/${id}`);
   },
 
   // Get dashboard statistics
   getDashboard: async (): Promise<ToolCategoryDashboard> => {
-    const response = await api.get('/tool-categories/dashboard');
+    const response = await api.get('/api/tool-categories/dashboard');
     return response.data;
   },
 }; 

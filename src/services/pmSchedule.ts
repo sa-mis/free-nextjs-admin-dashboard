@@ -76,65 +76,65 @@ export interface PmScheduleDashboard {
 export const pmScheduleAPI = {
   // Get all PM schedules
   getAll: async (params?: any): Promise<{ data: PmSchedule[]; total: number }> => {
-    const response = await api.get('/pm-schedules', { params });
+    const response = await api.get('/api/pm-schedules', { params });
     return response.data;
   },
 
   // Get single PM schedule
   getById: async (id: number): Promise<PmSchedule> => {
-    const response = await api.get(`/pm-schedules/${id}`);
+    const response = await api.get(`/api/pm-schedules/${id}`);
     return response.data;
   },
 
   // Create PM schedule
   create: async (data: Partial<PmSchedule>): Promise<PmSchedule> => {
-    const response = await api.post('/pm-schedules', data);
+    const response = await api.post('/api/pm-schedules', data);
     return response.data;
   },
 
   // Update PM schedule
   update: async (id: number, data: Partial<PmSchedule>): Promise<PmSchedule> => {
-    const response = await api.put(`/pm-schedules/${id}`, data);
+    const response = await api.put(`/api/pm-schedules/${id}`, data);
     return response.data;
   },
 
   // Delete PM schedule
   delete: async (id: number): Promise<void> => {
-    await api.delete(`/pm-schedules/${id}`);
+    await api.delete(`/api/pm-schedules/${id}`);
   },
 
   // Get dashboard statistics
   getDashboard: async (): Promise<PmScheduleDashboard> => {
-    const response = await api.get('/pm-schedules/dashboard');
+    const response = await api.get('/api/pm-schedules/dashboard');
     return response.data;
   },
 
   // Generate work order from PM schedule
   generateWorkOrder: async (id: number): Promise<any> => {
-    const response = await api.post(`/pm-schedules/${id}/generate-work-order`);
+    const response = await api.post(`/api/pm-schedules/${id}/generate-work-order`);
     return response.data;
   },
 
   // Get PM schedule tasks
   getTasks: async (id: number): Promise<PmScheduleTask[]> => {
-    const response = await api.get(`/pm-schedules/${id}/tasks`);
+    const response = await api.get(`/api/pm-schedules/${id}/tasks`);
     return response.data;
   },
 
   // Add task to PM schedule
   addTask: async (id: number, task: Partial<PmScheduleTask>): Promise<PmScheduleTask> => {
-    const response = await api.post(`/pm-schedules/${id}/tasks`, task);
+    const response = await api.post(`/api/pm-schedules/${id}/tasks`, task);
     return response.data;
   },
 
   // Update PM schedule task
   updateTask: async (id: number, taskId: number, task: Partial<PmScheduleTask>): Promise<PmScheduleTask> => {
-    const response = await api.put(`/pm-schedules/${id}/tasks/${taskId}`, task);
+    const response = await api.put(`/api/pm-schedules/${id}/tasks/${taskId}`, task);
     return response.data;
   },
 
   // Delete PM schedule task
   deleteTask: async (id: number, taskId: number): Promise<void> => {
-    await api.delete(`/pm-schedules/${id}/tasks/${taskId}`);
+    await api.delete(`/api/pm-schedules/${id}/tasks/${taskId}`);
   },
 }; 

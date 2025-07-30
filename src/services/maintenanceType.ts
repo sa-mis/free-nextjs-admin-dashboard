@@ -18,36 +18,36 @@ export interface MaintenanceTypeDashboard {
 export const maintenanceTypeAPI = {
   // Get all maintenance types
   getAll: async (params?: any): Promise<{ data: MaintenanceType[]; total: number }> => {
-    const response = await api.get('/maintenance-types', { params });
+    const response = await api.get('/api/maintenance-types', { params });
     return response.data;
   },
 
   // Get single maintenance type
   getById: async (id: number): Promise<MaintenanceType> => {
-    const response = await api.get(`/maintenance-types/${id}`);
+    const response = await api.get(`/api/maintenance-types/${id}`);
     return response.data;
   },
 
   // Create maintenance type
   create: async (data: Partial<MaintenanceType>): Promise<MaintenanceType> => {
-    const response = await api.post('/maintenance-types', data);
+    const response = await api.post('/api/maintenance-types', data);
     return response.data;
   },
 
   // Update maintenance type
   update: async (id: number, data: Partial<MaintenanceType>): Promise<MaintenanceType> => {
-    const response = await api.put(`/maintenance-types/${id}`, data);
+    const response = await api.put(`/api/maintenance-types/${id}`, data);
     return response.data;
   },
 
   // Delete maintenance type
   delete: async (id: number): Promise<void> => {
-    await api.delete(`/maintenance-types/${id}`);
+    await api.delete(`/api/maintenance-types/${id}`);
   },
 
   // Get dashboard statistics
   getDashboard: async (): Promise<MaintenanceTypeDashboard> => {
-    const response = await api.get('/maintenance-types/dashboard');
+    const response = await api.get('/api/maintenance-types/dashboard');
     return response.data;
   },
 }; 

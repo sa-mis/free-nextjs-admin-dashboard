@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { XIcon } from '@/icons';
+import { XCircleIcon } from '@/icons';
 import { serviceRequestAPI } from '@/services/serviceRequest';
 
 interface ServiceRequestAssignModalProps {
@@ -91,7 +91,7 @@ export default function ServiceRequestAssignModal({
             onClick={onClose}
             className="text-gray-400 hover:text-gray-600"
           >
-            <XIcon className="w-6 h-6" />
+            <XCircleIcon className="w-6 h-6" />
           </button>
         </div>
 

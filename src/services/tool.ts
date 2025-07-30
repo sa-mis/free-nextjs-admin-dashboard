@@ -64,48 +64,48 @@ export interface ToolDashboard {
 export const toolAPI = {
   // Get all tools
   getAll: async (params?: any): Promise<{ data: Tool[]; total: number }> => {
-    const response = await api.get('/tools', { params });
+    const response = await api.get('/api/tools', { params });
     return response.data;
   },
 
   // Get single tool
   getById: async (id: number): Promise<Tool> => {
-    const response = await api.get(`/tools/${id}`);
+    const response = await api.get(`/api/tools/${id}`);
     return response.data;
   },
 
   // Create tool
   create: async (data: Partial<Tool>): Promise<Tool> => {
-    const response = await api.post('/tools', data);
+    const response = await api.post('/api/tools', data);
     return response.data;
   },
 
   // Update tool
   update: async (id: number, data: Partial<Tool>): Promise<Tool> => {
-    const response = await api.put(`/tools/${id}`, data);
+    const response = await api.put(`/api/tools/${id}`, data);
     return response.data;
   },
 
   // Delete tool
   delete: async (id: number): Promise<void> => {
-    await api.delete(`/tools/${id}`);
+    await api.delete(`/api/tools/${id}`);
   },
 
   // Get dashboard statistics
   getDashboard: async (): Promise<ToolDashboard> => {
-    const response = await api.get('/tools/dashboard');
+    const response = await api.get('/api/tools/dashboard');
     return response.data;
   },
 
   // Get tool calibration history
   getCalibrations: async (toolId: number): Promise<any[]> => {
-    const response = await api.get(`/tools/${toolId}/calibrations`);
+    const response = await api.get(`/api/tools/${toolId}/calibrations`);
     return response.data;
   },
 
   // Get tool maintenance history
   getMaintenance: async (toolId: number): Promise<any[]> => {
-    const response = await api.get(`/tools/${toolId}/maintenance`);
+    const response = await api.get(`/api/tools/${toolId}/maintenance`);
     return response.data;
   },
 }; 
