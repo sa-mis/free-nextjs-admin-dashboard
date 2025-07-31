@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { XCircleIcon } from '@/icons';
 import { serviceRequestAPI } from '@/services/serviceRequest';
+import Select from '../form/Select';
 
 interface ServiceRequestAssignModalProps {
   open: boolean;
@@ -75,9 +76,8 @@ export default function ServiceRequestAssignModal({
     }
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+  const handleChange = (field: string, value: any) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
   };
 
   if (!open || !serviceRequest) return null;
@@ -117,10 +117,10 @@ export default function ServiceRequestAssignModal({
             <label className="block text-sm font-medium text-gray-700 mb-2">
               มอบหมายให้ผู้ใช้
             </label>
-            <select
+            <Select
               name="assigned_to"
               value={formData.assigned_to}
-              onChange={handleChange}
+              onChange={value => handleChange('assigned_to', value)}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="">เลือกผู้ใช้</option>
@@ -129,7 +129,7 @@ export default function ServiceRequestAssignModal({
                   {user.username} ({user.email})
                 </option>
               ))}
-            </select>
+            </Select>
           </div>
 
           {/* Assign to Division */}
@@ -137,10 +137,10 @@ export default function ServiceRequestAssignModal({
             <label className="block text-sm font-medium text-gray-700 mb-2">
               มอบหมายให้แผนก/ฝ่าย
             </label>
-            <select
+            <Select
               name="assigned_division_id"
               value={formData.assigned_division_id}
-              onChange={handleChange}
+              onChange={value => handleChange('assigned_division_id', value)}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="">เลือกแผนก/ฝ่าย</option>
@@ -149,7 +149,7 @@ export default function ServiceRequestAssignModal({
                   {division.name}
                 </option>
               ))}
-            </select>
+            </Select>
           </div>
 
           {/* Action Buttons */}

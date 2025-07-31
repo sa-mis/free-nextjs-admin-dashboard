@@ -43,7 +43,7 @@ interface FilterOptions {
 }
 
 const PmCalendar: React.FC = () => {
-  const { loading: authLoading, hasPermission } = usePageAuth('pm-schedule.view');
+  const { loading: authLoading, hasPermission } = usePageAuth('pm_schedule.view');
   const [events, setEvents] = useState<CalendarEvent[]>([]);
   const [pmSchedules, setPmSchedules] = useState<PmSchedule[]>([]);
   const [filterOptions, setFilterOptions] = useState<FilterOptions>({

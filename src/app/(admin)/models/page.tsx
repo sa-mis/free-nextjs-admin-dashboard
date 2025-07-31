@@ -11,6 +11,8 @@ import Label from '@/components/form/Label';
 import AdvancedCustomTable from '@/components/custom/AdvancedCustomTable';
 import { usePageAuth } from '@/hooks/usePageAuth';
 import PermissionDenied from '@/components/common/PermissionDenied';
+import TextArea from '@/components/form/input/TextArea';
+import Select from '@/components/form/Select';
 
 interface ModelFormModalProps {
   isOpen: boolean;
@@ -78,11 +80,11 @@ function ModelFormModal({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <Label htmlFor="brand_id">Brand</Label>
-              <select
+              <Select
                 id="brand_id"
                 value={formData.brand_id || ''}
-                onChange={(e) => handleInputChange('brand_id', e.target.value ? parseInt(e.target.value) : undefined)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                onChange={(value) => handleInputChange('brand_id', value ? parseInt(value) : undefined)}
+                // className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">Select Brand</option>
                 {brands.map((brand) => (
@@ -90,7 +92,7 @@ function ModelFormModal({
                     {brand.name}
                   </option>
                 ))}
-              </select>
+              </Select>
             </div>
             <div>
               <Label htmlFor="code">Model Code</Label>
@@ -115,11 +117,11 @@ function ModelFormModal({
 
           <div>
             <Label htmlFor="description">Description</Label>
-            <textarea
+            <TextArea
               id="description"
               value={formData.description}
-              onChange={(e) => handleInputChange('description', e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              onChange={(value) => handleInputChange('description', value)}
+              // className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               rows={3}
               placeholder="Enter model description"
             />
@@ -127,11 +129,11 @@ function ModelFormModal({
 
           <div>
             <Label htmlFor="specifications">Specifications</Label>
-            <textarea
+            <TextArea
               id="specifications"
               value={formData.specifications}
-              onChange={(e) => handleInputChange('specifications', e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              onChange={(value) => handleInputChange('specifications', value)}
+              // className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               rows={4}
               placeholder="Enter model specifications (JSON format)"
             />
@@ -139,15 +141,15 @@ function ModelFormModal({
 
           <div>
             <Label htmlFor="is_active">Status</Label>
-            <select
+            <Select
               id="is_active"
               value={formData.is_active ? '1' : '0'}
-              onChange={(e) => handleInputChange('is_active', e.target.value === '1')}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              onChange={(value) => handleInputChange('is_active', value === '1')}
+              // className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="1">Active</option>
               <option value="0">Inactive</option>
-            </select>
+            </Select>
           </div>
 
           <div className="flex justify-end space-x-3 pt-6">

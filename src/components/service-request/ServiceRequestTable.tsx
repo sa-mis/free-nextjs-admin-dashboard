@@ -9,6 +9,7 @@ import {
   ExclamationTriangleIcon
 } from '@/icons';
 import Pagination from '@/components/tables/Pagination';
+import Select from '../form/Select';
 
 interface ServiceRequestTableProps {
   data: any[];
@@ -115,9 +116,9 @@ export default function ServiceRequestTable({
           />
         </div>
         <div className="flex gap-2">
-          <select
+          <Select
             value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value)}
+            onChange={(value) => setStatusFilter(value)}
             className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             <option value="">สถานะทั้งหมด</option>
@@ -127,10 +128,10 @@ export default function ServiceRequestTable({
             <option value="resolved">แก้ไขแล้ว</option>
             <option value="closed">ปิดงาน</option>
             <option value="cancelled">ยกเลิก</option>
-          </select>
-          <select
+          </Select>
+          <Select
             value={priorityFilter}
-            onChange={(e) => setPriorityFilter(e.target.value)}
+            onChange={(value) => setPriorityFilter(value)}
             className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             <option value="">ความสำคัญทั้งหมด</option>
@@ -138,7 +139,7 @@ export default function ServiceRequestTable({
             <option value="high">สูง</option>
             <option value="medium">ปานกลาง</option>
             <option value="low">ต่ำ</option>
-          </select>
+          </Select>
         </div>
       </div>
 

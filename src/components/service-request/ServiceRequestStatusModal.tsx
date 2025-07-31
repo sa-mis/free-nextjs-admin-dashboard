@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { XCircleIcon } from '@/icons';
 import { serviceRequestAPI } from '@/services/serviceRequest';
+import TextArea from '../form/input/TextArea';
+import Select from '../form/Select';
 
 interface ServiceRequestStatusModalProps {
   open: boolean;
@@ -45,9 +47,8 @@ export default function ServiceRequestStatusModal({
     }
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLSelectElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+  const handleChange = (field: string, value: any) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
   };
 
   const getStatusText = (status: string) => {
@@ -99,10 +100,10 @@ export default function ServiceRequestStatusModal({
             <label className="block text-sm font-medium text-gray-700 mb-2">
               สถานะใหม่ <span className="text-red-500">*</span>
             </label>
-            <select
+            <Select
               name="status"
               value={formData.status}
-              onChange={handleChange}
+              onChange={value => handleChange('status', value)}
               required
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
@@ -113,7 +114,7 @@ export default function ServiceRequestStatusModal({
               <option value="resolved">แก้ไขแล้ว</option>
               <option value="closed">ปิดงาน</option>
               <option value="cancelled">ยกเลิก</option>
-            </select>
+            </Select>
           </div>
 
           {/* Resolution Notes */}
@@ -121,12 +122,12 @@ export default function ServiceRequestStatusModal({
             <label className="block text-sm font-medium text-gray-700 mb-2">
               หมายเหตุการแก้ไข
             </label>
-            <textarea
+            <TextArea
               name="resolution_notes"
               value={formData.resolution_notes}
-              onChange={handleChange}
+              onChange={value => handleChange('resolution_notes', value)}
               rows={4}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              // className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="กรอกหมายเหตุการแก้ไข (ถ้ามี)"
             />
           </div>

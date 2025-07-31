@@ -4,6 +4,7 @@ import { Modal } from '@/components/ui/modal';
 import Button from '@/components/ui/button/Button';
 import InputField from '@/components/form/input/InputField';
 import Label from '@/components/form/Label';
+import TextArea from '../form/input/TextArea';
 
 interface PermissionFormModalProps {
   open: boolean;
@@ -91,11 +92,11 @@ export default function PermissionFormModal({ open, onClose, onSuccess, initialD
 
             <div>
               <Label htmlFor="description">Description</Label>
-              <textarea
+              <TextArea
                 id="description"
                 value={formData.description}
                 onChange={(e) => handleChange('description', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+                // className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
                 rows={3}
               />
               {errors.description && (

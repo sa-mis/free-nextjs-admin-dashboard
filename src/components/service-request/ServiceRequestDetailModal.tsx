@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { XCircleIcon, ClockIcon, UserIcon, MapPinIcon, TagIcon } from '@/icons';
 import { serviceRequestAPI } from '@/services/serviceRequest';
+import TextArea from '../form/input/TextArea';
 
 interface ServiceRequestDetailModalProps {
   open: boolean;
@@ -269,11 +270,11 @@ export default function ServiceRequestDetailModal({
             <div>
               <h4 className="font-medium text-gray-800 mb-2">เพิ่มความคิดเห็น</h4>
               <form onSubmit={handleAddComment} className="space-y-3">
-                <textarea
+                <TextArea
                   value={comment}
                   onChange={(e) => setComment(e.target.value)}
                   rows={3}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  // className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="กรอกความคิดเห็น..."
                 />
                 <div className="flex justify-end">

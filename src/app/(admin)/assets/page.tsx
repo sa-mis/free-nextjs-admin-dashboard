@@ -15,6 +15,7 @@ import InputField from '@/components/form/input/InputField';
 import { PlusIcon } from '@/icons';
 import { usePageAuth } from '@/hooks/usePageAuth';
 import PermissionDenied from '@/components/common/PermissionDenied';
+import Select from '@/components/form/Select';
 
 export default function AssetsPage() {
   const { loading: authLoading, hasPermission } = usePageAuth('asset.view');
@@ -187,21 +188,21 @@ export default function AssetsPage() {
           value={query.search || ''}
           onChange={(e) => handleSearch(e.target.value)}
         />
-        <select
+        <Select
           value={query.status || ''}
-          onChange={(e) => handleFilter('status', e.target.value || undefined)}
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          onChange={(value) => handleFilter('status', value || undefined)}
+          // className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
           <option value="">All Status</option>
           <option value="active">Active</option>
           <option value="maintenance">Maintenance</option>
           <option value="inactive">Inactive</option>
           <option value="disposed">Disposed</option>
-        </select>
-        <select
+        </Select>
+        <Select
           value={query.category_id || ''}
-          onChange={(e) => handleFilter('category_id', e.target.value ? parseInt(e.target.value) : undefined)}
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          onChange={(value) => handleFilter('category_id', value ? parseInt(value) : undefined)}
+          // className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
           <option value="">All Categories</option>
           {categories.map((category: any) => (
@@ -209,11 +210,11 @@ export default function AssetsPage() {
               {category.name}
             </option>
           ))}
-        </select>
-        <select
+        </Select>
+        <Select
           value={query.division_id || ''}
-          onChange={(e) => handleFilter('division_id', e.target.value ? parseInt(e.target.value) : undefined)}
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          onChange={(value) => handleFilter('division_id', value ? parseInt(value) : undefined)}
+          // className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
           <option value="">All Divisions</option>
           {divisions.map((division: any) => (
@@ -221,7 +222,7 @@ export default function AssetsPage() {
               {division.name}
             </option>
           ))}
-        </select>
+        </Select>
       </div>
 
       {/* Assets Table */}

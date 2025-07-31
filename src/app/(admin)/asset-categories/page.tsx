@@ -3,12 +3,14 @@
 import { useState, useEffect } from 'react';
 import { categoryAPI, AssetCategory } from '@/services/category';
 // import { assetAPI } from '@/services/asset';
+import AdvancedCustomTable from '@/components/custom/AdvancedCustomTable';
 import ComponentCard from '@/components/common/ComponentCard';
 import Button from '@/components/ui/button/Button';
 import InputField from '@/components/form/input/InputField';
-import { Modal } from '@/components/ui/modal';
 import Label from '@/components/form/Label';
-import AdvancedCustomTable from '@/components/custom/AdvancedCustomTable';
+import Select from '@/components/form/Select';
+import TextArea from '@/components/form/input/TextArea';
+import { Modal } from '@/components/ui/modal';
 import { usePageAuth } from '@/hooks/usePageAuth';
 import PermissionDenied from '@/components/common/PermissionDenied';
 
@@ -92,11 +94,10 @@ function AssetCategoryFormModal({
 
           <div>
             <Label htmlFor="description">Description</Label>
-            <textarea
+            <TextArea
               id="description"
               value={formData.description}
-              onChange={(e) => handleInputChange('description', e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              onChange={(value) => handleInputChange('description', value)}
               rows={3}
               placeholder="Enter category description"
             />
@@ -104,19 +105,19 @@ function AssetCategoryFormModal({
 
           <div>
             <Label htmlFor="parent_id">Parent Category</Label>
-            <select
+            <Select
               id="parent_id"
               value={formData.parent_id || ''}
-              onChange={(e) => handleInputChange('parent_id', e.target.value ? parseInt(e.target.value) : undefined)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              <option value="">No Parent</option>
-              {categories.map((cat) => (
-                <option key={cat.id} value={cat.id}>
-                  {cat.name}
-                </option>
-              ))}
-            </select>
+              onChange={(value) => handleInputChange('parent_id', value ? parseInt(value) : undefined)}
+              options={[
+                { value: '', label: 'No Parent' },
+                ...categories.map((cat) => ({
+                  value: cat.id,
+                  label: cat.name,
+                })),
+              ]}
+              placeholder="Select parent category"
+            />
           </div>
 
           <div className="flex justify-end space-x-3 pt-6">

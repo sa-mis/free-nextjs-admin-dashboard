@@ -12,7 +12,7 @@ import { usePageAuth } from '@/hooks/usePageAuth';
 import PermissionDenied from '@/components/common/PermissionDenied';
 
 const MaintenanceTypesPage: React.FC = () => {
-  const { loading: authLoading, hasPermission } = usePageAuth('maintenance-type.view');
+  const { loading: authLoading, hasPermission } = usePageAuth('maintenance_type.view');
   const [maintenanceTypes, setMaintenanceTypes] = useState<MaintenanceType[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedMaintenanceType, setSelectedMaintenanceType] = useState<MaintenanceType | null>(null);

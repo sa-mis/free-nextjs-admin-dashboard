@@ -3,6 +3,7 @@ import { userAPI } from '@/services/user';
 import { roleAPI } from '@/services/role';
 import Button from '@/components/ui/button/Button';
 import Label from '@/components/form/Label';
+import Select from '../form/Select';
 
 interface UserRoleAssignModalProps {
   open: boolean;
@@ -72,10 +73,10 @@ export default function UserRoleAssignModal({ open, onClose, onSuccess, user }: 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <Label htmlFor="role_id">Role</Label>
-              <select
+              <Select
                 id="role_id"
                 value={selectedRoleId}
-                onChange={(e) => setSelectedRoleId(e.target.value)}
+                onChange={(value) => setSelectedRoleId(value as string)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required
               >
@@ -85,7 +86,7 @@ export default function UserRoleAssignModal({ open, onClose, onSuccess, user }: 
                     {role.name}
                   </option>
                 ))}
-              </select>
+              </Select>
               {errors.role_id && (
                 <p className="text-red-500 text-sm mt-1">{errors.role_id}</p>
               )}
@@ -96,10 +97,10 @@ export default function UserRoleAssignModal({ open, onClose, onSuccess, user }: 
             )}
 
             <div className="flex justify-end space-x-3">
-              <Button type="button" variant="outline" onClick={onClose}>
+              <Button variant="outline" onClick={onClose}>
                 Cancel
               </Button>
-              <Button type="submit" disabled={loading || !selectedRoleId}>
+              <Button disabled={loading || !selectedRoleId}>
                 {loading ? 'Assigning...' : 'Assign Role'}
               </Button>
             </div>

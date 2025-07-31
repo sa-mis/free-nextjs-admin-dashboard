@@ -6,6 +6,8 @@ import Button from "@/components/ui/button/Button";
 import { assetAPI } from '@/services/asset';
 import { userService } from '@/services/organization';
 import { licenseAPI } from '@/services/license';
+import TextArea from "@/components/form/input/TextArea";
+import Select from "@/components/form/Select";
 
 const licenseFields = [
   { name: 'license_key', label: 'License Key', type: 'text', required: true, placeholder: 'Enter license key' },
@@ -146,21 +148,21 @@ export default function LicenseEditPage() {
               <div key={field.name}>
                 <label className="block mb-1 font-medium text-gray-700 dark:text-gray-300">{field.label}{field.required && <span className="text-error-500 ml-1">*</span>}</label>
                 {field.type === 'select' ? (
-                  <select
+                  <Select
                     value={formData[field.name] || ''}
-                    onChange={e => handleFieldChange(field.name, e.target.value)}
+                    onChange={value => handleFieldChange(field.name, value)}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   >
                     <option value="">Select {field.label}</option>
                     {field.options?.map(opt => (
                       <option key={opt.value} value={opt.value}>{opt.label}</option>
                     ))}
-                  </select>
+                  </Select>
                 ) : field.type === 'textarea' ? (
-                  <textarea
+                  <TextArea
                     value={formData[field.name] || ''}
-                    onChange={e => handleFieldChange(field.name, e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    onChange={(value) => handleFieldChange(field.name, value)}
+                    // className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     rows={3}
                     placeholder={field.placeholder}
                   />

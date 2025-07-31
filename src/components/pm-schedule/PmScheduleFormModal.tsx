@@ -8,6 +8,8 @@ import Button from '@/components/ui/button/Button';
 import InputField from '@/components/form/input/InputField';
 import Label from '@/components/form/Label';
 import Switch from '@/components/form/switch/Switch';
+import TextArea from '../form/input/TextArea';
+import Select from '../form/Select';
 
 interface PmScheduleFormModalProps {
   isOpen: boolean;
@@ -116,14 +118,14 @@ const PmScheduleFormModal: React.FC<PmScheduleFormModalProps> = ({
 
           <div>
             <Label htmlFor="maintenance_type_id">Maintenance Type *</Label>
-            <select
+            <Select
               id="maintenance_type_id"
               {...register('maintenance_type_id', { required: 'Maintenance type is required' })}
               className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
             >
               <option value="">Select Maintenance Type</option>
               {/* TODO: Load maintenance types from API */}
-            </select>
+            </Select>
             {errors.maintenance_type_id && (
               <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.maintenance_type_id.message}</p>
             )}
@@ -133,33 +135,33 @@ const PmScheduleFormModal: React.FC<PmScheduleFormModalProps> = ({
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <Label htmlFor="asset_id">Asset</Label>
-            <select
+            <Select
               id="asset_id"
               {...register('asset_id')}
               className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
             >
               <option value="">Select Asset (Optional)</option>
               {/* TODO: Load assets from API */}
-            </select>
+            </Select>
           </div>
 
           <div>
             <Label htmlFor="tool_id">Tool</Label>
-            <select
+            <Select
               id="tool_id"
               {...register('tool_id')}
               className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
             >
               <option value="">Select Tool (Optional)</option>
               {/* TODO: Load tools from API */}
-            </select>
+            </Select>
           </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
             <Label htmlFor="frequency_type">Frequency Type</Label>
-            <select
+            <Select
               id="frequency_type"
               {...register('frequency_type')}
               className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
@@ -171,7 +173,7 @@ const PmScheduleFormModal: React.FC<PmScheduleFormModalProps> = ({
               <option value="semi_annual">Semi-Annual</option>
               <option value="annual">Annual</option>
               <option value="custom">Custom</option>
-            </select>
+            </Select>
           </div>
 
           <div>
@@ -226,24 +228,24 @@ const PmScheduleFormModal: React.FC<PmScheduleFormModalProps> = ({
 
           <div>
             <Label htmlFor="assigned_to">Assigned To</Label>
-            <select
+            <Select
               id="assigned_to"
               {...register('assigned_to')}
               className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
             >
               <option value="">Select User (Optional)</option>
               {/* TODO: Load users from API */}
-            </select>
+            </Select>
           </div>
         </div>
 
         <div>
           <Label htmlFor="description">Description</Label>
-          <textarea
+          <TextArea
             id="description"
             {...register('description')}
             rows={3}
-            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+            // className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
             placeholder="Enter description (optional)"
           />
         </div>

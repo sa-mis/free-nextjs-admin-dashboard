@@ -8,6 +8,8 @@ import { Modal } from '@/components/ui/modal';
 import Button from '@/components/ui/button/Button';
 import InputField from '@/components/form/input/InputField';
 import Label from '@/components/form/Label';
+import TextArea from '../form/input/TextArea';
+import Select from '../form/Select';
 
 interface AccessoryFormModalProps {
   open: boolean;
@@ -159,12 +161,12 @@ export default function AccessoryFormModal({ open, onClose, onSuccess, initialDa
           </div>
           <div>
             <Label htmlFor="description">Description</Label>
-            <textarea
+            <TextArea
               id="description"
               name="description"
               value={form.description}
-              onChange={handleFieldChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              onChange={(value) => handleChange('description', value)}
+              // className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               rows={3}
               placeholder="Enter accessory description"
             />
@@ -173,52 +175,52 @@ export default function AccessoryFormModal({ open, onClose, onSuccess, initialDa
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <Label htmlFor="category_id">Category</Label>
-              <select
+              <Select
                 id="category_id"
                 name="category_id"
                 value={form.category_id || ''}
-                onChange={handleFieldChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                onChange={value => handleFieldChange('category_id', value)}
+                // className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">Select Category</option>
                 {categories.map((category) => (
                   <option key={category.id} value={category.id}>{category.name}</option>
                 ))}
-              </select>
+              </Select>
             </div>
             <div>
               <Label htmlFor="brand_id">Brand</Label>
-              <select
+              <Select
                 id="brand_id"
                 name="brand_id"
                 value={form.brand_id || ''}
-                onChange={handleFieldChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                onChange={value => handleFieldChange('brand_id', value)}
+                // className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">Select Brand</option>
                 {brands.map((brand) => (
                   <option key={brand.id} value={brand.id}>{brand.name}</option>
                 ))}
-              </select>
+              </Select>
             </div>
           </div>
           {/* Model and Serial Number */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <Label htmlFor="model_id">Model</Label>
-              <select
+              <Select
                 id="model_id"
                 name="model_id"
                 value={form.model_id || ''}
-                onChange={handleFieldChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                onChange={value => handleFieldChange('model_id', value)}
+                // className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 disabled={!form.brand_id}
               >
                 <option value="">Select Model</option>
                 {models.map((model) => (
                   <option key={model.id} value={model.id}>{model.name}</option>
                 ))}
-              </select>
+              </Select>
             </div>
             <div>
               <Label htmlFor="serial_number">Serial Number</Label>
@@ -257,18 +259,18 @@ export default function AccessoryFormModal({ open, onClose, onSuccess, initialDa
             </div>
             <div>
               <Label htmlFor="vendor_id">Vendor</Label>
-              <select
+              <Select
                 id="vendor_id"
                 name="vendor_id"
                 value={form.vendor_id || ''}
-                onChange={handleFieldChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                onChange={value => handleFieldChange('vendor_id', value)}
+                // className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">Select Vendor</option>
                 {vendors.map((vendor) => (
                   <option key={vendor.id} value={vendor.id}>{vendor.name}</option>
                 ))}
-              </select>
+              </Select>
             </div>
           </div>
           {/* Stock and Location */}
@@ -323,28 +325,28 @@ export default function AccessoryFormModal({ open, onClose, onSuccess, initialDa
             </div>
             <div>
               <Label htmlFor="status">Status</Label>
-              <select
+              <Select
                 id="status"
                 name="status"
                 value={form.status}
-                onChange={handleFieldChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                onChange={value => handleFieldChange('status', value)}
+                // className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="active">Active</option>
                 <option value="in_use">In Use</option>
                 <option value="damaged">Damaged</option>
                 <option value="disposed">Disposed</option>
-              </select>
+              </Select>
             </div>
           </div>
           <div>
             <Label htmlFor="notes">Notes</Label>
-            <textarea
+            <TextArea
               id="notes"
               name="notes"
               value={form.notes}
-              onChange={handleFieldChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              onChange={(value) => handleChange('notes', value)}
+              // className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               rows={3}
               placeholder="Enter additional notes"
             />

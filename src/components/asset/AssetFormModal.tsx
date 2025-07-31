@@ -12,6 +12,8 @@ import { brandAPI } from '@/services/brand';
 import { vendorAPI } from '@/services/vendor';
 import { userService } from '@/services/organization';
 import { modelAPI } from '@/services/model';
+import TextArea from '../form/input/TextArea';
+import Select from '../form/Select';
 
 interface AssetFormModalProps {
   isOpen: boolean;
@@ -246,7 +248,7 @@ export function AssetFormModal({
               <InputField
                 id="name"
                 value={formData.name}
-                onChange={(e) => handleInputChange('name', e.target.value)}
+                onChange={(value) => handleInputChange('name', value)}
                 placeholder="Enter asset name"
               />
             </div>
@@ -254,11 +256,11 @@ export function AssetFormModal({
 
           <div>
             <Label htmlFor="description">Description</Label>
-            <textarea
+            <TextArea
               id="description"
               value={formData.description}
-              onChange={(e) => handleInputChange('description', e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              onChange={(value) => handleInputChange('description', value)}
+              // className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               rows={3}
               placeholder="Enter asset description"
             />
@@ -268,11 +270,11 @@ export function AssetFormModal({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <Label htmlFor="category_id">Category</Label>
-              <select
+              <Select
                 id="category_id"
                 value={formData.category_id || ''}
-                onChange={(e) => handleInputChange('category_id', e.target.value ? parseInt(e.target.value) : undefined)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                onChange={(value) => handleInputChange('category_id', value ? parseInt(value) : undefined)}
+                // className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">Select Category</option>
                 {categories.map((category) => (
@@ -280,15 +282,15 @@ export function AssetFormModal({
                     {category.name}
                   </option>
                 ))}
-              </select>
+              </Select>
             </div>
             <div>
               <Label htmlFor="brand_id">Brand</Label>
-              <select
+              <Select
                 id="brand_id"
                 value={formData.brand_id || ''}
-                onChange={(e) => handleInputChange('brand_id', e.target.value ? parseInt(e.target.value) : undefined)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                onChange={(value) => handleInputChange('brand_id', value ? parseInt(value) : undefined)}
+                // className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">Select Brand</option>
                 {brands.map((brand) => (
@@ -296,7 +298,7 @@ export function AssetFormModal({
                     {brand.name}
                   </option>
                 ))}
-              </select>
+              </Select>
             </div>
           </div>
 
@@ -304,11 +306,11 @@ export function AssetFormModal({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <Label htmlFor="model_id">Model</Label>
-              <select
+              <Select
                 id="model_id"
                 value={formData.model_id || ''}
-                onChange={(e) => handleInputChange('model_id', e.target.value ? parseInt(e.target.value) : undefined)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                onChange={(value) => handleInputChange('model_id', value ? parseInt(value) : undefined)}
+                // className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 disabled={!formData.brand_id}
               >
                 <option value="">Select Model</option>
@@ -317,14 +319,14 @@ export function AssetFormModal({
                     {model.name}
                   </option>
                 ))}
-              </select>
+              </Select>
             </div>
             <div>
               <Label htmlFor="serial_number">Serial Number</Label>
               <InputField
                 id="serial_number"
                 value={formData.serial_number}
-                onChange={(e) => handleInputChange('serial_number', e.target.value)}
+                onChange={(value) => handleInputChange('serial_number', value)}
                 placeholder="Enter serial number"
               />
             </div>
@@ -338,7 +340,7 @@ export function AssetFormModal({
                 id="purchase_date"
                 type="date"
                 value={formData.purchase_date}
-                onChange={(e) => handleInputChange('purchase_date', e.target.value)}
+                onChange={(value) => handleInputChange('purchase_date', value)}
               />
             </div>
             <div>
@@ -346,7 +348,7 @@ export function AssetFormModal({
               <InputField
                 id="purchase_order"
                 value={formData.purchase_order}
-                onChange={(e) => handleInputChange('purchase_order', e.target.value)}
+                onChange={(value) => handleInputChange('purchase_order', value)}
                 placeholder="Enter PO number"
               />
             </div>
@@ -357,7 +359,7 @@ export function AssetFormModal({
                 type="number"
                 step={0.01}
                 value={formData.purchase_price || ''}
-                onChange={(e) => handleInputChange('purchase_price', e.target.value ? parseFloat(e.target.value) : undefined)}
+                onChange={(value) => handleInputChange('purchase_price', value ? parseFloat(value) : undefined)}
                 placeholder="Enter price"
               />
             </div>
@@ -367,11 +369,11 @@ export function AssetFormModal({
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
               <Label htmlFor="vendor_id">Vendor</Label>
-              <select
+              <Select
                 id="vendor_id"
                 value={formData.vendor_id || ''}
-                onChange={(e) => handleInputChange('vendor_id', e.target.value ? parseInt(e.target.value) : undefined)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                onChange={(value) => handleInputChange('vendor_id', value ? parseInt(value) : undefined)}
+                // className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">Select Vendor</option>
                 {vendors.map((vendor) => (
@@ -379,7 +381,7 @@ export function AssetFormModal({
                     {vendor.name}
                   </option>
                 ))}
-              </select>
+              </Select>
             </div>
             <div>
               <Label htmlFor="warranty_start_date">Warranty Start</Label>
@@ -387,7 +389,7 @@ export function AssetFormModal({
                 id="warranty_start_date"
                 type="date"
                 value={formData.warranty_start_date}
-                onChange={(e) => handleInputChange('warranty_start_date', e.target.value)}
+                onChange={(value) => handleInputChange('warranty_start_date', value)}
               />
             </div>
             <div>
@@ -396,7 +398,7 @@ export function AssetFormModal({
                 id="warranty_end_date"
                 type="date"
                 value={formData.warranty_end_date}
-                onChange={(e) => handleInputChange('warranty_end_date', e.target.value)}
+                onChange={(value) => handleInputChange('warranty_end_date', value)}
               />
             </div>
           </div>
@@ -414,11 +416,11 @@ export function AssetFormModal({
             </div>
             <div>
               <Label htmlFor="division_id">Division</Label>
-              <select
+              <Select
                 id="division_id"
                 value={formData.division_id || ''}
-                onChange={(e) => handleInputChange('division_id', e.target.value ? parseInt(e.target.value) : undefined)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                onChange={(value) => handleInputChange('division_id', value ? parseInt(value) : undefined)}
+                // className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">Select Division</option>
                 {divisions.map((division) => (
@@ -426,7 +428,7 @@ export function AssetFormModal({
                     {division.name}
                   </option>
                 ))}
-              </select>
+              </Select>
             </div>
           </div>
 
@@ -434,42 +436,42 @@ export function AssetFormModal({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <Label htmlFor="status">Status</Label>
-              <select
+              <Select
                 id="status"
                 value={formData.status}
-                onChange={(e) => handleInputChange('status', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                onChange={(value) => handleInputChange('status', value)}
+                // className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="active">Active</option>
                 <option value="inactive">Inactive</option>
                 <option value="maintenance">Maintenance</option>
                 <option value="disposed">Disposed</option>
-              </select>
+              </Select>
             </div>
             <div>
               <Label htmlFor="condition_status">Condition</Label>
-              <select
+              <Select
                 id="condition_status"
                 value={formData.condition_status}
-                onChange={(e) => handleInputChange('condition_status', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                onChange={(value) => handleInputChange('condition_status', value)}
+                // className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="excellent">Excellent</option>
                 <option value="good">Good</option>
                 <option value="fair">Fair</option>
                 <option value="poor">Poor</option>
-              </select>
+                </Select>
             </div>
           </div>
 
           {/* Notes */}
           <div>
             <Label htmlFor="notes">Notes</Label>
-            <textarea
+            <TextArea
               id="notes"
               value={formData.notes}
-              onChange={(e) => handleInputChange('notes', e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              onChange={(value) => handleInputChange('notes', value)}
+              // className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               rows={3}
               placeholder="Enter additional notes"
             />
@@ -496,7 +498,7 @@ export function AssetFormModal({
         {showAssign && (
           <div className="mb-4 p-4 bg-gray-50 rounded">
             <Label htmlFor="assign_user">Assign to User</Label>
-            <select
+            <Select
               id="assign_user"
               value={assignUserId || ''}
               onChange={e => setAssignUserId(Number(e.target.value))}
@@ -506,7 +508,7 @@ export function AssetFormModal({
               {Array.isArray(users) && users.map(user => (
                 <option key={user.id} value={user.id}>{user.username} ({user.email})</option>
               ))}
-            </select>
+            </Select>
             <div className="flex gap-2 mt-2">
               <Button onClick={handleAssign} disabled={assignLoading}>{assignLoading ? 'Assigning...' : 'Assign'}</Button>
               <Button variant="outline" onClick={() => setShowAssign(false)}>Cancel</Button>
@@ -519,7 +521,7 @@ export function AssetFormModal({
         {showTransfer && (
           <div className="mb-4 p-4 bg-gray-50 rounded">
             <Label htmlFor="transfer_division">To Division</Label>
-            <select
+            <Select
               id="transfer_division"
               value={transferData.to_division_id}
               onChange={e => setTransferData(prev => ({ ...prev, to_division_id: e.target.value }))}
@@ -529,7 +531,7 @@ export function AssetFormModal({
               {divisions.map(division => (
                 <option key={division.id} value={division.id}>{division.name}</option>
               ))}
-            </select>
+            </Select>
             <Label htmlFor="transfer_location">To Location</Label>
             <InputField
               id="transfer_location"
@@ -538,7 +540,7 @@ export function AssetFormModal({
               placeholder="Enter new location"
             />
             <Label htmlFor="transfer_user">To User</Label>
-            <select
+            <Select
               id="transfer_user"
               value={transferData.to_assigned_to}
               onChange={e => setTransferData(prev => ({ ...prev, to_assigned_to: e.target.value }))}
@@ -548,7 +550,7 @@ export function AssetFormModal({
               {Array.isArray(users) && users.map(user => (
                 <option key={user.id} value={user.id}>{user.username} ({user.email})</option>
               ))}
-            </select>
+            </Select>
             <Label htmlFor="transfer_reason">Reason</Label>
             <InputField
               id="transfer_reason"

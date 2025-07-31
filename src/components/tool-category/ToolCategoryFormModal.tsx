@@ -8,6 +8,7 @@ import Button from '@/components/ui/button/Button';
 import InputField from '@/components/form/input/InputField';
 import Label from '@/components/form/Label';
 import Switch from '@/components/form/switch/Switch';
+import TextArea from '../form/input/TextArea';
 
 interface ToolCategoryFormModalProps {
   isOpen: boolean;
@@ -100,7 +101,7 @@ const ToolCategoryFormModal: React.FC<ToolCategoryFormModalProps> = ({
 
         <div>
           <Label htmlFor="description">Description</Label>
-          <textarea
+          <TextArea
             id="description"
             {...register('description')}
             rows={3}

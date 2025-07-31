@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react';
 import { XCircleIcon } from '@/icons';
 import { serviceRequestAPI, serviceCategoryAPI } from '@/services/serviceRequest';
+import TextArea from '../form/input/TextArea';
+import Select from '../form/Select';
+import InputField from '../form/input/InputField';
 
 interface ServiceRequestFormModalProps {
   open: boolean;
@@ -137,13 +140,13 @@ export default function ServiceRequestFormModal({
             <label className="block text-sm font-medium text-gray-700 mb-2">
               รายละเอียด <span className="text-red-500">*</span>
             </label>
-            <textarea
+            <TextArea
               name="description"
               value={formData.description}
               onChange={handleChange}
               required
               rows={4}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              // className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="กรอกรายละเอียดการแจ้งซ่อม"
             />
           </div>
@@ -154,10 +157,10 @@ export default function ServiceRequestFormModal({
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 หมวดหมู่
               </label>
-              <select
+              <Select
                 name="category_id"
                 value={formData.category_id}
-                onChange={handleChange}
+                onChange={value => handleChange('category_id', value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">เลือกหมวดหมู่</option>
@@ -166,24 +169,24 @@ export default function ServiceRequestFormModal({
                     {category.name}
                   </option>
                 ))}
-              </select>
+              </Select>
             </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 ความสำคัญ
               </label>
-              <select
+              <Select
                 name="priority"
                 value={formData.priority}
-                onChange={handleChange}
+                onChange={value => handleChange('priority', value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="low">ต่ำ</option>
                 <option value="medium">ปานกลาง</option>
                 <option value="high">สูง</option>
                 <option value="urgent">เร่งด่วน</option>
-              </select>
+              </Select>
             </div>
           </div>
 
@@ -193,12 +196,12 @@ export default function ServiceRequestFormModal({
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 สถานที่
               </label>
-              <input
-                type="text"
+              <InputField
+                // type="text"
                 name="location"
                 value={formData.location}
-                onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                onChange={value => handleChange('location', value)}
+                // className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="กรอกสถานที่"
               />
             </div>
@@ -207,10 +210,10 @@ export default function ServiceRequestFormModal({
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 ทรัพย์สิน
               </label>
-              <select
+                  <Select
                 name="asset_id"
                 value={formData.asset_id}
-                onChange={handleChange}
+                onChange={value => handleChange('asset_id', value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">เลือกทรัพย์สิน</option>
@@ -219,7 +222,7 @@ export default function ServiceRequestFormModal({
                     {asset.name} - {asset.asset_number}
                   </option>
                 ))}
-              </select>
+              </Select>
             </div>
           </div>
 
@@ -228,12 +231,12 @@ export default function ServiceRequestFormModal({
             <label className="block text-sm font-medium text-gray-700 mb-2">
               วันที่กำหนดเสร็จ
             </label>
-            <input
+            <InputField
               type="date"
               name="due_date"
               value={formData.due_date}
-              onChange={handleChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              onChange={value => handleChange('due_date', value)}
+              // className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
 

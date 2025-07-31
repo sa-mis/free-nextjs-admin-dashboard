@@ -4,6 +4,7 @@ import Button from "../ui/button/Button";
 import Input from "../form/input/InputField";
 import Select from "../form/Select";
 import Label from "../form/Label";
+import TextArea from "../form/input/TextArea";
 import { CloseIcon } from "../../icons";
 
 interface FormField {
@@ -111,9 +112,9 @@ const OrganizationFormModal: React.FC<OrganizationFormModalProps> = ({
 
       case "textarea":
         return (
-          <textarea
+          <TextArea
             value={value}
-            onChange={(e) => handleInputChange(field.name, e.target.value)}
+            onChange={(value) => handleInputChange(field.name, value)}
             placeholder={field.placeholder}
             className={`h-24 w-full rounded-lg border appearance-none px-4 py-2.5 text-sm shadow-theme-xs placeholder:text-gray-400 focus:outline-hidden focus:ring-3 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800 ${
               error

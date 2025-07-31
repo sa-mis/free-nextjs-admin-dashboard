@@ -6,6 +6,7 @@ import Button from '@/components/ui/button/Button';
 import InputField from '@/components/form/input/InputField';
 import Label from '@/components/form/Label';
 import Checkbox from '@/components/form/input/Checkbox';
+import Select from '../form/Select';
 
 interface UserFormModalProps {
   open: boolean;
@@ -144,10 +145,10 @@ export default function UserFormModal({ open, onClose, onSuccess, initialData }:
 
             <div>
               <Label htmlFor="role_id">Role</Label>
-              <select
+              <Select
                 id="role_id"
                 value={formData.role_id}
-                onChange={(e) => handleChange('role_id', e.target.value)}
+                onChange={(value) => handleChange('role_id', value)}
                 className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
               >
                 <option value="">Select Role</option>
@@ -156,7 +157,7 @@ export default function UserFormModal({ open, onClose, onSuccess, initialData }:
                     {role.name}
                   </option>
                 ))}
-              </select>
+              </Select>
               {errors.role_id && (
                 <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.role_id}</p>
               )}

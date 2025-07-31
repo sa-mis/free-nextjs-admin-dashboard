@@ -10,6 +10,7 @@ import Label from '@/components/form/Label';
 import AdvancedCustomTable from '@/components/custom/AdvancedCustomTable';
 import { usePageAuth } from '@/hooks/usePageAuth';
 import PermissionDenied from '@/components/common/PermissionDenied';
+import TextArea from '@/components/form/input/TextArea';
 
 interface VendorFormModalProps {
   isOpen: boolean;
@@ -131,11 +132,11 @@ function VendorFormModal({
 
           <div>
             <Label htmlFor="address">Address</Label>
-            <textarea
+            <TextArea
               id="address"
               value={formData.address}
-              onChange={(e) => handleInputChange('address', e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              onChange={(value) => handleInputChange('address', value)}
+              // className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               rows={3}
               placeholder="Enter vendor address"
             />

@@ -12,7 +12,7 @@ import { usePageAuth } from '@/hooks/usePageAuth';
 import PermissionDenied from '@/components/common/PermissionDenied';
 
 const ToolCategoriesPage: React.FC = () => {
-  const { loading: authLoading, hasPermission } = usePageAuth('tool-category.view');
+  const { loading: authLoading, hasPermission } = usePageAuth('tool_category.view');
   const [toolCategories, setToolCategories] = useState<ToolCategory[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedToolCategory, setSelectedToolCategory] = useState<ToolCategory | null>(null);

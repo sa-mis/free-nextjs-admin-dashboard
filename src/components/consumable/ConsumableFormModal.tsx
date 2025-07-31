@@ -9,6 +9,7 @@ import { categoryAPI } from '@/services/category';
 import { brandAPI } from '@/services/brand';
 import { modelAPI } from '@/services/model';
 import { vendorAPI } from '@/services/vendor';
+import TextArea from '../form/input/TextArea';
 
 const statusOptions = [
   { value: 'active', label: 'Active' },
@@ -127,7 +128,7 @@ export default function ConsumableFormModal({ open, onClose, onSubmit, initialDa
                 </div>
                 <div className="sm:col-span-2">
                   <Label htmlFor="description">Description</Label>
-                  <textarea id="description" name="description" value={form.description} onChange={handleChange} className="h-20 w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm shadow-theme-xs" />
+                  <TextArea id="description" name="description" value={form.description} onChange={handleChange} className="h-20 w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm shadow-theme-xs" />
                 </div>
               </div>
             </div>
@@ -193,7 +194,7 @@ export default function ConsumableFormModal({ open, onClose, onSubmit, initialDa
                 </div>
                 <div>
                   <Label htmlFor="notes">Notes</Label>
-                  <textarea id="notes" name="notes" value={form.notes} onChange={handleChange} className="h-20 w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm shadow-theme-xs" />
+                  <TextArea id="notes" name="notes" value={form.notes} onChange={handleChange} className="h-20 w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm shadow-theme-xs" />
                 </div>
               </div>
             </div>

@@ -12,7 +12,7 @@ import { usePageAuth } from '@/hooks/usePageAuth';
 import PermissionDenied from '@/components/common/PermissionDenied';
 
 const WorkOrdersPage: React.FC = () => {
-  const { loading: authLoading, hasPermission } = usePageAuth('work-order.view');
+  const { loading: authLoading, hasPermission } = usePageAuth('work_order.view');
   const [workOrders, setWorkOrders] = useState<WorkOrder[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedWorkOrder, setSelectedWorkOrder] = useState<WorkOrder | null>(null);

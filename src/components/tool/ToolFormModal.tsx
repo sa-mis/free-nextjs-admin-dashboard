@@ -8,6 +8,8 @@ import Button from '@/components/ui/button/Button';
 import InputField from '@/components/form/input/InputField';
 import Label from '@/components/form/Label';
 import Switch from '@/components/form/switch/Switch';
+import TextArea from '../form/input/TextArea';
+import Select from '../form/Select';
 
 interface ToolFormModalProps {
   isOpen: boolean;
@@ -130,14 +132,14 @@ const ToolFormModal: React.FC<ToolFormModalProps> = ({
 
           <div>
             <Label htmlFor="tool_category_id">Category *</Label>
-            <select
+            <Select
               id="tool_category_id"
               {...register('tool_category_id', { required: 'Category is required' })}
               className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
             >
               <option value="">Select Category</option>
               {/* TODO: Load categories from API */}
-            </select>
+            </Select>
             {errors.tool_category_id && (
               <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.tool_category_id.message}</p>
             )}
@@ -173,7 +175,7 @@ const ToolFormModal: React.FC<ToolFormModalProps> = ({
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <Label htmlFor="status">Status</Label>
-            <select
+            <Select
               id="status"
               {...register('status')}
               className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
@@ -183,12 +185,12 @@ const ToolFormModal: React.FC<ToolFormModalProps> = ({
               <option value="maintenance">Maintenance</option>
               <option value="calibration">Calibration</option>
               <option value="retired">Retired</option>
-            </select>
+            </Select>
           </div>
 
           <div>
             <Label htmlFor="condition">Condition</Label>
-            <select
+            <Select
               id="condition"
               {...register('condition')}
               className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
@@ -197,7 +199,7 @@ const ToolFormModal: React.FC<ToolFormModalProps> = ({
               <option value="good">Good</option>
               <option value="fair">Fair</option>
               <option value="poor">Poor</option>
-            </select>
+            </Select>
           </div>
         </div>
 
@@ -239,22 +241,22 @@ const ToolFormModal: React.FC<ToolFormModalProps> = ({
 
         <div>
           <Label htmlFor="description">Description</Label>
-          <textarea
+          <TextArea
             id="description"
             {...register('description')}
             rows={3}
-            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+            // className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
             placeholder="Enter description (optional)"
           />
         </div>
 
         <div>
           <Label htmlFor="notes">Notes</Label>
-          <textarea
+          <TextArea
             id="notes"
             {...register('notes')}
             rows={3}
-            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+            // className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
             placeholder="Enter notes (optional)"
           />
         </div>

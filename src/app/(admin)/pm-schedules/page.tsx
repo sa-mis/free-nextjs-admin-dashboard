@@ -12,7 +12,7 @@ import { usePageAuth } from '@/hooks/usePageAuth';
 import PermissionDenied from '@/components/common/PermissionDenied';
 
 const PmSchedulesPage: React.FC = () => {
-  const { loading: authLoading, hasPermission } = usePageAuth('pm-schedule.view');
+  const { loading: authLoading, hasPermission } = usePageAuth('pm_schedule.view');
   const [pmSchedules, setPmSchedules] = useState<PmSchedule[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedPmSchedule, setSelectedPmSchedule] = useState<PmSchedule | null>(null);

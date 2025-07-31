@@ -10,6 +10,8 @@ import Label from '@/components/form/Label';
 import AdvancedCustomTable from '@/components/custom/AdvancedCustomTable';
 import { usePageAuth } from '@/hooks/usePageAuth';
 import PermissionDenied from '@/components/common/PermissionDenied';
+import TextArea from '@/components/form/input/TextArea';
+import Select from '@/components/form/Select';
 
 interface BrandFormModalProps {
   isOpen: boolean;
@@ -95,11 +97,11 @@ function BrandFormModal({
 
           <div>
             <Label htmlFor="description">Description</Label>
-            <textarea
+            <TextArea
               id="description"
               value={formData.description}
-              onChange={(e) => handleInputChange('description', e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              onChange={(value) => handleInputChange('description', value)}
+              // className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               rows={3}
               placeholder="Enter brand description"
             />
@@ -129,15 +131,15 @@ function BrandFormModal({
 
           <div>
             <Label htmlFor="is_active">Status</Label>
-            <select
+            <Select
               id="is_active"
               value={formData.is_active ? '1' : '0'}
-              onChange={(e) => handleInputChange('is_active', e.target.value === '1')}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              onChange={(value) => handleInputChange('is_active', value === '1')}
+              // className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="1">Active</option>
               <option value="0">Inactive</option>
-            </select>
+            </Select>
           </div>
 
           <div className="flex justify-end space-x-3 pt-6">
