@@ -5,6 +5,8 @@ import { Asset } from '@/services/asset';
 import Button from '@/components/ui/button/Button';
 import Badge from '@/components/ui/badge/Badge';
 import { PencilIcon, TrashIcon, EyeIcon } from '@/icons';
+import { Table, TableBody, TableCell, TableHeader, TableRow } from '../ui/table';
+import { formatDate } from '@fullcalendar/core/index.js';
 
 interface AssetTableProps {
   assets: Asset[];
@@ -38,7 +40,7 @@ export function AssetTable({
     if (!amount) return '-';
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
-      currency: 'USD'
+      currency: 'THB'
     }).format(amount);
   };
 
@@ -67,111 +69,42 @@ export function AssetTable({
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg shadow">
       <div className="overflow-x-auto">
-        <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-          <thead className="bg-gray-50 dark:bg-gray-700">
-            <tr>
-              <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                Asset
-              </th>
-              <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                Category
-              </th>
-              <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                Location
-              </th>
-              <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                Status
-              </th>
-              <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                Condition
-              </th>
-              <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                Value
-              </th>
-              <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                Actions
-              </th>
-            </tr>
-          </thead>
-          <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableCell>Asset</TableCell>
+              <TableCell>Category</TableCell>
+              <TableCell>Location</TableCell>
+              <TableCell>Status</TableCell>
+              <TableCell>Condition</TableCell>
+              <TableCell>Value</TableCell>
+              <TableCell>Actions</TableCell>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
             {assets.map((asset) => (
-              <tr key={asset.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div>
-                    <div className="text-sm font-medium text-gray-900 dark:text-white">
-                      {asset.name}
-                    </div>
-                    <div className="text-sm text-gray-500 dark:text-gray-400">
-                      {asset.asset_tag}
-                    </div>
-                    {asset.serial_number && (
-                      <div className="text-xs text-gray-400 dark:text-gray-500">
-                        S/N: {asset.serial_number}
-                      </div>
-                    )}
-                  </div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm text-gray-900 dark:text-white">
-                    {asset.category_name || '-'}
-                  </div>
-                  <div className="text-sm text-gray-500 dark:text-gray-400">
-                    {asset.brand_name} {asset.model_name}
-                  </div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm text-gray-900 dark:text-white">
-                    {asset.location || '-'}
-                  </div>
-                  <div className="text-sm text-gray-500 dark:text-gray-400">
-                    {asset.division_name || '-'}
-                  </div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <Badge className={getStatusColor(asset.status)}>
-                    {asset.status}
-                  </Badge>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <Badge className={getConditionColor(asset.condition_status)}>
-                    {asset.condition_status}
-                  </Badge>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
-                  {formatCurrency(asset.purchase_price)}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                  <div className="flex space-x-2">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => setSelectedAsset(asset)}
-                      className="text-blue-600 hover:text-blue-900"
-                    >
-                      <EyeIcon className="w-4 h-4" />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => onEdit(asset)}
-                      className="text-green-600 hover:text-green-900"
-                    >
-                      <PencilIcon className="w-4 h-4" />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => onDelete(asset.id)}
-                      className="text-red-600 hover:text-red-900"
-                    >
-                      <TrashIcon className="w-4 h-4" />
-                    </Button>
-                  </div>
-                </td>
-              </tr>
+              <TableRow key={asset.id}>
+                <TableCell>{asset.name}</TableCell>
+                <TableCell>{asset.category_name}</TableCell>
+                <TableCell>{asset.location}</TableCell>
+                <TableCell>{asset.status}</TableCell>
+                <TableCell>{asset.condition_status}</TableCell>
+                <TableCell>{asset.purchase_price}</TableCell>
+                <TableCell>
+                  <Button variant="outline" size="sm" onClick={() => setSelectedAsset(asset)}>
+                    <EyeIcon className="w-4 h-4" />
+                  </Button>
+                  <Button variant="outline" size="sm" onClick={() => onEdit(asset)}>
+                    <PencilIcon className="w-4 h-4" />
+                  </Button>
+                  <Button variant="outline" size="sm" onClick={() => onDelete(asset.id)}>
+                    <TrashIcon className="w-4 h-4" />
+                  </Button>
+                </TableCell>
+              </TableRow>
             ))}
-          </tbody>
-        </table>
+          </TableBody>
+        </Table>
       </div>
 
       {/* Pagination */}
@@ -230,14 +163,6 @@ export function AssetTable({
                     </Button>
                   );
                 })}
-                <Button
-                  variant="outline"
-                  onClick={() => onPageChange(pagination.page + 1)}
-                  disabled={pagination.page >= pagination.pages}
-                  className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
-                >
-                  Next
-                </Button>
               </nav>
             </div>
           </div>
@@ -279,6 +204,277 @@ export function AssetTable({
                 </div>
                 <div>
                   <label className="text-sm font-medium text-gray-700">Division:</label>
+                  <p className="text-sm text-gray-900">{selectedAsset.name}</p>
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-700">Asset Tag:</label>
+                  <p className="text-sm text-gray-900">{selectedAsset.asset_tag}</p>
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-700">Category:</label>
+                  <p className="text-sm text-gray-900">{selectedAsset.category_name || '-'}</p>
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-700">Brand/Model:</label>
+                  <p className="text-sm text-gray-900">
+                    {selectedAsset.brand_name} {selectedAsset.model_name}
+                  </p>
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-700">Serial Number:</label>
+                  <p className="text-sm text-gray-900">{selectedAsset.serial_number || '-'}</p>
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-700">Location:</label>
+                  <p className="text-sm text-gray-900">{selectedAsset.location || '-'}</p>
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-700">Division:</label>
+                  <p className="text-sm text-gray-900">{selectedAsset.division_name || '-'}</p>
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-700">Assigned To:</label>
+                  <p className="text-sm text-gray-900">{selectedAsset.assigned_user_name || '-'}</p>
+                </div>
+                <div className="px-6 py-4 whitespace-nowrap">
+                  <label className="text-sm font-medium text-gray-700">Purchase Price:</label>
+                  <p className="text-sm text-gray-900">{formatCurrency(selectedAsset.purchase_price)}</p>
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-700">Purchase Date:</label>
+                  <p className="text-sm text-gray-900">{formatDate(selectedAsset.purchase_date)}</p>
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-700">Warranty:</label>
+                  <p className="text-sm text-gray-900">
+                    {formatDate(selectedAsset.warranty_start_date)} - {formatDate(selectedAsset.warranty_end_date)}
+                  </p>
+                </div>
+                <div className="px-6 py-4 whitespace-nowrap">
+                  <label className="text-sm font-medium text-gray-700">Notes:</label>
+                  <p className="text-sm text-gray-900">{selectedAsset.notes || '-'}</p>
+                </div>
+              </div>
+              <div className="mt-6 flex justify-end">
+                <Button onClick={() => setSelectedAsset(null)}>Close</Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Asset Details Modal */}
+      {selectedAsset && (
+        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+          <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+            <div className="mt-3">
+              <h3 className="text-lg font-medium text-gray-900 mb-4">Asset Details</h3>
+              <div className="space-y-3">
+                <div>
+                  <label className="text-sm font-medium text-gray-700">Name:</label>
+                  <p className="text-sm text-gray-900">{selectedAsset.name}</p>
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-700">Asset Tag:</label>
+                  <p className="text-sm text-gray-900">{selectedAsset.asset_tag}</p>
+                </div>
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-700">Category:</label>
+                  <p className="text-sm text-gray-900">{selectedAsset.category_name || '-'}</p>
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-700">Brand/Model:</label>
+                  <p className="text-sm text-gray-900">
+                    {selectedAsset.brand_name} {selectedAsset.model_name}
+                  </p>
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-700">Serial Number:</label>
+                  <p className="text-sm text-gray-900">{selectedAsset.serial_number || '-'}</p>
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-700">Location:</label>
+                  <p className="text-sm text-gray-900">{selectedAsset.location || '-'}</p>
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-700">Division:</label>
+                  <p className="text-sm text-gray-900">{selectedAsset.division_name || '-'}</p>
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-700">Assigned To:</label>
+                  <p className="text-sm text-gray-900">{selectedAsset.assigned_user_name || '-'}</p>
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-700">Purchase Price:</label>
+                  <p className="text-sm text-gray-900">{formatCurrency(selectedAsset.purchase_price)}</p>
+                <div>
+                  <label className="text-sm font-medium text-gray-700">Purchase Date:</label>
+                  <p className="text-sm text-gray-900">{formatDate(selectedAsset.purchase_date)}</p>
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-700">Warranty:</label>
+                  <p className="text-sm text-gray-900">
+                    {formatDate(selectedAsset.warranty_start_date)} - {formatDate(selectedAsset.warranty_end_date)}
+                  </p>
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-700">Serial Number:</label>
+                  <p className="text-sm text-gray-900">{selectedAsset.serial_number || '-'}</p>
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-700">Location:</label>
+                  <p className="text-sm text-gray-900">{selectedAsset.location || '-'}</p>
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-700">Division:</label>
+                  <p className="text-sm text-gray-900">{selectedAsset.division_name || '-'}</p>
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-700">Assigned To:</label>
+                  <p className="text-sm text-gray-900">{selectedAsset.assigned_user_name || '-'}</p>
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-700">Purchase Price:</label>
+                  <p className="text-sm text-gray-900">{formatCurrency(selectedAsset.purchase_price)}</p>
+                </div>
+              variant="outline"
+                <div>
+                  <label className="text-sm font-medium text-gray-700">Purchase Date:</label>
+                  <p className="text-sm text-gray-900">{formatDate(selectedAsset.purchase_date)}</p>
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-700">Warranty:</label>
+                  <p className="text-sm text-gray-900">
+                    {formatDate(selectedAsset.warranty_start_date)} - {formatDate(selectedAsset.warranty_end_date)}
+                  </p>
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-700">Notes:</label>
+                  <p className="text-sm text-gray-900">{selectedAsset.notes || '-'}</p>
+                </div>
+              </div>
+              <div className="mt-6 flex justify-end">
+                <Button onClick={() => setSelectedAsset(null)}>Close</Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Asset Details Modal */}
+      {selectedAsset && (
+        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+          <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+            <div className="mt-3">
+              <h3 className="text-lg font-medium text-gray-900 mb-4">Asset Details</h3>
+              <div className="space-y-3">
+                <div>
+                  <label className="text-sm font-medium text-gray-700">Name:</label>
+                  <div className="mt-6 flex justify-end">
+                    <Button onClick={() => setSelectedAsset(null)}>Close</Button>
+                  </div>
+                </div>
+                {[...Array(pagination.pages)].map((_, i) => {
+                  const page = i + 1;
+                  return (
+                    <Button
+                      key={page}
+                      variant={page === pagination.page ? "primary" : "outline"}
+                      onClick={() => onPageChange(page)}
+                      className="relative inline-flex items-center px-4 py-2 border text-sm font-medium"
+                    >
+                      {page}
+                    </Button>
+                  );
+                })}
+                <div>
+                  <label className="text-sm font-medium text-gray-700">Brand/Model:</label>
+                  <p className="text-sm text-gray-900">
+                    {selectedAsset.brand_name} {selectedAsset.model_name}
+                  </p>
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-700">Category:</label>
+                  <p className="text-sm text-gray-900">{selectedAsset.category_name || '-'}</p>
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-700">Serial Number:</label>
+                  <p className="text-sm text-gray-900">{selectedAsset.serial_number || '-'}</p>
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-700">Location:</label>
+                  <p className="text-sm text-gray-900">{selectedAsset.location || '-'}</p>
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-700">Division:</label>
+                  <p className="text-sm text-gray-900">{selectedAsset.division_name || '-'}</p>
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-700">Assigned To:</label>
+                  <p className="text-sm text-gray-900">{selectedAsset.assigned_user_name || '-'}</p>
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-700">Purchase Price:</label>
+                  <p className="text-sm text-gray-900">{formatCurrency(selectedAsset.purchase_price)}</p>
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-700">Purchase Date:</label>
+                  <p className="text-sm text-gray-900">{formatDate(selectedAsset.purchase_date)}</p>
+                </div>
+                <div>
+                    <label className="text-sm font-medium text-gray-700">Warranty:</label>
+                  <p className="text-sm text-gray-900">
+                    {formatDate(selectedAsset.warranty_start_date)} - {formatDate(selectedAsset.warranty_end_date)}
+                  </p>
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-700">Notes:</label>
+                </div>
+              </div>
+              <div className="mt-6 flex justify-end">
+                <Button onClick={() => setSelectedAsset(null)}>Close</Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Asset Details Modal */}
+      {selectedAsset && (
+        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+          <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+            <div className="mt-3">
+              <h3 className="text-lg font-medium text-gray-900 mb-4">Asset Details</h3>
+              <div className="space-y-3">
+                <div>
+                  <label className="text-sm font-medium text-gray-700">Name:</label>
+                    <p className="text-sm text-gray-900">{selectedAsset.name}</p>
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-700">Asset Tag:</label>
+                  <p className="text-sm text-gray-900">{selectedAsset.asset_tag}</p>
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-700">Category:</label>
+                  <p className="text-sm text-gray-900">{selectedAsset.category_name || '-'}</p>
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-700">Brand/Model:</label>
+                  <p className="text-sm text-gray-900">
+                    {selectedAsset.brand_name} {selectedAsset.model_name}
+                  </p>
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-700">Serial Number:</label>
+                  <p className="text-sm text-gray-900">{selectedAsset.serial_number || '-'}</p>
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-700">Location:</label>
+                  <p className="text-sm text-gray-900">{selectedAsset.location || '-'}</p>
+                  </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-700">Division:</label>
                   <p className="text-sm text-gray-900">{selectedAsset.division_name || '-'}</p>
                 </div>
                 <div>
@@ -313,4 +509,4 @@ export function AssetTable({
       )}
     </div>
   );
-} 
+}

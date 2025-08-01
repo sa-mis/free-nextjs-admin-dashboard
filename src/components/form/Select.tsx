@@ -6,13 +6,16 @@ interface Option {
 }
 
 interface SelectProps {
-  options: Option[];
+  options?: Option[];
   placeholder?: string;
   onChange: (value: string | number) => void;
   className?: string;
   value?: string | number;
   defaultValue?: string | number;
   error?: boolean;
+  children?: React.ReactNode;
+  id?: string;
+  disabled?: boolean;
 }
 
 const Select: React.FC<SelectProps> = ({
@@ -23,6 +26,9 @@ const Select: React.FC<SelectProps> = ({
   value,
   defaultValue = "",
   error = false,
+  children,
+  id,
+  disabled = false,
 }) => {
   // Manage the selected value
   const [selectedValue, setSelectedValue] = useState<string | number>(value || defaultValue);
@@ -50,7 +56,9 @@ const Select: React.FC<SelectProps> = ({
   } ${className}`;
 
   // Add styles for different states
-  if (error) {
+  if (disabled) {
+    selectClasses += ` bg-gray-100 opacity-50 text-gray-500 border-gray-300 cursor-not-allowed dark:bg-gray-800 dark:text-gray-400 dark:border-gray-700`;
+  } else if (error) {
     selectClasses += ` text-error-800 border-error-500 focus:ring-error-500/10 dark:text-error-400 dark:border-error-500`;
   } else {
     selectClasses += ` border-gray-300 focus:border-brand-300 focus:ring-brand-500/10 dark:border-gray-600`;
@@ -58,9 +66,11 @@ const Select: React.FC<SelectProps> = ({
 
   return (
     <select
+      id={id}
       className={selectClasses}
       value={selectedValue}
       onChange={handleChange}
+      disabled={disabled}
     >
       {/* Placeholder option */}
       <option
@@ -70,8 +80,8 @@ const Select: React.FC<SelectProps> = ({
       >
         {placeholder}
       </option>
-      {/* Map over options */}
-      {options.map((option) => (
+      {/* Render options from props if provided */}
+      {options && options.map((option) => (
         <option
           key={option.value}
           value={option.value}
@@ -80,6 +90,8 @@ const Select: React.FC<SelectProps> = ({
           {option.label}
         </option>
       ))}
+      {/* Render children if provided */}
+      {children}
     </select>
   );
 };

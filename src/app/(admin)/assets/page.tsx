@@ -9,10 +9,13 @@ import { divisionService } from '@/services/organization';
 import { toast } from 'react-hot-toast';
 import AdvancedCustomTable from '@/components/custom/AdvancedCustomTable';
 import { AssetFormModal } from '@/components/asset/AssetFormModal';
+import { AssetAssignModal } from '@/components/asset/AssetAssignModal';
+import { AssetTransferModal } from '@/components/asset/AssetTransferModal';
+import { AssetHistoryModal } from '@/components/asset/AssetHistoryModal';
 import { AssetDashboard } from '@/components/asset/AssetDashboard';
 import Button from '@/components/ui/button/Button';
 import InputField from '@/components/form/input/InputField';
-import { PlusIcon } from '@/icons';
+import { PlusIcon, UserIcon, ArrowRightIcon, ClockIcon } from '@/icons';
 import { usePageAuth } from '@/hooks/usePageAuth';
 import PermissionDenied from '@/components/common/PermissionDenied';
 import Select from '@/components/form/Select';
@@ -23,6 +26,10 @@ export default function AssetsPage() {
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [editingAsset, setEditingAsset] = useState<Asset | null>(null);
+  const [showAssignModal, setShowAssignModal] = useState(false);
+  const [showTransferModal, setShowTransferModal] = useState(false);
+  const [showHistoryModal, setShowHistoryModal] = useState(false);
+  const [selectedAsset, setSelectedAsset] = useState<Asset | null>(null);
   const [query, setQuery] = useState<AssetQuery>({
     page: 1,
     limit: 10
@@ -99,6 +106,25 @@ export default function AssetsPage() {
     }
   };
 
+  const handleAssign = (asset: Asset) => {
+    setSelectedAsset(asset);
+    setShowAssignModal(true);
+  };
+
+  const handleTransfer = (asset: Asset) => {
+    setSelectedAsset(asset);
+    setShowTransferModal(true);
+  };
+
+  const handleHistory = (asset: Asset) => {
+    setSelectedAsset(asset);
+    setShowHistoryModal(true);
+  };
+
+  const handleActionSuccess = () => {
+    loadAssets();
+  };
+
   const handleSave = async (data: Partial<Asset>) => {
     try {
       if (editingAsset) {
@@ -159,6 +185,41 @@ export default function AssetsPage() {
     { key: 'status', label: 'Status', filterable: true, searchable: true, exportable: true, render: (value: string) => <span className={getStatusColor(value)}>{value}</span> },
     { key: 'condition_status', label: 'Condition', filterable: true, searchable: true, exportable: true, render: (value: string) => <span className={getConditionColor(value)}>{value}</span> },
     { key: 'purchase_price', label: 'Value', filterable: true, searchable: true, exportable: true, render: (value: number) => value ? value.toLocaleString('en-US', { style: 'currency', currency: 'USD' }) : '-' },
+    { 
+      key: 'actions', 
+      label: 'Actions', 
+      filterable: false, 
+      searchable: false, 
+      exportable: false,
+      render: (value: any, row: Asset) => (
+        <div className="flex space-x-2">
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={() => handleAssign(row)}
+            className="flex items-center gap-1"
+          >
+            <UserIcon className="w-3 h-3" />
+          </Button>
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={() => handleTransfer(row)}
+            className="flex items-center gap-1"
+          >
+            <ArrowRightIcon className="w-3 h-3" />
+          </Button>
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={() => handleHistory(row)}
+            className="flex items-center gap-1"
+          >
+            <ClockIcon className="w-3 h-3" />
+          </Button>
+        </div>
+      )
+    },
   ];
 
   if (authLoading) return <div>Loading...</div>;
@@ -201,7 +262,7 @@ export default function AssetsPage() {
         </Select>
         <Select
           value={query.category_id || ''}
-          onChange={(value) => handleFilter('category_id', value ? parseInt(value) : undefined)}
+          onChange={(value) => handleFilter('category_id', value ? parseInt(value.toString()) : undefined)}
           // className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
           <option value="">All Categories</option>
@@ -213,7 +274,7 @@ export default function AssetsPage() {
         </Select>
         <Select
           value={query.division_id || ''}
-          onChange={(value) => handleFilter('division_id', value ? parseInt(value) : undefined)}
+          onChange={(value) => handleFilter('division_id', value ? parseInt(value.toString()) : undefined)}
           // className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
           <option value="">All Divisions</option>
@@ -247,6 +308,30 @@ export default function AssetsPage() {
         categories={categories}
         brands={brands}
         vendors={vendors}
+      />
+
+      {/* Asset Assign Modal */}
+      <AssetAssignModal
+        isOpen={showAssignModal}
+        onClose={() => setShowAssignModal(false)}
+        assetId={selectedAsset?.id || 0}
+        onSuccess={handleActionSuccess}
+      />
+
+      {/* Asset Transfer Modal */}
+      <AssetTransferModal
+        isOpen={showTransferModal}
+        onClose={() => setShowTransferModal(false)}
+        assetId={selectedAsset?.id || 0}
+        divisions={divisions}
+        onSuccess={handleActionSuccess}
+      />
+
+      {/* Asset History Modal */}
+      <AssetHistoryModal
+        isOpen={showHistoryModal}
+        onClose={() => setShowHistoryModal(false)}
+        assetId={selectedAsset?.id || 0}
       />
     </div>
   );
