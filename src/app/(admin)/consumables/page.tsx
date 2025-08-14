@@ -11,6 +11,8 @@ import { consumableAPI } from '@/services/consumable';
 import { Consumable, ConsumableAssignment, ConsumableStockMovement } from '@/types/consumable';
 import { usePageAuth } from '@/hooks/usePageAuth';
 import PermissionDenied from '@/components/common/PermissionDenied';
+import ComponentCard from '@/components/common/ComponentCard';
+import PageBreadcrumb from '@/components/common/PageBreadCrumb';
 
 export default function ConsumablesPage() {
   const { loading: authLoading, hasPermission } = usePageAuth('consumable.view');
@@ -137,7 +139,10 @@ export default function ConsumablesPage() {
   if (!hasPermission) return <PermissionDenied />;
   
   return (
-    <div className="mx-auto max-w-screen-2xl p-4 md:p-6 2xl:p-10">
+    <div>
+      <PageBreadcrumb pageTitle="Consumables" />
+      <div className="space-y-6">
+        <ComponentCard title="Consumables">
       <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <h2 className="text-title-md2 font-bold text-black dark:text-white">
           Consumables
@@ -177,6 +182,8 @@ export default function ConsumablesPage() {
         loading={stockLoading}
         error={stockError}
       />
+      </ComponentCard>
+      </div>
     </div>
   );
 } 

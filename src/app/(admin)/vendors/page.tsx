@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { vendorAPI, Vendor } from '@/services/vendor';
 import ComponentCard from '@/components/common/ComponentCard';
+import PageBreadcrumb from '@/components/common/PageBreadCrumb';
 import Button from '@/components/ui/button/Button';
 import InputField from '@/components/form/input/InputField';
 import { Modal } from '@/components/ui/modal';
@@ -133,7 +134,7 @@ function VendorFormModal({
           <div>
             <Label htmlFor="address">Address</Label>
             <TextArea
-              id="address"
+              // id="address"
               value={formData.address}
               onChange={(value) => handleInputChange('address', value)}
               // className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -235,15 +236,18 @@ export default function VendorsPage() {
   if (!hasPermission) return <PermissionDenied />;
   
   return (
-    <div className="mx-auto max-w-screen-2xl p-4 md:p-6 2xl:p-10">
-      <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+    <div>
+      <PageBreadcrumb pageTitle="Vendors" />
+      <div className="space-y-6">
+        <ComponentCard title="Vendors">
+      {/* <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <h2 className="text-title-md2 font-bold text-black dark:text-white">
           Vendors
         </h2>
         <Button onClick={() => setIsModalOpen(true)}>
           Add Vendor
         </Button>
-      </div>
+      </div> */}
 
       <AdvancedCustomTable
         data={vendors}
@@ -265,6 +269,8 @@ export default function VendorsPage() {
         vendor={selectedVendor}
         onSave={handleSave}
       />
+      </ComponentCard>
+      </div>
     </div>
   );
 } 

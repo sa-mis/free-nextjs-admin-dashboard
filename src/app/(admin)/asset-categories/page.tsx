@@ -7,6 +7,8 @@ import { AssetCategoryFormModal } from '@/components/asset-category/AssetCategor
 import Button from '@/components/ui/button/Button';
 import { usePageAuth } from '@/hooks/usePageAuth';
 import PermissionDenied from '@/components/common/PermissionDenied';
+import ComponentCard from '@/components/common/ComponentCard';
+import PageBreadcrumb from '@/components/common/PageBreadCrumb';
 
 export default function AssetCategoriesPage() {
   const { loading: authLoading, hasPermission } = usePageAuth('asset.view');
@@ -73,15 +75,18 @@ export default function AssetCategoriesPage() {
   if (!hasPermission) return <PermissionDenied />;
   
   return (
-    <div className="mx-auto max-w-screen-2xl p-4 md:p-6 2xl:p-10">
-      <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+    <div>
+      <PageBreadcrumb pageTitle="Asset Categories" />
+      <div className="space-y-6">
+        <ComponentCard title="Asset Categories">
+      {/* <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <h2 className="text-title-md2 font-bold text-black dark:text-white">
           Asset Categories
         </h2>
         <Button onClick={() => setIsModalOpen(true)}>
           Add Category
         </Button>
-      </div>
+      </div> */}
 
       <AdvancedCustomTable
         data={categories}
@@ -104,6 +109,8 @@ export default function AssetCategoriesPage() {
         onSave={handleSave}
         categories={categories}
       />
+      </ComponentCard>
+      </div>
     </div>
   );
 } 

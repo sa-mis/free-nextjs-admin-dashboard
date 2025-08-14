@@ -19,6 +19,8 @@ import { PlusIcon, UserIcon, ArrowRightIcon, ClockIcon } from '@/icons';
 import { usePageAuth } from '@/hooks/usePageAuth';
 import PermissionDenied from '@/components/common/PermissionDenied';
 import Select from '@/components/form/Select';
+import PageBreadcrumb from '@/components/common/PageBreadCrumb';
+import ComponentCard from '@/components/common/ComponentCard';
 
 export default function AssetsPage() {
   const { loading: authLoading, hasPermission } = usePageAuth('asset.view');
@@ -226,113 +228,118 @@ export default function AssetsPage() {
   if (!hasPermission) return <PermissionDenied />;
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Asset Management</h1>
-          <p className="text-gray-600 dark:text-gray-400">Manage your organization's assets</p>
+    <div>
+      <PageBreadcrumb pageTitle="Assets" />
+        <div className="space-y-6">
+        <ComponentCard title="Assets">
+        {/* Header */}
+          <div className="flex justify-between items-center">
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Asset Management</h1>
+              <p className="text-gray-600 dark:text-gray-400">Manage your organization's assets</p>
+            </div>
+            <Button onClick={handleCreate} className="flex items-center gap-2">
+              <PlusIcon className="w-4 h-4" />
+              Add Asset
+            </Button>
+          </div>
+
+          {/* Dashboard Stats */}
+          <AssetDashboard />
+
+          {/* Filters */}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <InputField
+              placeholder="Search assets..."
+              value={query.search || ''}
+              onChange={(e) => handleSearch(e.target.value)}
+            />
+            <Select
+              value={query.status || ''}
+              onChange={(value) => handleFilter('status', value || undefined)}
+              // className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="">All Status</option>
+              <option value="active">Active</option>
+              <option value="maintenance">Maintenance</option>
+              <option value="inactive">Inactive</option>
+              <option value="disposed">Disposed</option>
+            </Select>
+            <Select
+              value={query.category_id || ''}
+              onChange={(value) => handleFilter('category_id', value ? parseInt(value.toString()) : undefined)}
+              // className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="">All Categories</option>
+              {categories.map((category: any) => (
+                <option key={category.id} value={category.id}>
+                  {category.name}
+                </option>
+              ))}
+            </Select>
+            <Select
+              value={query.division_id || ''}
+              onChange={(value) => handleFilter('division_id', value ? parseInt(value.toString()) : undefined)}
+              // className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="">All Divisions</option>
+              {divisions.map((division: any) => (
+                <option key={division.id} value={division.id}>
+                  {division.name}
+                </option>
+              ))}
+            </Select>
+          </div>
+
+          {/* Assets Table */}
+          <AdvancedCustomTable
+            data={assets}
+            columns={columns}
+            onEdit={handleEdit}
+            onDelete={(asset) => handleDelete(asset.id)}
+            onAdd={handleCreate}
+            addButtonText="Add Asset"
+            isLoading={loading}
+            title="Assets Management"
+          />
+
+          {/* Asset Form Modal */}
+          <AssetFormModal
+            isOpen={showModal}
+            onClose={() => setShowModal(false)}
+            asset={editingAsset}
+            onSave={handleSave}
+            divisions={divisions}
+            categories={categories}
+            brands={brands}
+            vendors={vendors}
+          />
+
+          {/* Asset Assign Modal */}
+          <AssetAssignModal
+            isOpen={showAssignModal}
+            onClose={() => setShowAssignModal(false)}
+            assetId={selectedAsset?.id || 0}
+            onSuccess={handleActionSuccess}
+          />
+
+          {/* Asset Transfer Modal */}
+          <AssetTransferModal
+            isOpen={showTransferModal}
+            onClose={() => setShowTransferModal(false)}
+            assetId={selectedAsset?.id || 0}
+            divisions={divisions}
+            onSuccess={handleActionSuccess}
+          />
+
+          {/* Asset History Modal */}
+          <AssetHistoryModal
+            isOpen={showHistoryModal}
+            onClose={() => setShowHistoryModal(false)}
+            assetId={selectedAsset?.id || 0}
+          />
+        </ComponentCard>
         </div>
-        <Button onClick={handleCreate} className="flex items-center gap-2">
-          <PlusIcon className="w-4 h-4" />
-          Add Asset
-        </Button>
-      </div>
-
-      {/* Dashboard Stats */}
-      <AssetDashboard />
-
-      {/* Filters */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <InputField
-          placeholder="Search assets..."
-          value={query.search || ''}
-          onChange={(e) => handleSearch(e.target.value)}
-        />
-        <Select
-          value={query.status || ''}
-          onChange={(value) => handleFilter('status', value || undefined)}
-          // className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-        >
-          <option value="">All Status</option>
-          <option value="active">Active</option>
-          <option value="maintenance">Maintenance</option>
-          <option value="inactive">Inactive</option>
-          <option value="disposed">Disposed</option>
-        </Select>
-        <Select
-          value={query.category_id || ''}
-          onChange={(value) => handleFilter('category_id', value ? parseInt(value.toString()) : undefined)}
-          // className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-        >
-          <option value="">All Categories</option>
-          {categories.map((category: any) => (
-            <option key={category.id} value={category.id}>
-              {category.name}
-            </option>
-          ))}
-        </Select>
-        <Select
-          value={query.division_id || ''}
-          onChange={(value) => handleFilter('division_id', value ? parseInt(value.toString()) : undefined)}
-          // className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-        >
-          <option value="">All Divisions</option>
-          {divisions.map((division: any) => (
-            <option key={division.id} value={division.id}>
-              {division.name}
-            </option>
-          ))}
-        </Select>
-      </div>
-
-      {/* Assets Table */}
-      <AdvancedCustomTable
-        data={assets}
-        columns={columns}
-        onEdit={handleEdit}
-        onDelete={(asset) => handleDelete(asset.id)}
-        onAdd={handleCreate}
-        addButtonText="Add Asset"
-        isLoading={loading}
-        title="Assets Management"
-      />
-
-      {/* Asset Form Modal */}
-      <AssetFormModal
-        isOpen={showModal}
-        onClose={() => setShowModal(false)}
-        asset={editingAsset}
-        onSave={handleSave}
-        divisions={divisions}
-        categories={categories}
-        brands={brands}
-        vendors={vendors}
-      />
-
-      {/* Asset Assign Modal */}
-      <AssetAssignModal
-        isOpen={showAssignModal}
-        onClose={() => setShowAssignModal(false)}
-        assetId={selectedAsset?.id || 0}
-        onSuccess={handleActionSuccess}
-      />
-
-      {/* Asset Transfer Modal */}
-      <AssetTransferModal
-        isOpen={showTransferModal}
-        onClose={() => setShowTransferModal(false)}
-        assetId={selectedAsset?.id || 0}
-        divisions={divisions}
-        onSuccess={handleActionSuccess}
-      />
-
-      {/* Asset History Modal */}
-      <AssetHistoryModal
-        isOpen={showHistoryModal}
-        onClose={() => setShowHistoryModal(false)}
-        assetId={selectedAsset?.id || 0}
-      />
     </div>
   );
 } 

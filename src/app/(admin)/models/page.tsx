@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { Model, Brand } from '@/services/asset';
 import { assetAPI } from '@/services/asset';
 import ComponentCard from '@/components/common/ComponentCard';
+import PageBreadcrumb from '@/components/common/PageBreadCrumb';
 import Button from '@/components/ui/button/Button';
 import InputField from '@/components/form/input/InputField';
 import { Modal } from '@/components/ui/modal';
@@ -13,6 +14,8 @@ import { usePageAuth } from '@/hooks/usePageAuth';
 import PermissionDenied from '@/components/common/PermissionDenied';
 import TextArea from '@/components/form/input/TextArea';
 import Select from '@/components/form/Select';
+import { modelAPI } from '@/services/model';
+import { brandAPI } from '@/services/brand';
 
 interface ModelFormModalProps {
   isOpen: boolean;
@@ -185,7 +188,7 @@ export default function ModelsPage() {
   const loadModels = async () => {
     try {
       setLoading(true);
-      const response = await assetAPI.getModels();
+      const response = await modelAPI.getModels();
       setModels(response.data);
     } catch (error) {
       console.error('Error loading models:', error);
@@ -196,7 +199,7 @@ export default function ModelsPage() {
 
   const loadBrands = async () => {
     try {
-      const response = await assetAPI.getBrands();
+      const response = await brandAPI.getBrands();
       setBrands(response.data);
     } catch (error) {
       console.error('Error loading brands:', error);
@@ -206,9 +209,9 @@ export default function ModelsPage() {
   const handleSave = async (data: Partial<Model>) => {
     try {
       if (selectedModel) {
-        await assetAPI.updateModel(selectedModel.id, data);
+        await modelAPI.update(selectedModel.id, data);
       } else {
-        await assetAPI.createModel(data);
+        await modelAPI.create(data);
       }
       setIsModalOpen(false);
       setSelectedModel(null);
@@ -226,7 +229,7 @@ export default function ModelsPage() {
   const handleDelete = async (model: Model) => {
     if (confirm('Are you sure you want to delete this model?')) {
       try {
-        await assetAPI.deleteModel(model.id);
+        await modelAPI.delete(model.id);
         loadModels();
       } catch (error) {
         console.error('Error deleting model:', error);
@@ -246,15 +249,18 @@ export default function ModelsPage() {
   if (!hasPermission) return <PermissionDenied />;
   
   return (
-    <div className="mx-auto max-w-screen-2xl p-4 md:p-6 2xl:p-10">
-      <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+    <div>
+      <PageBreadcrumb pageTitle="Models" />
+      <div className="space-y-6">
+        <ComponentCard title="Models">
+      {/* <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <h2 className="text-title-md2 font-bold text-black dark:text-white">
           Models
         </h2>
         <Button onClick={() => setIsModalOpen(true)}>
           Add Model
         </Button>
-      </div>
+      </div> */}
 
       <AdvancedCustomTable
         data={models}
@@ -277,6 +283,8 @@ export default function ModelsPage() {
         onSave={handleSave}
         brands={brands}
       />
+      </ComponentCard>
+      </div>
     </div>
   );
 } 
